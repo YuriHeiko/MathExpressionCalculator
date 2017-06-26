@@ -1,13 +1,13 @@
 package com.sysgears.simplecalculator.computer;
 
-public class Expression<T, S> {
-    private T t;
-    private S s;
+public class Expression {
+    private Object firstValue;
+    private Object secondValue;
     private Operators operator;
 
-    public Expression(T t, S s, Operators operator) {
-        this.t = t;
-        this.s = s;
+    public Expression(Object firstValue, Object secondValue, Operators operator) {
+        this.firstValue = firstValue;
+        this.secondValue = secondValue;
         this.operator = operator;
     }
 
@@ -17,11 +17,11 @@ public class Expression<T, S> {
     }
 
     public Integer getFirstValue() {
-        return (Integer) t;
+        return (Integer) firstValue;
     }
 
     public Integer getSecondValue() {
-        return (Integer) s;
+        return (Integer) secondValue;
     }
 
     public Operators getOperator() {
