@@ -1,32 +1,64 @@
 package com.sysgears.simplecalculator.computer;
 
 public class Expression {
-    private Object firstValue;
-    private Object secondValue;
+    private ValueHolder firstValue;
+    private ValueHolder secondValue;
     private Operators operator;
 
-    public Expression(Object firstValue, Object secondValue, Operators operator) {
-        this.firstValue = firstValue;
-        this.secondValue = secondValue;
+    public Expression(Double firstValue, Double secondValue, Operators operator) {
+        this.firstValue = new ValueHolder(firstValue);
+        this.secondValue = new ValueHolder(secondValue);
+        this.operator = operator;
+    }
+
+    public Expression(Double firstValue, Expression secondValue, Operators operator) {
+        this.firstValue = new ValueHolder(firstValue);
+        this.secondValue = new ValueHolder(secondValue);
+        this.operator = operator;
+    }
+
+    public Expression(Expression firstValue, Double secondValue, Operators operator) {
+        this.firstValue = new ValueHolder(firstValue);
+        this.secondValue = new ValueHolder(secondValue);
+        this.operator = operator;
+    }
+
+    public Expression(Expression firstValue, Expression secondValue, Operators operator) {
+        this.firstValue = new ValueHolder(firstValue);
+        this.secondValue = new ValueHolder(secondValue);
         this.operator = operator;
     }
 
 //    (\((?:[^()]++|(?1))*\))
 
-    public Expression() {
+
+    public Double getFirstValue() {
+        return firstValue.getValue();
     }
 
-    public Integer getFirstValue() {
-        return (Integer) firstValue;
+    public Double getSecondValue() {
+        return secondValue.getValue();
     }
 
-    public Integer getSecondValue() {
-        return (Integer) secondValue;
+    public Double evaluate() {
+        return operator.evaluate(this);
     }
 
-    public Operators getOperator() {
-        return operator;
-    }
+    private class ValueHolder {
+        private Double evaluatedValue;
+        private Expression expression;
 
+        public ValueHolder(Double evaluetedValue) {
+            this.evaluatedValue = evaluetedValue;
+        }
+
+        public ValueHolder(Expression expression) {
+            this.expression = expression;
+        }
+
+        public Double getValue() {
+            return evaluatedValue == null ? expression.evaluate() : evaluatedValue;
+        }
+    }
 
 }
