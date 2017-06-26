@@ -12,7 +12,7 @@ public class Calculator {
 
         String line;
         while (!(line = consoleReader.read(PROMPT_STRING)).equals("exit")) {
-            System.out.println(new Expression().evaluate(line));
+//            System.out.println(new Expression().evaluate(line));
             System.out.println("---------------------------------------------------------");
         }
     }
