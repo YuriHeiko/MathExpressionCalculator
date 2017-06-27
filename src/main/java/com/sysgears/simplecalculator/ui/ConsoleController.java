@@ -17,7 +17,7 @@ public class ConsoleController implements UIController {
 
     @Override
     public void write(String description, String outputString) {
-        System.out.println(new String(new byte[45]).replaceAll("", "-"));
-        System.out.printf("%s%s%n%n", description, outputString);
+        System.out.println(new String(new byte[45]).replaceAll(".", "-"));
+        System.out.printf("%s%s%n%n%n", description, outputString);
     }
 }

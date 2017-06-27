@@ -1,5 +1,6 @@
 package com.sysgears.simplecalculator;
 
+import com.sysgears.simplecalculator.parser.ExpressionCalculator;
 import com.sysgears.simplecalculator.ui.ConsoleController;
 import com.sysgears.simplecalculator.ui.UIController;
 
@@ -12,9 +13,12 @@ public class Calculator {
             final String VALUE_STRING = "Evaluated value is ";
             UIController uiController = new ConsoleController();
 
+            // (-(12-7)*(6-2)+4/(7-3))*9
+            // ((12-7)*(6-2)+4/(7-3))*9-1000*2+(10-10)
             String line;
             while (!(line = uiController.read(PROMPT_STRING)).equals("exit")) {
-                uiController.write(VALUE_STRING, line);
+                Double value = new ExpressionCalculator(line).evaluate();
+                uiController.write(VALUE_STRING, value.toString());
             }
         } catch (IOException e) {
             e.printStackTrace();
