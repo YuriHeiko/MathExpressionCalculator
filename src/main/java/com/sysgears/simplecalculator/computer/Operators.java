@@ -1,13 +1,13 @@
 package com.sysgears.simplecalculator.computer;
 
 public enum Operators {
-    PLUS('+', 100) {
+    ADD('+', 100) {
         @Override
         public Double evaluate(Expression expression) {
             return expression.getFirstValue() + expression.getSecondValue();
         }
     },
-    MINUS('-', 100) {
+    SUBTRACT('-', 100) {
         @Override
         public Double evaluate(Expression expression) {
             return expression.getFirstValue() - expression.getSecondValue();

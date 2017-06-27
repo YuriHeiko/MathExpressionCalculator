@@ -1,6 +1,6 @@
 package com.sysgears.simplecalculator.computer;
 
-public class Expression {
+public class Expression implements Computer {
     private ValueHolder firstValue;
     private ValueHolder secondValue;
     private Operators operator;
@@ -29,9 +29,6 @@ public class Expression {
         this.operator = operator;
     }
 
-//    (\((?:[^()]++|(?1))*\))
-
-
     public Double getFirstValue() {
         return firstValue.getValue();
     }
@@ -40,6 +37,7 @@ public class Expression {
         return secondValue.getValue();
     }
 
+    @Override
     public Double evaluate() {
         return operator.evaluate(this);
     }
