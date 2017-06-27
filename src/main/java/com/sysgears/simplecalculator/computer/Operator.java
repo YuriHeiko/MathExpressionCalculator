@@ -53,7 +53,9 @@ public enum Operator {
     private char operator;
     private int priority;
 
-    Operator(char operator, int priority) {
+    public abstract double evaluate(double v1, double v2);
+
+    private Operator(char operator, int priority) {
         this.operator = operator;
         this.priority = priority;
     }
@@ -81,6 +83,4 @@ public enum Operator {
 
         return false;
     }
-
-    public abstract double evaluate(double v1, double v2);
 }

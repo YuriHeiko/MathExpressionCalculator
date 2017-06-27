@@ -65,19 +65,9 @@ public class ExpressionCalculator {
     }
 
     private boolean isEvaluationNeeded(int priority) {
-        return isNotFinished() && isOperator() && isPriority(priority);
-    }
-
-    private boolean isNotFinished() {
-        return builder.length() != 0;
-    }
-
-    private boolean isPriority(int priority) {
-        return Operator.getBySymbol(builder.charAt(0)).getPriority() == priority;
-    }
-
-    private boolean isOperator() {
-        return Operator.isBySymbol(builder.charAt(0));
+        return builder.length() != 0 &&
+                Operator.isBySymbol(builder.charAt(0)) &&
+                Operator.getBySymbol(builder.charAt(0)).getPriority() == priority;
     }
 
     private Operator getOperator() {
