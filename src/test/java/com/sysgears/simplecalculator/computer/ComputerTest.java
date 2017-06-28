@@ -1,4 +1,4 @@
-package com.sysgears.simplecalculator2.computer;
+package com.sysgears.simplecalculator.computer;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -9,22 +9,22 @@ public class ComputerTest {
 
     @Test
     public void testFindFirstParenthesesExpression() {
-        Assert.assertEquals("2+2", computer.findParenthesesExpression("(2+2)*2"));
+        Assert.assertEquals("2+2", computer.getParenthesesExpression("(2+2)*2"));
     }
 
     @Test
     public void testFindFirstParenthesesExpressionLeadingMinus() {
-        Assert.assertEquals("-2+2", computer.findParenthesesExpression("(-2+2)*2"));
+        Assert.assertEquals("-2+2", computer.getParenthesesExpression("(-2+2)*2"));
     }
 
     @Test
     public void testFindFirstParenthesesExpressionLong() {
-        Assert.assertEquals("(2+2)", computer.findParenthesesExpression("2+((2+2))"));
+        Assert.assertEquals("(2+2)", computer.getParenthesesExpression("2+((2+2))"));
     }
 
     @Test
     public void testFindFirstParenthesesExpressionLong2() {
-        Assert.assertEquals("(2+(1-1)*2)", computer.findParenthesesExpression("2+((2+(1-1)*2))"));
+        Assert.assertEquals("(2+(1-1)*2)", computer.getParenthesesExpression("2+((2+(1-1)*2))"));
     }
 
     @Test

@@ -1,86 +1,73 @@
 package com.sysgears.simplecalculator.computer;
 
 public enum Operator {
-    ADD('+', 100) {
+    POWER("^") {
         @Override
-        public double evaluate(double v1, double v2) {
-            return v1 + v2;
+        public Double evaluate(double v1, double v2) {
+            return Math.pow(v1, v2);
+        }
+
+        @Override
+        public String getRegExp() {
+            return "\\" + getDepiction();
         }
     },
-    X('x', 100) {
+    DIVIDE("/") {
         @Override
-        public double evaluate(double v1, double v2) {
-            return v1 * v2 / 2;
-        }
-    },
-    SUBTRACT('-', 100) {
-        @Override
-        public double evaluate(double v1, double v2) {
-            return v1 - v2;
-        }
-    },
-    MULTIPLY('*', 1000) {
-        @Override
-        public double evaluate(double v1, double v2) {
-            return v1 * v2;
-        }
-    },
-    DIVIDE('/', 1000) {
-        @Override
-        public double evaluate(double v1, double v2) {
+        public Double evaluate(double v1, double v2) {
             return v1 / v2;
         }
-    },
-    SQRT('s', 2000) {
+
         @Override
-        public double evaluate(double v1, double v2) {
-            return Math.sqrt(v1);
+        public String getRegExp() {
+            return "\\" + getDepiction();
         }
     },
-    UNARY_PLUS('+', 3000) {
+    MULTIPLY("*") {
         @Override
-        public double evaluate(double v1, double v2) {
-            return v1;
+        public Double evaluate(double v1, double v2) {
+            return v1 * v2;
+        }
+
+        @Override
+        public String getRegExp() {
+            return "\\" + getDepiction();
         }
     },
-    UNARY_MINUS('-', 3000) {
+    SUBTRACT("-") {
         @Override
-        public double evaluate(double v1, double v2) {
-            return -v1;
+        public Double evaluate(double v1, double v2) {
+            return v1 - v2;
+        }
+
+        @Override
+        public String getRegExp() {
+            return "\\" + getDepiction();
+        }
+    },
+    ADD("+") {
+        @Override
+        public Double evaluate(double v1, double v2) {
+            return v1 + v2;
+        }
+
+        @Override
+        public String getRegExp() {
+            return "\\" + getDepiction();
         }
     };
 
-    private char operator;
-    private int priority;
+    private String depiction;
 
-    public abstract double evaluate(double v1, double v2);
+    public abstract Double evaluate(double v1, double v2);
 
-    private Operator(char operator, int priority) {
-        this.operator = operator;
-        this.priority = priority;
+    public abstract String getRegExp();
+
+    Operator(String operator) {
+        this.depiction = operator;
     }
 
-    public int getPriority() {
-        return priority;
-    }
-
-    public static Operator getBySymbol(char symbol) {
-        for (Operator operator : values()) {
-            if (operator.operator == symbol) {
-                return operator;
-            }
-        }
-
-        throw new IllegalArgumentException();
-    }
-
-    public static boolean isBySymbol(char symbol) {
-        for (Operator operator : values()) {
-            if (operator.operator == symbol) {
-                return true;
-            }
-        }
-
-        return false;
+    public String getDepiction() {
+        return depiction;
     }
 }
