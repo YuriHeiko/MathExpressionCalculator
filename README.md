@@ -1,8 +1,8 @@
 **Task**  
 You have to create a Calculator app. It should solve simple math expressions with integers:
-(2 + 3) * 4. All the operations should calculate according their math precedence.
+(2 + 3) * 4. All the operations should calculate according to their math precedence.
 
-**App work description**  
+**The description of app work**  
 A user runs the app and type an expression to calculate. The application returns the evaluated 
 result and prompt to either do another calculation or exit. 
  

@@ -59,13 +59,13 @@ public enum Operator {
 
     private String depiction;
 
-    public abstract Double evaluate(double v1, double v2);
-
-    public abstract String getRegExp();
-
     Operator(String operator) {
         this.depiction = operator;
     }
+
+    public abstract Double evaluate(double v1, double v2);
+
+    public abstract String getRegExp();
 
     public String getDepiction() {
         return depiction;

@@ -1,8 +1,8 @@
 package com.sysgears.simplecalculator;
 
+import com.sysgears.simplecalculator.computer.Computer;
 import com.sysgears.simplecalculator.ui.ConsoleController;
 import com.sysgears.simplecalculator.ui.UIController;
-import com.sysgears.simplecalculator.computer.Computer;
 
 import java.io.IOException;
 
