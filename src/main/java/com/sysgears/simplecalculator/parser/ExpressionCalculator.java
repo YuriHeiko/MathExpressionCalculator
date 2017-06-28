@@ -16,21 +16,25 @@ public class ExpressionCalculator {
     public double evaluate() {
         double result = firstLevel();
 
-        if (isEvaluationNeeded(100)) {
-            result = getOperator().evaluate(result, firstLevel());
+        while (true) {
+            if (isEvaluationNeeded(100)) {
+                result = getOperator().evaluate(result, firstLevel());
+            } else {
+                return result;
+            }
         }
-
-        return result;
     }
 
     double firstLevel() {
         double result = secondLevel();
 
-        if (isEvaluationNeeded(1000)) {
-            result = getOperator().evaluate(result, secondLevel());
+        while (true) {
+            if (isEvaluationNeeded(1000)) {
+                result = getOperator().evaluate(result, secondLevel());
+            } else {
+                return result;
+            }
         }
-
-        return result;
     }
 
     double secondLevel() {
