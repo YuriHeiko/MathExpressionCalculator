@@ -66,4 +66,22 @@ public enum Operators {
     public String getDepiction() {
         return depiction;
     }
+
+    /**
+     * Returns the RegExp string representation of the operator
+     *
+     * @return the string representation of the operator
+     */
+    public String getDepictionRegExp() {
+        return depiction;
+    }
+
+
+    /**
+     *
+     * @return
+     */
+    public static String getRegExp() {
+        return "[\\^\\/\\*\\-\\+]{1})+";
+    }
 }
