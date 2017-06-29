@@ -1,5 +1,8 @@
 package com.sysgears.simplecalculator.computer;
 
+/**
+ * Contains possible operators and their math logic.
+ */
 public enum Operators {
     POWER("^") {
         @Override
@@ -32,14 +35,34 @@ public enum Operators {
         }
     };
 
+    /**
+     * The string representation of the operator
+     */
     private String depiction;
 
-    Operators(String operator) {
-        this.depiction = operator;
+    /**
+     * Constructs an object
+     *
+     * @param depiction the string representation of the operator
+     */
+    Operators(String depiction) {
+        this.depiction = depiction;
     }
 
+    /**
+     * Contains the math logic of the operator
+     *
+     * @param v1 the left operand
+     * @param v2 the right operand
+     * @return computed value
+     */
     public abstract Double calculate(final double v1, final double v2);
 
+    /**
+     * Returns the string representation of the operator
+     *
+     * @return the string representation of the operator
+     */
     public String getDepiction() {
         return depiction;
     }

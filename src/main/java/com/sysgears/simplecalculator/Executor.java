@@ -7,6 +7,9 @@ import com.sysgears.simplecalculator.ui.UIController;
 
 import java.io.IOException;
 
+/**
+ * Is used to run a demo of Simple Calculator application
+ */
 public class Executor {
     public static void main(String[] args) throws IOException {
         UIController controller = new ConsoleController();

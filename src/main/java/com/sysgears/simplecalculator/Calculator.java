@@ -6,21 +6,48 @@ import com.sysgears.simplecalculator.history.HistoryHolder;
 import com.sysgears.simplecalculator.ui.Constants;
 import com.sysgears.simplecalculator.ui.UIController;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Properties;
+
+/**
+ * Uses {@code UIController} to lead dialog with a user, {@code Computer}
+ * to calculate user's math expression and {@code HistoryHolder} to keep
+ * and show history
+ */
 public class Calculator {
     private final UIController controller;
     private final HistoryHolder history;
     private final Computer computer;
 
+    /**
+     * Constructs an object
+     *
+     * @param controller the UI controller
+     * @param history    the history holder
+     * @param computer   the computer
+     */
     public Calculator(final UIController controller, final HistoryHolder history, final Computer computer) {
         this.controller = controller;
         this.history = history;
         this.computer = computer;
     }
 
+    /**
+     * Uses the controller to lead dialog with a user.
+     */
     public void run() {
         String result = "";
 
         try {
+
+/*
+            Properties prop = new Properties();
+            prop.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("SimpleCalculator.properties"));
+*/
+
             controller.printLine(Constants.DESCRIPTION);
 
             while (true) {
@@ -56,6 +83,13 @@ public class Calculator {
         }
     }
 
+    /**
+     * Uses the computer to calculate the expression and history holder to store
+     * events
+     *
+     * @param expression the math expression string
+     * @return a string with the computed expression or error description
+     */
     String CalculateExpression(final String expression) {
         String result = history.getResult(expression);
 
