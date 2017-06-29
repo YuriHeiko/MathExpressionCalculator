@@ -79,46 +79,46 @@ public class ComputerTest {
 
     @Test
     public void testEvaluateOperators() {
-        Assert.assertEquals("4.0", computer.evaluateOperators("2+2"));
+        Assert.assertEquals("4.0", computer.calculateExpression("2+2"));
     }
 
     @Test
     public void testEvaluateOperatorsNegative() {
-        Assert.assertEquals("-2.0", computer.evaluateOperators("2+2-6"));
+        Assert.assertEquals("-2.0", computer.calculateExpression("2+2-6"));
     }
 
     @Test
     public void testEvaluateOperatorsConsequence() {
-        Assert.assertEquals("3.0", computer.evaluateOperators("-1+2-1+2-1+2"));
+        Assert.assertEquals("3.0", computer.calculateExpression("-1+2-1+2-1+2"));
     }
 
     @Test
     public void testEvaluateParentheses() {
-        Assert.assertEquals("24.0", computer.evaluateParentheses("(2+2)*6"));
+        Assert.assertEquals("24.0", computer.calculateParentheses("(2+2)*6"));
     }
 
     @Test
     public void testEvaluateParenthesesNegative() {
-        Assert.assertEquals("-5.0", computer.evaluateParentheses("-(12-7)"));
+        Assert.assertEquals("-5.0", computer.calculateParentheses("-(12-7)"));
     }
 
     @Test
     public void testEvaluateParenthesesNegativeLong() {
-        Assert.assertEquals("-19.0", computer.evaluateParentheses("(-(12-7)-5)*2+1"));
+        Assert.assertEquals("-19.0", computer.calculateParentheses("(-(12-7)-5)*2+1"));
     }
 
     @Test
     public void testEvaluateParenthesesLong() {
-        Assert.assertEquals("-2171.0", computer.evaluateParentheses("(-(12-7)*(6-2)+4/(7-3))*9-1000*2+(10-10)"));
+        Assert.assertEquals("-2171.0", computer.calculateParentheses("(-(12-7)*(6-2)+4/(7-3))*9-1000*2+(10-10)"));
     }
 
     @Test
     public void testEvaluateParenthesesLongPower() {
-        Assert.assertEquals("164.0", computer.evaluateParentheses("(12-2)^2+8^2"));
+        Assert.assertEquals("164.0", computer.calculateParentheses("(12-2)^2+8^2"));
     }
 
     @Test
     public void testEvaluateParenthesesInvalid() {
-        Assert.assertEquals("164.0", computer.evaluateParentheses("(12f2)^2+8^2"));
+        Assert.assertEquals("164.0", computer.calculateParentheses("(12f2)^2+8^2"));
     }
 }

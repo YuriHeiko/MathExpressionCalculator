@@ -10,23 +10,19 @@ public class Computer {
         expression = Objects.requireNonNull(expression, "Incoming string cannot be null");
 
         return !expression.isEmpty()
-                ? evaluateOperators(evaluateParentheses(expression.replaceAll("\\s", "")))
+                ? calculateExpression(calculateParentheses(expression.replaceAll("\\s", "")))
                 : expression;
     }
 
-    String evaluateParentheses(String expression) {
-        while (containParentheses(expression)) {
+    String calculateParentheses(String expression) {
+        while (expression.contains("(")) {
             String parenthesesExpression = getParenthesesExpression(expression);
             expression = expression.replace(
                     "(" + parenthesesExpression + ")",
-                    evaluateParentheses(parenthesesExpression));
+                    calculateParentheses(parenthesesExpression));
         }
 
-        return evaluateOperators(expression);
-    }
-
-    boolean containParentheses(final String expression) {
-        return expression.contains("(");
+        return calculateExpression(expression);
     }
 
     String getParenthesesExpression(final String expression) {
@@ -44,12 +40,12 @@ public class Computer {
         return expression.substring(startIndex + 1, endIndex);
     }
 
-    String evaluateOperators(String expression) {
+    String calculateExpression(String expression) {
         for (Operator operator : Operator.values()) {
             while (containOperator(expression, operator)) {
                 String leftValue = getExpressionValue(expression, operator, LEFT);
                 String rightValue = getExpressionValue(expression, operator, RIGHT);
-                String calculatedValue = operator.evaluate(Double.parseDouble(leftValue), Double.parseDouble(rightValue)).toString();
+                String calculatedValue = operator.calculate(Double.parseDouble(leftValue), Double.parseDouble(rightValue)).toString();
                 expression =
                         expression.
                                 replace(leftValue + operator.getDepiction() + rightValue, calculatedValue).

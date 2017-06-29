@@ -9,8 +9,8 @@ import java.io.IOException;
 public class Calculator {
     public static void main(String[] args) {
         try {
-            final String PROMPT_STRING = "Type an expression to evaluate or 'exit' to exit";
-            final String VALUE_STRING = "Evaluated value is ";
+            final String PROMPT_STRING = "Type an expression to calculate or 'exit' to exit";
+            final String VALUE_STRING = "Calculated value is ";
             UIController uiController = new ConsoleController();
 
             String expression;
