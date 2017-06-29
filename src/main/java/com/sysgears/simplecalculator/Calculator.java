@@ -90,7 +90,7 @@ public class Calculator {
 
         if (result == null) {
             try {
-                result = computer.calculate(expression);
+                result = computer.compute(expression);
 
             } catch (InvalidInputExpressionException | NullPointerException e) {
                 result = e.getMessage() + Constants.ERROR;

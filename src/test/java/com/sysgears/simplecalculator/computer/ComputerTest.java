@@ -5,136 +5,108 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class ComputerTest {
-
-    Computer computer = new Computer();
-
+    static Computer computer = new ComputerRegExp();
+    
     @Test
-    public void testGetParenthesesExpression() {
-        Assert.assertEquals("2+2", computer.getParenthesesExpression("(2+2)*2"));
+    public void testValidateString() throws Exception {
+        Assert.assertFalse(computer.isStringInvalid("12+2"));
     }
 
     @Test
-    public void testGetParenthesesExpressionLeadingMinus() {
-        Assert.assertEquals("-2+2", computer.getParenthesesExpression("(-2+2)*2"));
+    public void testValidateStringFalse() throws Exception {
+        Assert.assertTrue(computer.isStringInvalid("12D+2f"));
     }
 
     @Test
-    public void testGetParenthesesExpressionLong() {
-        Assert.assertEquals("(2+2)", computer.getParenthesesExpression("2+((2+2))"));
+    public void testComputeBinaryExpressionAdd() throws Exception {
+        Assert.assertEquals("4.0", computer.computeBinaryExpression("2+2", Operators.ADD));
     }
 
     @Test
-    public void testGetParenthesesExpressionShort() {
-        Assert.assertEquals("", computer.getParenthesesExpression("()"));
+    public void testComputeBinaryExpressionSubtract() throws Exception {
+        Assert.assertEquals("5.8999999999999995", computer.computeBinaryExpression("9.1-3.2", Operators.SUBTRACT));
     }
 
     @Test
-    public void testGetParenthesesExpressionLong2() {
-        Assert.assertEquals("(2+(1-1)*2)", computer.getParenthesesExpression("2+((2+(1-1)*2))"));
+    public void testComputeBinaryExpressionMultiply() throws Exception {
+        Assert.assertEquals("10.0", computer.computeBinaryExpression("2*5", Operators.MULTIPLY));
     }
 
     @Test
-    public void testGetExpressionOperandLeft() {
-        Assert.assertEquals("1", computer.getExpressionOperand("1+2", Operators.ADD, -1));
+    public void testComputeBinaryExpressionDivide() throws Exception {
+        Assert.assertEquals("2.5", computer.computeBinaryExpression("5/2", Operators.DIVIDE));
+    }
+
+    @Test(expected = InvalidInputExpressionException.class)
+    public void testComputeBinaryExpressionAddError() throws Exception {
+        Assert.assertEquals("4.0", computer.computeBinaryExpression("7+3x", Operators.ADD));
+    }
+
+    @Test(expected = InvalidInputExpressionException.class)
+    public void testComputeBinaryExpressionSubtractError() throws Exception {
+        Assert.assertEquals("5.9", computer.computeBinaryExpression("9,1-3z2", Operators.SUBTRACT));
+    }
+
+    @Test(expected = InvalidInputExpressionException.class)
+    public void testComputeBinaryExpressionMultiplyError() throws Exception {
+        Assert.assertEquals("10.0", computer.computeBinaryExpression("2x5", Operators.MULTIPLY));
+    }
+
+    @Test(expected = InvalidInputExpressionException.class)
+    public void testComputeBinaryExpressionDivideError() throws Exception {
+        Assert.assertEquals("2.5", computer.computeBinaryExpression("5/sd2", Operators.DIVIDE));
     }
 
     @Test
-    public void testGetExpressionOperandRight() {
-        Assert.assertEquals("2", computer.getExpressionOperand("1+2", Operators.ADD, 1));
+    public void testOpenParenthesesOne() throws Exception {
+        Assert.assertEquals("4.0", computer.openParentheses("(2+2)"));
     }
 
     @Test
-    public void testGetExpressionOperandLeftComplex() {
-        Assert.assertEquals("-1", computer.getExpressionOperand("5-1*2+9", Operators.MULTIPLY, -1));
+    public void testOpenParenthesesTwo() throws Exception {
+        Assert.assertEquals("8.0", computer.openParentheses("(2+(1*8)-2)"));
     }
 
     @Test
-    public void testGetExpressionOperandRightComplex() {
-        Assert.assertEquals("2", computer.getExpressionOperand("5-1/2*3", Operators.DIVIDE, 1));
+    public void testOpenParenthesesThree() throws Exception {
+        Assert.assertEquals("3.0", computer.openParentheses("(2+(1*8)-2)-5"));
     }
 
     @Test
-    public void testGetExpressionOperandLeftNegative() {
-        Assert.assertEquals("-1", computer.getExpressionOperand("-1+2", Operators.ADD, -1));
+    public void testOpenParenthesesFour() throws Exception {
+        Assert.assertEquals("-125.0", computer.openParentheses("10*(-2+(-1*8)-2)-5"));
     }
 
     @Test
-    public void testGetExpressionOperandLeftNegative2() {
-        Assert.assertEquals("-5.0", computer.getExpressionOperand("-5.0-2", Operators.SUBTRACT, -1));
+    public void testOpenParenthesesFive() throws Exception {
+        Assert.assertEquals("0.0", computer.openParentheses("1-1-(1-2)-(1-2)-1-1"));
     }
 
     @Test
-    public void testGetExpressionOperandRightNegative() {
-        Assert.assertEquals("2", computer.getExpressionOperand("-5.0-2", Operators.SUBTRACT, 1));
+    public void testOpenParenthesesSix() throws Exception {
+        Assert.assertEquals("-1.0", computer.openParentheses("-1+1-1+1-1+1-1"));
     }
 
     @Test
-    public void testGetExpressionOperandLeftNegativeNumber() {
-        Assert.assertEquals("-1", computer.getExpressionOperand("5-1+2", Operators.ADD, -1));
-    }
-
-    @Test
-    public void testGetExpressionOperandLeftDouble() {
-        Assert.assertEquals("10.1", computer.getExpressionOperand("10.1+2", Operators.ADD, -1));
-    }
-
-    @Test
-    public void testGetExpressionOperandRightDouble() {
-        Assert.assertEquals("20.3", computer.getExpressionOperand("1+20.3", Operators.ADD, 1));
-    }
-
-    @Test
-    public void testCalculateExpression() {
-        Assert.assertEquals("4.0", computer.calculateExpression("2+2"));
-    }
-
-    @Test
-    public void testCalculateExpressionNegative() {
-        Assert.assertEquals("-2.0", computer.calculateExpression("2+2-6"));
-    }
-
-    @Test
-    public void testCalculateExpressionConsequence() {
-        Assert.assertEquals("3.0", computer.calculateExpression("-1+2-1+2-1+2"));
-    }
-
-    @Test
-    public void testOpenParentheses() {
-        Assert.assertEquals("24.0", computer.openParentheses("(2+2)*6"));
-    }
-
-    @Test
-    public void testOpenParenthesesNegative() {
-        Assert.assertEquals("-5.0", computer.openParentheses("-(12-7)"));
-    }
-
-    @Test
-    public void testOpenParenthesesNegativeLong() {
-        Assert.assertEquals("-19.0", computer.openParentheses("(-(12-7)-5)*2+1"));
-    }
-
-    @Test
-    public void testOpenParenthesesLong() {
+    public void testOpenParenthesesSeven() throws Exception {
         Assert.assertEquals("-2171.0", computer.openParentheses("(-(12-7)*(6-2)+4/(7-3))*9-1000*2+(10-10)"));
     }
 
     @Test
-    public void testOpenParenthesesLongPower() {
+    public void testOpenParenthesesEight() throws Exception {
         Assert.assertEquals("164.0", computer.openParentheses("(12-2)^2+8^2"));
     }
 
-    @Test(expected = InvalidInputExpressionException.class)
-    public void testEvaluateInvalidString() {
-        computer.calculate("(12f2)^2+8^2");
-    }
-
-    @Test(expected = InvalidInputExpressionException.class)
-    public void testEvaluateNullString() {
-        computer.calculate(null);
+    @Test
+    public void testOpenParenthesesNine() throws Exception {
+        Assert.assertEquals("8.342156896551725", computer.openParentheses("(-(12.1-7)/5.8)*2.9999+10.98"));
     }
 
     @Test
-    public void testEvaluateEmptyString() {
-        Assert.assertEquals("", computer.calculate(""));
+    public void testComputeArithmeticExpression() throws Exception {
+    }
+
+    @Test
+    public void testCompute() throws Exception {
     }
 }

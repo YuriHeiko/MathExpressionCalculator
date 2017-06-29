@@ -1,6 +1,7 @@
 package com.sysgears.simplecalculator.computer;
 
 import com.sysgears.simplecalculator.exceptions.InvalidInputExpressionException;
+import com.sysgears.simplecalculator.utils.RegExpUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,17 +19,14 @@ import java.util.regex.Pattern;
  */
 public class ComputerRegExp extends Computer {
     private final String NUMBER = "\\-?\\d+([.,]{1}\\d+)?";
-    private final String EXPRESSION = NUMBER + Operators.getRegExp() + NUMBER;
-    private final String PARENTHESES = "\\({1}((" + NUMBER + ")|((" + EXPRESSION + ")){1}\\){1}";
-
-    private final Pattern NUMBER_PATTERN = Pattern.compile(NUMBER);
-    private final Pattern EXPRESSION_PATTERN = Pattern.compile(EXPRESSION);
+    private final String PARENTHESES = "\\({1}((" + NUMBER + ")|((" + NUMBER + Operators.getRegExp() + ")+" + NUMBER + ")){1}\\){1}";
     private final Pattern PARENTHESES_PATTERN = Pattern.compile(PARENTHESES);
 
     /**
      * Finds all parts of the expression which are enclosed in parentheses.
      * Computes such parts and put the value instead of the respective
      * enclosed part. Removes parentheses respectively.
+     * Computes the remaining arithmetic expression
      *
      * @param expression String contains a valid math expression
      * @return String contains an expression with open parentheses
@@ -37,26 +35,24 @@ public class ComputerRegExp extends Computer {
      */
     @Override
     String openParentheses(String expression) throws InvalidInputExpressionException {
-        Matcher matcher = PARENTHESES_PATTERN.matcher(expression);
-        while (matcher.find()) {
-            String parenthesesExpression = matcher.group(0);
+        // TODO refactor this
+        for (Matcher matcher = PARENTHESES_PATTERN.matcher(expression);
+             matcher.find();
+             matcher = PARENTHESES_PATTERN.matcher(expression)) {
 
-            expression = expression.replace(
-                    "(" + parenthesesExpression + ")",
-                    openParentheses(parenthesesExpression));
+            expression = expression.replace(matcher.group(0), openParentheses(matcher.group(1))).replace("--", "+");
         }
 
-        return calculateExpression(expression);
+        return computeArithmeticExpression(expression);
     }
 
     /**
      * Computes the received expression according to the math rules.
-     * The ideas behind the algorithm are next:
+     * The ideas lie behind the algorithm are next:
      * <p><ul>
      * <li>iterates by all possible operators that exist in {@code Operators}
      * class</li>
-     * <li>finds parts of expression that use such an operator</li>
-     * <li>split the found part into operands</li>
+     * <li>finds a binary expression that use such an operator</li>
      * <li>computes the expression</li>
      * <li>put the value instead of the respective part until all the
      * possible parts are computed</li>
@@ -68,31 +64,17 @@ public class ComputerRegExp extends Computer {
      *                                         invalid format
      */
     @Override
-    String calculateExpression(String expression) throws InvalidInputExpressionException {
-        Matcher matcher = EXPRESSION_PATTERN.matcher(expression);
-        while (matcher.find()) {
-
-        }
-
+    String computeArithmeticExpression(String expression) throws InvalidInputExpressionException {
         for (Operators operator : Operators.values()) {
-            while (containOperator(expression, operator)) {
-                String leftOperand = getExpressionOperand(expression, operator, LEFT);
-                String rightOperand = getExpressionOperand(expression, operator, RIGHT);
+            String arithmeticExpression = NUMBER + "[" + operator.getDepictionRegExp() + "]{1}" + NUMBER;
+            Pattern pattern = Pattern.compile(arithmeticExpression);
 
-                String calculatedValue;
-                try {
-                    calculatedValue = operator.calculate(Double.parseDouble(leftOperand),
-                            Double.parseDouble(rightOperand)).toString();
-
-                } catch (NumberFormatException e) {
-                    throw new InvalidInputExpressionException(String.format("Input data is probably invalid cause " +
-                            "this part of expression: \"%s\" is invalid", expression));
-                }
-
+            for (Matcher matcher = pattern.matcher(expression); matcher.find(); matcher = pattern.matcher(expression)) {
+                String binaryExpression = matcher.group(0);
                 expression =
                         expression.
-                                replace(leftOperand + operator.getDepiction() + rightOperand, calculatedValue).
-                                replace("+-", "-");
+                                replaceAll("(?<![-])" + RegExpUtils.changeToRegExp(binaryExpression),
+                                        computeBinaryExpression(binaryExpression, operator));
             }
         }
 

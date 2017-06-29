@@ -14,13 +14,11 @@ import com.sysgears.simplecalculator.exceptions.InvalidInputExpressionException;
  * </ul></p>
  */
 public class ComputerBruteForce extends Computer {
-    private static final int LEFT = -1;
-    private static final int RIGHT = 1;
-
     /**
      * Finds all parts of the expression which are enclosed in parentheses.
      * Computes such parts and put the value instead of the respective
      * enclosed part. Removes parentheses respectively.
+     * Computes the remaining arithmetic expression
      *
      * @param expression String contains a valid math expression
      * @return String contains an expression with open parentheses
@@ -35,7 +33,7 @@ public class ComputerBruteForce extends Computer {
                     openParentheses(parenthesesExpression));
         }
 
-        return calculateExpression(expression);
+        return computeArithmeticExpression(expression);
     }
 
     /**
@@ -62,12 +60,11 @@ public class ComputerBruteForce extends Computer {
 
     /**
      * Computes the received expression according to the math rules.
-     * The ideas behind the algorithm are next:
+     * The ideas lie behind the algorithm are next:
      * <p><ul>
      * <li>iterates by all possible operators that exist in {@code Operators}
      * class</li>
-     * <li>finds parts of expression that use such an operator</li>
-     * <li>split the found part into operands</li>
+     * <li>finds a binary expression that use such an operator</li>
      * <li>computes the expression</li>
      * <li>put the value instead of the respective part until all the
      * possible parts are computed</li>
@@ -78,26 +75,16 @@ public class ComputerBruteForce extends Computer {
      * @throws InvalidInputExpressionException if the incoming string has an
      *                                         invalid format
      */
-    String calculateExpression(String expression) throws InvalidInputExpressionException {
+    String computeArithmeticExpression(String expression) throws InvalidInputExpressionException {
         for (Operators operator : Operators.values()) {
             while (containOperator(expression, operator)) {
-                String leftOperand = getExpressionOperand(expression, operator, LEFT);
-                String rightOperand = getExpressionOperand(expression, operator, RIGHT);
+                String leftOperand = getBinaryExpression(expression, operator);
+                String rightOperand = getBinaryExpression(expression, operator);
 
-                String calculatedValue;
-                try {
-                    calculatedValue = operator.calculate(Double.parseDouble(leftOperand),
-                            Double.parseDouble(rightOperand)).toString();
-
-                } catch (NumberFormatException e) {
-                    throw new InvalidInputExpressionException(String.format("Input data is probably invalid cause " +
-                            "this part of expression: \"%s\" is invalid", expression));
-                }
-
-                expression =
+/*                expression =
                         expression.
                                 replace(leftOperand + operator.getDepiction() + rightOperand, calculatedValue).
-                                replace("+-", "-");
+                                replace("+-", "-");*/
             }
         }
 
@@ -108,7 +95,7 @@ public class ComputerBruteForce extends Computer {
      * Checks incoming string whether it contains the required operator.
      *
      * @param expression String contains a valid math expression without parentheses
-     * @param operator the required operator
+     * @param operator   the required operator
      * @return true if such the operator is found
      */
     boolean containOperator(final String expression, final Operators operator) {
@@ -118,32 +105,35 @@ public class ComputerBruteForce extends Computer {
     }
 
     /**
-     * Get the operand of the received expression according its side and the operator
+     * Returns the binary expression with specified operator
      *
-     * @param expression String contains a valid math expression with only two operands
-     *                   and received operator, without parentheses.
-     * @param operator  the required operator
-     * @param SIDE stipulates the side of the operand
-     * @return String contains the according operand
+     * @param expression String contains a valid math expression without parentheses.
+     * @param operator   the required operator
+     * @return String contains the binary expression
      */
-    String getExpressionOperand(final String expression, final Operators operator, final int SIDE) {
+
+    // TODO test it
+    String getBinaryExpression(final String expression, final Operators operator) {
         int operatorIndex = expression.indexOf(operator.getDepiction(), 1);
-        int index = operatorIndex + SIDE;
+        int leftBound = operatorIndex - 1;
+        int rightBound = operatorIndex;
 
-        while (index > 0 && index < expression.length() &&
-                (Character.isDigit(expression.charAt(index)) || expression.charAt(index) == '.')) {
+        while (leftBound > 0 && leftBound < expression.length() &&
+                (Character.isDigit(expression.charAt(leftBound)) || expression.charAt(leftBound) == '.')) {
 
-            index += SIDE;
+            leftBound--;
         }
 
-        if (SIDE == LEFT) {
-            if (index > 0 && expression.charAt(index) != '-') {
-                index++; // step back
-            }
-            return expression.substring(index, operatorIndex);
+        while (rightBound < expression.length() &&
+                (Character.isDigit(expression.charAt(rightBound)) || expression.charAt(rightBound) == '.')) {
 
-        } else {
-            return expression.substring(operatorIndex + 1, index);
+            rightBound++;
         }
+
+        if (leftBound > 0 && expression.charAt(leftBound) != '-') {
+            leftBound++; // step back
+        }
+
+        return expression.substring(leftBound, rightBound);
     }
 }

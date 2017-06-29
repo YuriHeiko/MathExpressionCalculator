@@ -2,6 +2,9 @@ package com.sysgears.simplecalculator.computer;
 
 import com.sysgears.simplecalculator.exceptions.InvalidInputExpressionException;
 
+/**
+ * Contains common logic and the interface contract for compute algorithms
+ */
 public abstract class Computer {
 
     /**
@@ -14,7 +17,7 @@ public abstract class Computer {
      * @throws InvalidInputExpressionException if the incoming string has an
      *                                         invalid format, or it is null
      */
-    public String calculate(final String expression) throws InvalidInputExpressionException {
+    public String compute(final String expression) throws InvalidInputExpressionException {
         if (expression == null) {
             throw new InvalidInputExpressionException("Incoming string cannot be null");
 
@@ -22,10 +25,10 @@ public abstract class Computer {
             return expression;
         }
 
-        String result = calculateExpression(openParentheses(expression.replaceAll("\\s", "")));
+        String result = openParentheses(expression.replaceAll("\\s", ""));
 
         try {
-            if (validateString(expression)) {
+            if (isStringInvalid(expression)) {
                 throw new NumberFormatException();
 
             } else {
@@ -47,13 +50,63 @@ public abstract class Computer {
      * undesirable behaviour according to the common math rules.
      *
      * @param expression String contains a valid math expression
-     * @return true if there are no such symbols
+     * @return true if there are such symbols
      */
-    boolean validateString(final String expression) {
+    boolean isStringInvalid(final String expression) {
         return expression.contains("f") || expression.contains("d") || expression.contains("F") || expression.contains("D");
     }
 
+    /**
+     * Finds all parts of the expression which are enclosed in parentheses.
+     * Computes such parts and put the value instead of the respective
+     * enclosed part. Removes parentheses respectively.
+     * Computes the remaining arithmetic expression
+     *
+     * @param expression String contains a valid math expression
+     * @return String contains an expression with open parentheses
+     * @throws InvalidInputExpressionException if the incoming string has an
+     *                                         invalid format
+     */
     abstract String openParentheses(String expression);
 
-    abstract String calculateExpression(String expression);
+    /**
+     * Computes the received expression according to the math rules.
+     * The ideas lie behind the algorithm are next:
+     * <p><ul>
+     * <li>iterates by all possible operators that exist in {@code Operators}
+     * class</li>
+     * <li>finds a binary expression that use such an operator</li>
+     * <li>computes the expression</li>
+     * <li>put the value instead of the respective part until all the
+     * possible parts are computed</li>
+     * </ul></p>
+     *
+     * @param expression String contains a valid math expression without parentheses
+     * @return String contains the calculated expression
+     * @throws InvalidInputExpressionException if the incoming string has an
+     *                                         invalid format
+     */
+    abstract String computeArithmeticExpression(String expression);
+
+    /**
+     * Computes the math binary expression
+     *
+     * @param expression String contains a valid binary math expression
+     * @return string contains computed value
+     */
+    String computeBinaryExpression(String expression, Operators operator) {
+        try {
+            String leftOperand = expression.substring(0, expression.lastIndexOf(operator.getDepiction()));
+            String rightOperand = expression.substring(expression.lastIndexOf((operator.getDepiction())) + 1);
+
+            expression = operator.calculate(Double.parseDouble(leftOperand),
+                    Double.parseDouble(rightOperand)).toString();
+
+        } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
+            throw new InvalidInputExpressionException(String.format("Input data is probably invalid cause " +
+                    "this part of expression: \"%s\" is invalid", expression));
+        }
+
+        return expression;
+    }
 }

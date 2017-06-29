@@ -1,5 +1,7 @@
 package com.sysgears.simplecalculator.computer;
 
+import com.sysgears.simplecalculator.utils.RegExpUtils;
+
 /**
  * Contains possible operators and their math logic.
  */
@@ -73,15 +75,21 @@ public enum Operators {
      * @return the string representation of the operator
      */
     public String getDepictionRegExp() {
-        return depiction;
+        return RegExpUtils.changeToRegExp(depiction);
     }
 
-
     /**
+     * Builds a RegExp string contains all the operators
      *
-     * @return
+     * @return a RegExp string contains all the operators
      */
     public static String getRegExp() {
-        return "[\\^\\/\\*\\-\\+]{1})+";
+        StringBuilder builder = new StringBuilder("[");
+
+        for (Operators operator : values()) {
+            builder.append(operator.getDepictionRegExp());
+        }
+
+        return builder.append("]{1}").toString();
     }
 }
