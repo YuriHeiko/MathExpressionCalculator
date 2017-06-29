@@ -28,9 +28,10 @@ public class ComputerBruteForce extends Computer {
     String openParentheses(String expression) throws InvalidInputExpressionException {
         while (expression.contains("(")) {
             String parenthesesExpression = getParenthesesExpression(expression);
-            expression = expression.replace(
-                    "(" + parenthesesExpression + ")",
-                    openParentheses(parenthesesExpression));
+            expression =
+                    expression.
+                            replace("(" + parenthesesExpression + ")",openParentheses(parenthesesExpression)).
+                            replace("--", "+");
         }
 
         return computeArithmeticExpression(expression);
