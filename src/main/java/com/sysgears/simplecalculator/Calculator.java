@@ -6,12 +6,6 @@ import com.sysgears.simplecalculator.history.HistoryHolder;
 import com.sysgears.simplecalculator.ui.Constants;
 import com.sysgears.simplecalculator.ui.UIController;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Properties;
-
 /**
  * Uses {@code UIController} to lead dialog with a user, {@code Computer}
  * to calculate user's math expression and {@code HistoryHolder} to keep
@@ -50,6 +44,7 @@ public class Calculator {
 
             controller.printLine(Constants.DESCRIPTION);
 
+            // TODO add a possible operators option
             while (true) {
                 String line = controller.readLine(Constants.PROMPT_STRING);
 
