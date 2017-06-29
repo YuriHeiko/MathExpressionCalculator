@@ -1,9 +1,10 @@
 package com.sysgears.simplecalculator;
 
 import com.sysgears.simplecalculator.computer.Computer;
+import com.sysgears.simplecalculator.computer.Operators;
 import com.sysgears.simplecalculator.exceptions.InvalidInputExpressionException;
 import com.sysgears.simplecalculator.history.HistoryHolder;
-import com.sysgears.simplecalculator.ui.Constants;
+import com.sysgears.simplecalculator.ui.Commands;
 import com.sysgears.simplecalculator.ui.UIController;
 
 /**
@@ -36,36 +37,27 @@ public class Calculator {
         String result = "";
 
         try {
-/*
-            Properties prop = new Properties();
-            prop.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("SimpleCalculator.properties"));
-*/
-            controller.printLine(Constants.DESCRIPTION);
+            controller.printLine(
+                    "This application can solve simple math expressions according to their math precedence");
 
-            // TODO add a possible operators option
             while (true) {
-                String line = controller.readLine(Constants.PROMPT_STRING);
+                String line = controller.readLine(
+                        "Type an expression to calculate (or type 'help' for allowed commands):").toLowerCase();
 
-                switch (line.toLowerCase()) {
-                    case Constants.COMMAND_EXIT:
-                        controller.printLine(System.lineSeparator() + "Good bye!");
-                        return;
-
-                    case Constants.COMMAND_HELP:
-                        controller.printLine("You can use next commands:", Constants.HELP_DESCRIPTION);
-                        break;
-
-                    case Constants.COMMAND_HISTORY:
-                        controller.printLine("History:" + System.lineSeparator(), history.toString());
-                        break;
-
-                    case Constants.COMMAND_UNIQUE_HISTORY:
-                        controller.printLine("History:" + System.lineSeparator(), history.getUniqueHistory());
-                        break;
-
-                    default:
-                        result = CalculateExpression(line);
-                        controller.printLine(Constants.VALUE_STRING, result);
+                if (line.equals(Commands.EXIT.COMMAND)) {
+                    controller.printLine(System.lineSeparator() + "Good bye!");
+                    return;
+                } else if (line.equals(Commands.HELP.COMMAND)) {
+                    controller.printLine(Commands.HELP.getHEADER(), Commands.getList());
+                } else if (line.equals(Commands.HISTORY.COMMAND)) {
+                    controller.printLine(Commands.HISTORY.getHEADER(), history.toString());
+                } else if (line.equals(Commands.UNIQUE_HISTORY.COMMAND)) {
+                    controller.printLine(Commands.UNIQUE_HISTORY.getHEADER(), history.getUniqueHistory());
+                } else if (line.equals(Commands.OPERATORS.COMMAND)) {
+                    controller.printLine(Commands.OPERATORS.getHEADER(), Operators.getList());
+                } else {
+                    result = CalculateExpression(line);
+                    controller.printLine("", result);
                 }
 
                 history.addEvent(line, result);
@@ -91,7 +83,7 @@ public class Calculator {
                 result = computer.compute(expression);
 
             } catch (InvalidInputExpressionException | NullPointerException e) {
-                result = e.getMessage() + Constants.ERROR;
+                result = e.getMessage() + System.lineSeparator() + "\t\tPlease read the instructions carefully.";
             }
         }
 

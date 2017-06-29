@@ -33,8 +33,8 @@ public class ConsoleController implements UIController {
      */
     @Override
     public void printLine(final String description, final String outputString) {
-        System.out.println(new String(new byte[45]).replaceAll(".", "-"));
-        System.out.printf("%s%s%n%n%n", description, outputString);
+        System.out.println(new String(new byte[75]).replaceAll(".", "-"));
+        System.out.printf("%s%s%n%n", description, outputString);
     }
 
     /**

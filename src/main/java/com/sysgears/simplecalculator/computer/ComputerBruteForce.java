@@ -2,6 +2,8 @@ package com.sysgears.simplecalculator.computer;
 
 import com.sysgears.simplecalculator.exceptions.InvalidInputExpressionException;
 
+import java.util.regex.Pattern;
+
 /**
  * Attempts to calculate a received math expression according to the
  * math precedence. The ideas behind the algorithm are next:
@@ -30,8 +32,9 @@ public class ComputerBruteForce extends Computer {
             String parenthesesExpression = getParenthesesExpression(expression);
             expression =
                     expression.
-                            replace("(" + parenthesesExpression + ")",openParentheses(parenthesesExpression)).
-                            replace("--", "+");
+                            replace("(" + parenthesesExpression + ")", openParentheses(parenthesesExpression)).
+                            replace("--", "+").
+                            replace("+-", "-");
         }
 
         return computeArithmeticExpression(expression);
@@ -70,6 +73,11 @@ public class ComputerBruteForce extends Computer {
      * <li>puts the value instead of the corresponding part until all the
      * possible parts are computed</li>
      * </ul></p>
+     * <p>
+     * RegExp "(?<![-])" helps replace expressions that don't have a minus
+     * before, i.e. expression = 1-1-1-1+1-1       binary one = 1-1
+     * computed one = 0.0  and the result after replacement is 0.0-1-1+0.0
+     * </p>
      *
      * @param expression String contains a valid math expression without parentheses
      * @return String contains the calculated expression
@@ -78,13 +86,13 @@ public class ComputerBruteForce extends Computer {
      */
     String computeArithmeticExpression(String expression) throws InvalidInputExpressionException {
         for (Operators operator : Operators.values()) {
-            while (containOperator(expression, operator)) {
+            while (containsOperator(expression, operator)) {
                 String binaryExpression = getBinaryExpression(expression, operator);
-                expression = expression.replace(binaryExpression, computeBinaryExpression(binaryExpression, operator));
-/*                expression =
+                expression =
                         expression.
-                                replace(leftOperand + operator.getRepresentation() + rightOperand, calculatedValue).
-                                replace("+-", "-");*/
+                                replaceAll("(?<![-])" + Pattern.quote(binaryExpression),
+                                        computeBinaryExpression(binaryExpression, operator)).
+                                replace("+-", "-");
             }
         }
 
@@ -98,7 +106,7 @@ public class ComputerBruteForce extends Computer {
      * @param operator   the required operator
      * @return true if such the operator is found
      */
-    boolean containOperator(final String expression, final Operators operator) {
+    boolean containsOperator(final String expression, final Operators operator) {
         return expression.charAt(0) == '-'
                 ? expression.indexOf(operator.getRepresentation(), 1) != -1
                 : expression.contains(operator.getRepresentation());
@@ -114,7 +122,7 @@ public class ComputerBruteForce extends Computer {
     String getBinaryExpression(final String expression, final Operators operator) {
         int operatorIndex = expression.indexOf(operator.getRepresentation(), 1);
         int leftBound = operatorIndex - 1;
-        int rightBound = operatorIndex + 1;
+        int rightBound = operatorIndex + 1 + (Character.isDigit(expression.charAt(operatorIndex)) ? 0 : 1);
 
         while (leftBound > 0 && leftBound < expression.length() &&
                 (Character.isDigit(expression.charAt(leftBound)) || expression.charAt(leftBound) == '.')) {

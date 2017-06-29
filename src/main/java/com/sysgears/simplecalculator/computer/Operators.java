@@ -1,6 +1,8 @@
 package com.sysgears.simplecalculator.computer;
 
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Contains possible operators and their math logic. Priority of
@@ -112,5 +114,16 @@ public enum Operators {
      */
     public String getRegExpRepresentation() {
         return Pattern.quote(representation);
+    }
+
+    /**
+     * Builds and returns the string representation of the operator list
+     *
+     * @return The string with the description of all the operators
+     */
+    public static String getList() {
+        return Stream.of(values()).
+                map(e -> "\t" + e + "(" + e.getRepresentation() + ")").
+                collect(Collectors.joining(System.lineSeparator()));
     }
 }

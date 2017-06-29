@@ -2,6 +2,8 @@ package com.sysgears.simplecalculator.computer;
 
 import com.sysgears.simplecalculator.exceptions.InvalidInputExpressionException;
 
+import java.util.regex.Pattern;
+
 /**
  * Contains common logic and the interface contract for compute algorithms
  */
@@ -44,16 +46,15 @@ public abstract class Computer {
     }
 
     /**
-     * Checks incoming string whether it contains symbols(f/F/d/D) that are
-     * used in Java to show the number format (float/double). However, it is
-     * undesirable behaviour according to the common math rules.
+     * Checks the incoming string whether it contains symbols(f/F/d/D) that
+     * are used in Java to show the number format (float/double). However,
+     * it is undesirable behaviour according to the common math rules.
      *
      * @param expression String contains a valid math expression
      * @return true if there are such symbols
      */
     boolean isStringInvalid(final String expression) {
-        return expression.contains("f") || expression.contains("d") ||
-                expression.contains("F") || expression.contains("D");
+        return Pattern.compile("\\-?\\d+([.,]{1}\\d+)?[dDfF]{1}").matcher(expression).find();
     }
 
     /**

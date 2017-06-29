@@ -37,7 +37,7 @@ public class ComputerRegExp extends Computer {
         for (Matcher matcher = PARENTHESES.matcher(expression);
              matcher.find();
              matcher = PARENTHESES.matcher(expression)) {
-            // TODO replace '--' with RegExp
+
             expression =
                     expression.
                             replace(matcher.group(0), openParentheses(matcher.group(1))).

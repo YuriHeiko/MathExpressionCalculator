@@ -4,9 +4,11 @@ import com.sysgears.simplecalculator.exceptions.InvalidInputExpressionException;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ComputerTest {
+public abstract class ComputerTest {
     static Computer computer = new ComputerBruteForce();
-    
+
+    // TODO add divide by zero test
+
     @Test
     public void testValidateString() throws Exception {
         Assert.assertFalse(computer.isStringInvalid("12+2"));
