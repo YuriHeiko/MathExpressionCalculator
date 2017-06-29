@@ -1,6 +1,6 @@
 package com.sysgears.simplecalculator.computer;
 
-public enum Operator {
+public enum Operators {
     POWER("^") {
         @Override
         public Double calculate(final double v1, final double v2) {
@@ -34,7 +34,7 @@ public enum Operator {
 
     private String depiction;
 
-    Operator(String operator) {
+    Operators(String operator) {
         this.depiction = operator;
     }
 

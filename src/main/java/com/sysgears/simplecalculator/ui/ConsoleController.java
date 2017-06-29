@@ -8,7 +8,8 @@ public class ConsoleController implements UIController {
 
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-    public String read(String promptString) throws IOException {
+    @Override
+    public String readLine(final String promptString) throws IOException {
 
         System.out.println(promptString);
 
@@ -16,8 +17,18 @@ public class ConsoleController implements UIController {
     }
 
     @Override
-    public void write(String description, String outputString) {
+    public void printLine(final String description, final String outputString) {
         System.out.println(new String(new byte[45]).replaceAll(".", "-"));
         System.out.printf("%s%s%n%n%n", description, outputString);
+    }
+
+    @Override
+    public void printLine(final String line) {
+        System.out.println(line);
+    }
+
+    @Override
+    public void close() throws IOException {
+        reader.close();
     }
 }
