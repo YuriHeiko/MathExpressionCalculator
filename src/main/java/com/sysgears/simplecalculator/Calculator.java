@@ -30,18 +30,16 @@ public class Calculator {
     }
 
     /**
-     * Uses the controller to lead dialog with a user.
+     * Uses the controller to conduct dialogue with a user.
      */
     public void run() {
         String result = "";
 
         try {
-
 /*
             Properties prop = new Properties();
             prop.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("SimpleCalculator.properties"));
 */
-
             controller.printLine(Constants.DESCRIPTION);
 
             // TODO add a possible operators option

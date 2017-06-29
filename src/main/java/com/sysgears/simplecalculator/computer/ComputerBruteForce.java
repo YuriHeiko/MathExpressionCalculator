@@ -64,9 +64,9 @@ public class ComputerBruteForce extends Computer {
      * <p><ul>
      * <li>iterates by all possible operators that exist in {@code Operators}
      * class</li>
-     * <li>finds a binary expression that use such an operator</li>
+     * <li>finds a binary expression that uses such an operator</li>
      * <li>computes the expression</li>
-     * <li>put the value instead of the respective part until all the
+     * <li>puts the value instead of the corresponding part until all the
      * possible parts are computed</li>
      * </ul></p>
      *
@@ -78,12 +78,11 @@ public class ComputerBruteForce extends Computer {
     String computeArithmeticExpression(String expression) throws InvalidInputExpressionException {
         for (Operators operator : Operators.values()) {
             while (containOperator(expression, operator)) {
-                String leftOperand = getBinaryExpression(expression, operator);
-                String rightOperand = getBinaryExpression(expression, operator);
-
+                String binaryExpression = getBinaryExpression(expression, operator);
+                expression = expression.replace(binaryExpression, computeBinaryExpression(binaryExpression, operator));
 /*                expression =
                         expression.
-                                replace(leftOperand + operator.getDepiction() + rightOperand, calculatedValue).
+                                replace(leftOperand + operator.getRepresentation() + rightOperand, calculatedValue).
                                 replace("+-", "-");*/
             }
         }
@@ -100,8 +99,8 @@ public class ComputerBruteForce extends Computer {
      */
     boolean containOperator(final String expression, final Operators operator) {
         return expression.charAt(0) == '-'
-                ? expression.indexOf(operator.getDepiction(), 1) != -1
-                : expression.contains(operator.getDepiction());
+                ? expression.indexOf(operator.getRepresentation(), 1) != -1
+                : expression.contains(operator.getRepresentation());
     }
 
     /**
@@ -111,12 +110,10 @@ public class ComputerBruteForce extends Computer {
      * @param operator   the required operator
      * @return String contains the binary expression
      */
-
-    // TODO test it
     String getBinaryExpression(final String expression, final Operators operator) {
-        int operatorIndex = expression.indexOf(operator.getDepiction(), 1);
+        int operatorIndex = expression.indexOf(operator.getRepresentation(), 1);
         int leftBound = operatorIndex - 1;
-        int rightBound = operatorIndex;
+        int rightBound = operatorIndex + 1;
 
         while (leftBound > 0 && leftBound < expression.length() &&
                 (Character.isDigit(expression.charAt(leftBound)) || expression.charAt(leftBound) == '.')) {

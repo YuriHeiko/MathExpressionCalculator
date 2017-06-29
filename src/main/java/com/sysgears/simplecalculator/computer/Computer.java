@@ -43,7 +43,6 @@ public abstract class Computer {
         return result;
     }
 
-
     /**
      * Checks incoming string whether it contains symbols(f/F/d/D) that are
      * used in Java to show the number format (float/double). However, it is
@@ -53,7 +52,8 @@ public abstract class Computer {
      * @return true if there are such symbols
      */
     boolean isStringInvalid(final String expression) {
-        return expression.contains("f") || expression.contains("d") || expression.contains("F") || expression.contains("D");
+        return expression.contains("f") || expression.contains("d") ||
+                expression.contains("F") || expression.contains("D");
     }
 
     /**
@@ -75,9 +75,9 @@ public abstract class Computer {
      * <p><ul>
      * <li>iterates by all possible operators that exist in {@code Operators}
      * class</li>
-     * <li>finds a binary expression that use such an operator</li>
+     * <li>finds a binary expression that uses such an operator</li>
      * <li>computes the expression</li>
-     * <li>put the value instead of the respective part until all the
+     * <li>puts the value instead of the corresponding part until all the
      * possible parts are computed</li>
      * </ul></p>
      *
@@ -96,13 +96,13 @@ public abstract class Computer {
      */
     String computeBinaryExpression(String expression, Operators operator) {
         try {
-            String leftOperand = expression.substring(0, expression.lastIndexOf(operator.getDepiction()));
-            String rightOperand = expression.substring(expression.lastIndexOf((operator.getDepiction())) + 1);
+            String leftOperand = expression.substring(0, expression.lastIndexOf(operator.getRepresentation()));
+            String rightOperand = expression.substring(expression.lastIndexOf((operator.getRepresentation())) + 1);
 
             expression = operator.calculate(Double.parseDouble(leftOperand),
                     Double.parseDouble(rightOperand)).toString();
 
-        } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
+        } catch (NumberFormatException | StringIndexOutOfBoundsException | ArithmeticException e) {
             throw new InvalidInputExpressionException(String.format("Input data is probably invalid cause " +
                     "this part of expression: \"%s\" is invalid", expression));
         }

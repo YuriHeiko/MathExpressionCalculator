@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class ComputerTest {
-    static Computer computer = new ComputerRegExp();
+    static Computer computer = new ComputerBruteForce();
     
     @Test
     public void testValidateString() throws Exception {
@@ -103,10 +103,33 @@ public class ComputerTest {
     }
 
     @Test
-    public void testComputeArithmeticExpression() throws Exception {
+    public void testComputeArithmeticExpressionOne() throws Exception {
+        Assert.assertEquals("-1.0", computer.computeArithmeticExpression("-1+1-1+1-1+1-1"));
     }
 
     @Test
-    public void testCompute() throws Exception {
+    public void testComputeArithmeticExpressionTwo() throws Exception {
+        Assert.assertEquals("-258.3333333333333", computer.computeArithmeticExpression("-10*12-12^2-100/12+14"));
     }
+
+    @Test
+    public void testComputeArithmeticExpressionThree() throws Exception {
+        Assert.assertEquals("-156.0", computer.computeArithmeticExpression("-12-12^2"));
+    }
+
+    @Test
+    public void testComputeEmptyString() throws Exception {
+        Assert.assertEquals("", computer.compute(""));
+    }
+
+    @Test
+    public void testComputeWhiteSpaces() throws Exception {
+        Assert.assertEquals("-46.333333333333336", computer.compute(" (2+   8) /  6 - 12 * 4  ^    1"));
+    }
+
+    @Test(expected = InvalidInputExpressionException.class)
+    public void testComputeNull() throws Exception {
+        Assert.assertEquals("", computer.compute(null));
+    }
+
 }
