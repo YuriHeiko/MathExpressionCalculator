@@ -21,14 +21,14 @@ public enum Commands {
     /**
      * Constructs an object
      *
-     * @param COMMAND The string representation of command
-     * @param HEADER The command header for the UI
-     * @param DESCRIPTION  The command description
+     * @param command     The string representation of the command
+     * @param header      The command header for UI
+     * @param description The command description
      */
-    Commands(final String COMMAND, final String HEADER, final String DESCRIPTION) {
-        this.COMMAND = COMMAND;
-        this.HEADER = HEADER;
-        this.DESCRIPTION = DESCRIPTION;
+    Commands(final String command, final String header, final String description) {
+        this.COMMAND = command;
+        this.HEADER = header;
+        this.DESCRIPTION = description;
     }
 
     /**

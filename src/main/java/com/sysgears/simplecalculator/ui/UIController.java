@@ -8,31 +8,33 @@ import java.io.IOException;
 public interface UIController {
 
     /**
-     * Read the line
+     * Reads the line
      *
-     * @param promptString the prompt string
+     * @param promptString The prompt string
      * @return the incoming line
      * @throws IOException If an I/O error occurs
      */
     String readLine(String promptString) throws IOException;
 
     /**
-     * Prints a line into a system console
+     * Prints a line
      *
-     * @param description  the line description
-     * @param outputString the output string
+     * @param description  The line description
+     * @param outputString The output string
      */
     void printLine(String description, String outputString);
 
     /**
-     * Prints a line into a system console
+     * Prints a line
      *
-     * @param line the output string
+     * @param line The output string
      */
     void printLine(String line);
 
     /**
      * Closes open connections
+     *
+     * @throws IOException If an I/O error occurs
      */
     void close() throws IOException;
 }

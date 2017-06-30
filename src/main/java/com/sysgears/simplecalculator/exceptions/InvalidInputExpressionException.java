@@ -11,7 +11,7 @@ public class InvalidInputExpressionException extends RuntimeException {
      * Constructs an object. Resend message to the super
      * class constructor
      *
-     * @param message String contains an error description
+     * @param message The string contains an error description
      */
     public InvalidInputExpressionException(String message) {
         super(message);

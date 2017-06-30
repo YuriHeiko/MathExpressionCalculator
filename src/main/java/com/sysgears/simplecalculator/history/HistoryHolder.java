@@ -22,18 +22,18 @@ public class HistoryHolder {
     /**
      * Add a new event into history container
      *
-     * @param key the key
-     * @param value the value
+     * @param key   The key
+     * @param value The value
      */
     public void addEvent(String key, String value) {
         history.add(new ResultPair(key, value));
     }
 
     /**
-     * returns the value associated with the key
+     * Returns the value associated with the key
      *
-     * @param key the key
-     * @return the value associated with the key
+     * @param key The key
+     * @return The value associated with the key
      */
     public String getResult(String key) {
         int index = history.indexOf(new ResultPair(key));
@@ -48,16 +48,16 @@ public class HistoryHolder {
     /**
      * Returns string contains the history events without duplicates
      *
-     * @return history without duplicates
+     * @return History without duplicates
      */
     public String getUniqueHistory() {
         return buildString(new LinkedHashSet<>(history));
     }
 
     /**
-     * Returns string contains the history events
+     * Returns the string contains the history events
      *
-     * @return string contains the history events
+     * @return The string contains the history events
      */
     @Override
     public String toString() {
@@ -65,14 +65,14 @@ public class HistoryHolder {
     }
 
     /**
-     * Builds a string with history events from the incoming {@code Collection}
+     * Builds a string with history events from the received {@code Collection}
      *
-     * @param pairs Collection contains history events
-     * @return string contains the history events
+     * @param pairs The collection contains history events
+     * @return The string contains the history events
      */
     private String buildString(Collection<ResultPair> pairs) {
         return "\t" + pairs.stream().
-                                    map(ResultPair::toString).
-                                    collect(Collectors.joining(System.lineSeparator() + "\t"));
+                map(ResultPair::toString).
+                collect(Collectors.joining(System.lineSeparator() + "\t"));
     }
 }

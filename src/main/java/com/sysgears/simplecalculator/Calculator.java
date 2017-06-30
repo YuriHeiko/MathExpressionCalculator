@@ -20,9 +20,9 @@ public final class Calculator {
     /**
      * Constructs an object
      *
-     * @param controller the UI controller
-     * @param history    the history holder
-     * @param computer   the computer
+     * @param controller The UI controller
+     * @param history    The history holder
+     * @param computer   The computer
      */
     public Calculator(final UIController controller, final HistoryHolder history, final Computer computer) {
         this.controller = controller;
@@ -31,7 +31,8 @@ public final class Calculator {
     }
 
     /**
-     * Uses received objects to conduct dialogue with a user and compute math expressions
+     * Uses received objects to conduct dialogue with a user and compute
+     * math expressions
      */
     public void run() {
         String result = "";
@@ -77,8 +78,8 @@ public final class Calculator {
      * Uses the computer to calculate the expression and history holder to store
      * events
      *
-     * @param expression the math expression string
-     * @return a string with the computed expression or error description
+     * @param expression The math expression string
+     * @return The string with the computed expression or an error description
      */
     String CalculateExpression(final String expression) {
         String result = history.getResult(expression);

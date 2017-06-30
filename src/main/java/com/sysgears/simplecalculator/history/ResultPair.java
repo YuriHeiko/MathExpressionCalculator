@@ -3,7 +3,8 @@ package com.sysgears.simplecalculator.history;
 import java.text.SimpleDateFormat;
 
 /**
- * Keeps a associated pair and a time stamp when the object was created.
+ * Keeps an associated pair and a time stamp when the object
+ * was created.
  */
 public class ResultPair {
     private String key;
@@ -12,32 +13,33 @@ public class ResultPair {
     private SimpleDateFormat sdf = new SimpleDateFormat("dd MMM HH:mm:ss");
 
     /**
-     * Constructs an object with the only key
+     * Constructs an object with the only key. It is needed to
+     * provide search by the key in the collection of these
      *
-     * @param key the key
+     * @param key The key
      */
     public ResultPair(String key) {
         this.key = key;
     }
 
     /**
-     * Constructs an object and store the time of its creation
+     * Constructs an object
      *
-     * @param key   the key
-     * @param value the value
+     * @param key   The key
+     * @param value The value
      */
     public ResultPair(String key, String value) {
         this(key, value, System.currentTimeMillis());
     }
 
     /**
-     * Constructs an object
+     * Constructs an object and store the time of its creation
      *
      * @param key       the key
-     * @param value     the value
-     * @param timeStamp the time
+     * @param value     The value
+     * @param timeStamp The time
      */
-    public ResultPair(String key, String value, long timeStamp) {
+    private ResultPair(String key, String value, long timeStamp) {
         this.key = key;
         this.value = value;
         this.timeStamp = timeStamp;
@@ -46,7 +48,7 @@ public class ResultPair {
     /**
      * Returns the key
      *
-     * @return the key
+     * @return The key
      */
     public String getKey() {
         return key;
@@ -55,7 +57,7 @@ public class ResultPair {
     /**
      * Returns the value
      *
-     * @return the value
+     * @return The value
      */
     public String getValue() {
         return value;
@@ -65,7 +67,7 @@ public class ResultPair {
      * Checks whether the received object is equal to this or not.
      * Takes into account only the value of the key
      *
-     * @param o the object to compare
+     * @param o The object to compare
      * @return true if object is equal to this
      */
     @Override
@@ -89,14 +91,14 @@ public class ResultPair {
     }
 
     /**
-     * Returns the string depiction of the object
+     * Returns the string representation of the object
      *
-     * @return the string depiction of the object
+     * @return The string representation of the object
      */
     @Override
     public String toString() {
-        return "Expression = '" + key + '\'' +
-                ", Result = " + value +
-                ", Time = " + sdf.format(timeStamp);
+        return "Expression: '" + key + '\'' +
+                ", Result: " + value +
+                ", Time: " + sdf.format(timeStamp);
     }
 }
