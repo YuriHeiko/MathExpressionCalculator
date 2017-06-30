@@ -23,8 +23,8 @@ public enum Operators {
      */
     POWER("^") {
         @Override
-        public Double calculate(final double v1, final double v2) {
-            return convertNegativeZero((v1 < 0 ? -1 : 1) * Math.pow(v1, v2));
+        public Double calculate(final double x, final double y) {
+            return convertNegativeZero((x < 0 ? -1 : 1) * Math.pow(x, y));
         }
     },
     /**
@@ -32,12 +32,12 @@ public enum Operators {
      */
     DIVIDE("/") {
         @Override
-        public Double calculate(final double v1, final double v2) {
-            if (Double.compare(convertNegativeZero(v2), 0) == 0) {
+        public Double calculate(final double x, final double y) {
+            if (Double.compare(convertNegativeZero(y), 0) == 0) {
                 throw new ArithmeticException();
             }
 
-            return convertNegativeZero(v1 / v2);
+            return convertNegativeZero(x / y);
         }
     },
     /**
@@ -45,8 +45,8 @@ public enum Operators {
      */
     MULTIPLY("*") {
         @Override
-        public Double calculate(final double v1, final double v2) {
-            return convertNegativeZero(v1 * v2);
+        public Double calculate(final double x, final double y) {
+            return convertNegativeZero(x * y);
         }
     },
     /**
@@ -54,8 +54,8 @@ public enum Operators {
      */
     SUBTRACT("-") {
         @Override
-        public Double calculate(final double v1, final double v2) {
-            return convertNegativeZero(v1 - v2);
+        public Double calculate(final double x, final double y) {
+            return convertNegativeZero(x - y);
         }
     },
     /**
@@ -63,8 +63,8 @@ public enum Operators {
      */
     ADD("+") {
         @Override
-        public Double calculate(final double v1, final double v2) {
-            return convertNegativeZero(v1 + v2);
+        public Double calculate(final double x, final double y) {
+            return convertNegativeZero(x + y);
         }
     };
 
@@ -115,12 +115,12 @@ public enum Operators {
     /**
      * Contains the math logic of the operator
      *
-     * @param v1 The left operand
-     * @param v2 The right operand
+     * @param x The left operand
+     * @param y The right operand
      * @return The computed value
      * @throws ArithmeticException If an arithmetic error is happen
      */
-    public abstract Double calculate(final double v1, final double v2) throws ArithmeticException;
+    public abstract Double calculate(final double x, final double y) throws ArithmeticException;
 
     /**
      * Returns the string representation of the operator
