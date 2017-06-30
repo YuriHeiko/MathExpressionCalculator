@@ -73,14 +73,16 @@ public abstract class Computer {
     /**
      * Computes the received expression according to the math rules.
      * The ideas lie behind the algorithm are next:
-     * <p><ul>
-     * <li>iterates by all possible operators that exist in {@code Operators}
-     * class</li>
-     * <li>finds a binary expression that uses such an operator</li>
-     * <li>computes the expression</li>
-     * <li>puts the value instead of the corresponding part
-     * <li>continues until all the possible parts are computed</li>
-     * </ul></p>
+     * <p>
+     *     <ul>
+     *         <li>iterates by all possible operators that exist in
+     *         {@code Operators} class</li>
+     *         <li>finds a binary expression that uses such an operator</li>
+     *         <li>computes the expression</li>
+     *         <li>puts the value instead of the corresponding part
+     *         <li>continues until all the possible parts are computed</li>
+     *     </ul>
+     * </p>
      *
      * @param expression The string contains a valid math expression without
      *                   parentheses
@@ -110,5 +112,27 @@ public abstract class Computer {
         }
 
         return expression;
+    }
+
+    /**
+     * Normalizes an math expression according to common math rules
+     * <p>
+     *     <ul>
+     *         <li> if there is '--' after '(', it is altered by ""</li>
+     *         <li>remaining "--" is altered by "+"</li>
+     *         <li>if the string starts with '+', it is altered by ""</li>
+     *         <li>finally, all the "+-" are altered by "-"</li>
+     *     </ul>
+     * </p>
+     *
+     * @param expression The string contains a math expression
+     * @return The normalized expression
+     */
+    String normalizeExpression(final String expression) {
+        return expression.
+                replaceAll("(?<=[(])--", "").
+                replaceAll("--", "+").
+                replaceAll("^\\+", "").
+                replace("+-", "-");
     }
 }

@@ -8,13 +8,15 @@ import java.util.regex.Pattern;
 /**
  * Attempts to calculate a received math expression according to the math
  * precedence. The ideas lie behind the algorithm are next:
- * <p><ul>
- * <li>recursively opens all the parentheses by calculating the enclosed
- * expressions</li>
- * <li>calculates the remaining parts of the expression according to
- * operators precedence</li>
- * <li>all possible operators are stored in {@link Operators} class</li>
- * </ul></p>
+ * <p>
+ *     <ul>
+ *         <li>recursively opens all the parentheses by calculating the
+ *         enclosed expressions</li>
+ *         <li>calculates the remaining parts of the expression according
+ *         to operators precedence</li>
+ *         <li>all possible operators are stored in {@link Operators}</li>
+ *         </ul>
+ * </p>
  */
 public class ComputerRegExp extends Computer {
     /**
@@ -42,30 +44,29 @@ public class ComputerRegExp extends Computer {
              matcher.find();
              matcher = pattern.matcher(expression)) {
 
-            expression =
-                    expression.
-                            replace(matcher.group(0), openParentheses(matcher.group(1))).
-                            replace("--", "+");
+            expression = normalizeExpression(expression.replace(matcher.group(0), openParentheses(matcher.group(1))));
         }
 
         return computeArithmeticExpression(expression);
     }
 
     /**
-     * Computes the received expression according to the math rules. The ideas
-     * lie behind the algorithm are next:
-     * <p><ul>
-     * <li>iterates by all possible operators that exist in {@code Operators}
-     * class</li>
-     * <li>finds a binary expression that uses such an operator</li>
-     * <li>computes the expression</li>
-     * <li>puts the value instead of the corresponding parts</li>
-     * <li>continues until all the possible parts are computed</li>
-     * </ul></p>
+     * Computes the received expression according to the math rules.
+     * The ideas lie behind the algorithm are next:
      * <p>
-     * "(?<![-])" helps replace expressions that don't have a minus before, i.e.
-     * expression = 1-1-1-1+1-1       binary one = 1-1      computed one = 0.0
-     * and the result after replacement = 0.0-1-1+0.0
+     *     <ul>
+     *         <li>iterates by all possible operators that exist in
+     *         {@code Operators} class</li>
+     *         <li>finds a binary expression that uses such an operator</li>
+     *         <li>computes the expression</li>
+     *         <li>puts the value instead of the corresponding part
+     *         <li>continues until all the possible parts are computed</li>
+     *         </ul>
+     * </p>
+     * <p>
+     *     "(?<![-])" helps replace expressions that don't have a minus before, i.e.
+     *     expression = 1-1-1-1+1-1       binary one = 1-1      computed one = 0.0
+     *     and the result after replacement = 0.0-1-1+0.0
      * </p>
      *
      * @param expression The string contains a valid math expression without parentheses

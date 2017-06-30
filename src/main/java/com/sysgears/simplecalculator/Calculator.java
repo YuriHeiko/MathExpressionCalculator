@@ -12,8 +12,9 @@ import com.sysgears.simplecalculator.ui.UIController;
  * to calculate user's math expression and {@code HistoryHolder} to keep
  * and show history.
  * <p>
- * If a new expression has been already computed it will the result will
- * be gotten from the history holder, and no calculations will be done.
+ *     If a new expression has been already computed it will the result
+ *     will be gotten from the history holder, and no calculations will
+ *     be done.
  * </p>
  */
 public final class Calculator {
@@ -93,8 +94,8 @@ public final class Calculator {
      * Uses the computer to calculate the expression and history holder to store
      * events
      * <p>
-     * If the expression has been already computed the result will be gotten from
-     * the history holder, and no calculations will be done.
+     *     If the expression has been already computed the result will be gotten
+     *     from the history holder, and no calculations will be done.
      * </p>
      *
      * @param expression The math expression string

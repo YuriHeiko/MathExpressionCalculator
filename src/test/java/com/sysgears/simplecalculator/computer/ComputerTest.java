@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public abstract class ComputerTest {
-    static Computer computer = new ComputerBruteForce();
+    static Computer computer = new ComputerRegExp();
 
     @Test
     public void testValidateString() throws Exception {
@@ -105,6 +105,11 @@ public abstract class ComputerTest {
     @Test
     public void testOpenParenthesesNine() throws Exception {
         Assert.assertEquals("8.342156896551725", computer.openParentheses("(-(12.1-7)/5.8)*2.9999+10.98"));
+    }
+
+    @Test
+    public void testOpenParenthesesTen() throws Exception {
+        Assert.assertEquals("30.0", computer.openParentheses("-(-(-(-10-20)))"));
     }
 
     @Test
