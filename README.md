@@ -1,6 +1,6 @@
 **Task**  
-You have to create a Calculator app. It should solve simple math expressions with integers(i.e.
-_(2 + 3) * 4_ ). All the operations should calculate according to their math precedence.  
+You have to create a Calculator app. It should solve simple math expressions with integers, i.e.
+_(2 + 3) * 4_. All the operations should calculate according to their math precedence.  
 
 _Optional:_  
 <ul>
