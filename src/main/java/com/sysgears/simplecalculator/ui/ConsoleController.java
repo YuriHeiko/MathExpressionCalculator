@@ -8,6 +8,9 @@ import java.io.InputStreamReader;
  * Uses a system console to get and show information.
  */
 public class ConsoleController implements UIController {
+    /**
+     * The system console reader
+     */
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
     /**

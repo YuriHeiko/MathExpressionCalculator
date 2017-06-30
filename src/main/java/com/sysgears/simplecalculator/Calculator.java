@@ -7,6 +7,9 @@ import com.sysgears.simplecalculator.history.HistoryHolder;
 import com.sysgears.simplecalculator.ui.Commands;
 import com.sysgears.simplecalculator.ui.UIController;
 
+import java.io.IOException;
+import java.util.Objects;
+
 /**
  * Uses {@code UIController} to lead dialog with a user, {@code Computer}
  * to calculate user's math expression and {@code HistoryHolder} to keep
@@ -41,7 +44,7 @@ public final class Calculator {
      * @param computer   The computer
      */
     public Calculator(final UIController controller, final HistoryHolder history, final Computer computer) {
-        this.controller = controller;
+        this.controller = Objects.requireNonNull(controller);
         this.history = history;
         this.computer = computer;
     }
@@ -87,6 +90,11 @@ public final class Calculator {
 
         } catch (Exception e) {
             e.printStackTrace();
+
+        } finally {
+            try {
+                controller.close();
+            } catch (IOException e) {}
         }
     }
 

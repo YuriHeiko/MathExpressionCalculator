@@ -30,15 +30,15 @@ public enum Commands {
     /**
      * A command to show the list of allowed math operators
      */
-    OPERATORS("operators", "The operators list, sorted in ascending order by their precedence:",
+    OPERATORS("operators", "The operators list, sorted in ascending order by their precedence:" + System.lineSeparator(),
             "        - to see the operators list"),
 
     /**
      * Additional information
      */
     ATTENTION(System.lineSeparator() + "ADDITIONAL INFO: ", "",
-            "You must NOT use either '+-' or '-+' combinations in your expressions" + System.lineSeparator() +
-                    "You should bear in mind that all the calculations can have some ROUND-OFF errors");
+            "You must NOT use either '+-' or '-+' combinations in your expressions." + System.lineSeparator() +
+                    "You should bear in mind that all the calculations can have some ROUND-OFF errors.");
 
     /**
      * A command string representation
