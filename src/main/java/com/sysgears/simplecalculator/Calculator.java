@@ -12,7 +12,7 @@ import com.sysgears.simplecalculator.ui.UIController;
  * to calculate user's math expression and {@code HistoryHolder} to keep
  * and show history
  */
-public class Calculator {
+public final class Calculator {
     private final UIController controller;
     private final HistoryHolder history;
     private final Computer computer;
@@ -31,7 +31,7 @@ public class Calculator {
     }
 
     /**
-     * Uses the controller to conduct dialogue with a user.
+     * Uses received objects to conduct dialogue with a user and compute math expressions
      */
     public void run() {
         String result = "";
@@ -47,14 +47,19 @@ public class Calculator {
                 if (line.equals(Commands.EXIT.COMMAND)) {
                     controller.printLine(System.lineSeparator() + "Good bye!");
                     return;
+
                 } else if (line.equals(Commands.HELP.COMMAND)) {
                     controller.printLine(Commands.HELP.getHEADER(), Commands.getList());
+
                 } else if (line.equals(Commands.HISTORY.COMMAND)) {
                     controller.printLine(Commands.HISTORY.getHEADER(), history.toString());
+
                 } else if (line.equals(Commands.UNIQUE_HISTORY.COMMAND)) {
                     controller.printLine(Commands.UNIQUE_HISTORY.getHEADER(), history.getUniqueHistory());
+
                 } else if (line.equals(Commands.OPERATORS.COMMAND)) {
                     controller.printLine(Commands.OPERATORS.getHEADER(), Operators.getList());
+
                 } else {
                     result = CalculateExpression(line);
                     controller.printLine("", result);
@@ -83,7 +88,7 @@ public class Calculator {
                 result = computer.compute(expression);
 
             } catch (InvalidInputExpressionException | NullPointerException e) {
-                result = e.getMessage() + System.lineSeparator() + "\t\tPlease read the instructions carefully.";
+                result = e.getMessage() + System.lineSeparator() + "\tPlease read the instructions carefully.";
             }
         }
 
