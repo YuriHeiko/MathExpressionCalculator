@@ -1,15 +1,20 @@
+<h4>MATH EXPRESSIONS CALCULATOR</h4>
+
 **Task**  
-You have to create a Calculator app. It should solve simple math expressions with integers, i.e.
-_(2 + 3) * 4_. All the operations should calculate according to their math precedence.  
+You have to create a Calculator app. It should solve simple math expressions with integers, i.e.:
+
+    (2 + 3) * 4
+
+All the operations should calculate according to their math precedence.    
 
 _Optional:_  
-<ul>
-<li>add history of calculations that should be stored in a standard Java collection</li>
-<li>add commands 'history' and 'history unique' that show history of calculations and  history whithout duplicates</li>
-<li>add the 'exit' command</li>
-<li>add the 'operators' command which shows the list of allowed math operators</li>
-<li>your algorithm should be friendly to adding new operators</li>
-</ul>
+<ol>
+<li>Add history of calculations that should be stored in a standard Java collection</li>
+<li>Add commands 'history' and 'history unique' that show history of calculations and  history whithout duplicates</li>
+<li>Add the 'exit' command</li>
+<li>Add the 'operators' command which shows the list of allowed math operators</li>
+<li>Your algorithm should be friendly to adding new operators</li>
+</ol>
 
 **The description of app work**  
 A user runs the app and type an expression to calculate. The application returns the evaluated 
