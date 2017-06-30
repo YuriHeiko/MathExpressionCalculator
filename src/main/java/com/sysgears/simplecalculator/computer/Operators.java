@@ -12,6 +12,10 @@ import java.util.stream.Stream;
  * lead to round-off errors, and this type is constrained by number
  * size. So, it can be changed to {@code BigDecimal} so as to
  * solve problems above.
+ * <p>
+ *     Parentheses symbols, '--', '+-' and '-+' CANNOT use either as
+ *     operators or as a part of operator
+ * </p>
  */
 public enum Operators {
     /**

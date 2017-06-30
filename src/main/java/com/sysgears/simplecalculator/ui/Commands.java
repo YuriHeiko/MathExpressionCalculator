@@ -10,28 +10,35 @@ public enum Commands {
     /**
      * A command to end application work
      */
-    EXIT("exit", "", " - to close the application"),
+    EXIT("exit", "", "             - to close the application"),
 
     /**
      * A command to show help
      */
-    HELP("help", "You can use next commands:", " - to get this description"),
+    HELP("help", "You can use next commands:" + System.lineSeparator(), "             - to get this description"),
 
     /**
      * A command to show the list of history events
      */
-    HISTORY("history", "History:", " - to see the calculation history"),
+    HISTORY("history", "History:", "          - to see the calculation history"),
 
     /**
      * A command to show the list of history events without duplicates
      */
-    UNIQUE_HISTORY("history unique", "Unique history:", " - to see the calculation history without duplicates"),
+    UNIQUE_HISTORY("history unique", "Unique history:", "   - to see the calculation history without duplicates"),
 
     /**
      * A command to show the list of allowed math operators
      */
     OPERATORS("operators", "The operators list, sorted in ascending order by their precedence:",
-            " - to see the operators list");
+            "        - to see the operators list"),
+
+    /**
+     * Additional information
+     */
+    ATTENTION(System.lineSeparator() + "ADDITIONAL INFO: ", "",
+            "You must NOT use either '+-' or '-+' combinations in your expressions" + System.lineSeparator() +
+                    "You should bear in mind that all the calculations can have some ROUND-OFF errors");
 
     /**
      * A command string representation
