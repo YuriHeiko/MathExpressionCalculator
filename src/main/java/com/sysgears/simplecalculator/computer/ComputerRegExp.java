@@ -17,7 +17,10 @@ import java.util.regex.Pattern;
  * </ul></p>
  */
 public class ComputerRegExp extends Computer {
-    private final String NUMBER_EXP = "\\-?\\d+([.,]{1}\\d+)?";
+    /**
+     * A pattern for a valid number
+     */
+    private final String NUMBER_EXP = "\\-?\\d+([.]{1}\\d+)?";
 
     /**
      * Finds all parts of the expression which are enclosed in parentheses.

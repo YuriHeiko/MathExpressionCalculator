@@ -14,12 +14,18 @@ import java.util.stream.Stream;
  * solve problems above.
  */
 public enum Operators {
+    /**
+     * A math power operator
+     */
     POWER("^") {
         @Override
         public Double calculate(final double v1, final double v2) {
             return convertNegativeZero((v1 < 0 ? -1 : 1) * Math.pow(v1, v2));
         }
     },
+    /**
+     * A math power divide
+     */
     DIVIDE("/") {
         @Override
         public Double calculate(final double v1, final double v2) {
@@ -30,18 +36,27 @@ public enum Operators {
             return convertNegativeZero(v1 / v2);
         }
     },
+    /**
+     * A math multiply operator
+     */
     MULTIPLY("*") {
         @Override
         public Double calculate(final double v1, final double v2) {
             return convertNegativeZero(v1 * v2);
         }
     },
+    /**
+     * A math subtract operator
+     */
     SUBTRACT("-") {
         @Override
         public Double calculate(final double v1, final double v2) {
             return convertNegativeZero(v1 - v2);
         }
     },
+    /**
+     * A math add operator
+     */
     ADD("+") {
         @Override
         public Double calculate(final double v1, final double v2) {

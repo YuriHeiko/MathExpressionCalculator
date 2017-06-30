@@ -4,18 +4,48 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Contains all the application commands
+ * Contains all the application commands.
  */
 public enum Commands {
+    /**
+     * A command to end application work
+     */
     EXIT("exit", "", " - to close the application"),
+
+    /**
+     * A command to show help
+     */
     HELP("help", "You can use next commands:", " - to get this description"),
+
+    /**
+     * A command to show the list of history events
+     */
     HISTORY("history", "History:", " - to see the calculation history"),
+
+    /**
+     * A command to show the list of history events without duplicates
+     */
     UNIQUE_HISTORY("history unique", "Unique history:", " - to see the calculation history without duplicates"),
+
+    /**
+     * A command to show the list of allowed math operators
+     */
     OPERATORS("operators", "The operators list, sorted in ascending order by their precedence:",
             " - to see the operators list");
 
+    /**
+     * A command string representation
+     */
     public final String COMMAND;
+
+    /**
+     * A command header string representation
+     */
     public final String HEADER;
+
+    /**
+     * A command description string representation
+     */
     public final String DESCRIPTION;
 
     /**

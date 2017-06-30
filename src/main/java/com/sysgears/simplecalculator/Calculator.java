@@ -13,8 +13,19 @@ import com.sysgears.simplecalculator.ui.UIController;
  * and show history
  */
 public final class Calculator {
+    /**
+     * A UI controller object
+     */
     private final UIController controller;
+
+    /**
+     * An event history holder
+     */
     private final HistoryHolder history;
+
+    /**
+     * A computer for math expressions
+     */
     private final Computer computer;
 
     /**

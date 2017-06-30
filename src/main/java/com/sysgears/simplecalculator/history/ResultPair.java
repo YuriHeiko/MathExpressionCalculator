@@ -7,9 +7,24 @@ import java.text.SimpleDateFormat;
  * was created.
  */
 public class ResultPair {
+    /**
+     * A key
+     */
     private String key;
+
+    /**
+     * A value
+     */
     private String value;
+
+    /**
+     * A time stamp of a history event creation
+     */
     private long timeStamp;
+
+    /**
+     * A Date formatter
+     */
     private SimpleDateFormat sdf = new SimpleDateFormat("dd MMM HH:mm:ss");
 
     /**

@@ -10,6 +10,10 @@ import java.util.stream.Collectors;
  * Keeps the history which elements stores in {@link ResultPair} class.
  */
 public class HistoryHolder {
+    /**
+     * A {@code List} collection holds {@code ResultPair} objects which
+     * keeps history events
+     */
     private List<ResultPair> history;
 
     /**
