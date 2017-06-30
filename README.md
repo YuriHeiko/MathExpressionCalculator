@@ -7,6 +7,7 @@ _Optional:_
 <li>add history of calculations that should be stored in a standard Java collection</li>
 <li>add commands 'history' and 'history unique' that show history of calculations and  history whithout duplicates</li>
 <li>add the 'exit' command</li>
+<li>add the 'operators' command which shows the list of allowed math operators</li>
 <li>your algorithm should be friendly to adding new operators</li>
 </ul>
 

@@ -23,7 +23,9 @@ public abstract class Computer {
     public String compute(String expression) throws InvalidInputExpressionException {
 
         expression = Objects.requireNonNull(expression, "Incoming string cannot be null");
-        String result = openParentheses(expression.replaceAll("\\s", "").replace(',', '.'));
+        String result = expression.isEmpty()
+                ? expression
+                : openParentheses(expression.replaceAll("\\s", "").replace(',', '.'));
 
         if (!result.isEmpty()) {
             try {
@@ -100,7 +102,7 @@ public abstract class Computer {
             String rightOperand = expression.substring(expression.lastIndexOf((operator.getRepresentation())) + 1);
 
             expression = operator.calculate(Double.parseDouble(leftOperand),
-                                            Double.parseDouble(rightOperand)).toString();
+                    Double.parseDouble(rightOperand)).toString();
 
         } catch (NumberFormatException | StringIndexOutOfBoundsException | ArithmeticException e) {
             throw new InvalidInputExpressionException(String.format("Input data is probably invalid cause " +

@@ -126,10 +126,10 @@ public abstract class ComputerTest {
 
     @Test
     public void testComputeWhiteSpaces() throws Exception {
-        Assert.assertEquals("-46.333333333333336", computer.compute(" (2+   8) /  6 - 12 * 4  ^    1"));
+        Assert.assertEquals("-49.53333333333334", computer.compute(" (2+   8) /  6 - 12,8 * 4  ^    1"));
     }
 
-    @Test(expected = InvalidInputExpressionException.class)
+    @Test(expected = NullPointerException.class)
     public void testComputeNull() throws Exception {
         Assert.assertEquals("", computer.compute(null));
     }
