@@ -7,8 +7,6 @@ import org.junit.Test;
 public abstract class ComputerTest {
     static Computer computer = new ComputerBruteForce();
 
-    // TODO add divide by zero test
-
     @Test
     public void testValidateString() throws Exception {
         Assert.assertFalse(computer.isStringInvalid("12+2"));
@@ -56,7 +54,12 @@ public abstract class ComputerTest {
 
     @Test(expected = InvalidInputExpressionException.class)
     public void testComputeBinaryExpressionDivideError() throws Exception {
-        Assert.assertEquals("2.5", computer.computeBinaryExpression("5/sd2", Operators.DIVIDE));
+        Assert.assertEquals("2.5", computer.computeBinaryExpression("4*8f-5/1+3^0", Operators.DIVIDE));
+    }
+
+    @Test(expected = InvalidInputExpressionException.class)
+    public void testComputeBinaryExpressionDivideByZeroError() throws Exception {
+        Assert.assertEquals("2.5", computer.computeBinaryExpression("4*8-5/0+3^0", Operators.DIVIDE));
     }
 
     @Test

@@ -10,7 +10,11 @@ import com.sysgears.simplecalculator.ui.UIController;
 /**
  * Uses {@code UIController} to lead dialog with a user, {@code Computer}
  * to calculate user's math expression and {@code HistoryHolder} to keep
- * and show history
+ * and show history.
+ * <p>
+ * If a new expression has been already computed it will the result will
+ * be gotten from the history holder, and no calculations will be done.
+ * </p>
  */
 public final class Calculator {
     /**
@@ -24,7 +28,7 @@ public final class Calculator {
     private final HistoryHolder history;
 
     /**
-     * A computer for math expressions
+     * A math expression computer
      */
     private final Computer computer;
 
@@ -88,6 +92,10 @@ public final class Calculator {
     /**
      * Uses the computer to calculate the expression and history holder to store
      * events
+     * <p>
+     * If the expression has been already computed the result will be gotten from
+     * the history holder, and no calculations will be done.
+     * </p>
      *
      * @param expression The math expression string
      * @return The string with the computed expression or an error description
