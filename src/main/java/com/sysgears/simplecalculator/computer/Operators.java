@@ -5,16 +5,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Contains allowed math operators and their logic. Priority of
- * operators is their order in this class. Minus must be before
- * plus according to algorithms' logic. All the computes heavily
- * rely on {@code double} type, however in Java such calculations
- * lead to round-off errors, and this type is constrained by number
- * size. So, it can be changed to {@code BigDecimal} so as to
- * solve problems above.
+ * Contains allowed math operators and their logic. The precedence of the
+ * operators is their order in this class. Minus must be before plus
+ * according to algorithms' logic. All the computes heavily rely on
+ * {@code double} type, however in Java such calculations lead to round-off
+ * errors, and this type is constrained by number size. So, it can be
+ * changed to {@code BigDecimal} so as to solve problems above.
  * <p>
  *     Parentheses symbols, '--', '+-' and '-+' CANNOT use either as
- *     operators or as a part of operator
+ *     operators or as a part of an operator
  * </p>
  */
 public enum Operators {

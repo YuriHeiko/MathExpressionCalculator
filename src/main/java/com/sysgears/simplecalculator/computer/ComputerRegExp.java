@@ -6,8 +6,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Attempts to calculate a received math expression according to the math
- * precedence. The ideas lie behind the algorithm are next:
+ * Calculates a received math expression according to the {@code Operators}
+ * precedence. It is based on regular expressions. The ideas lie behind the
+ * algorithm are next:
  * <p>
  *     <ul>
  *         <li>recursively opens all the parentheses by calculating the
@@ -20,30 +21,22 @@ import java.util.regex.Pattern;
  */
 public class ComputerRegExp extends Computer {
     /**
-     * A pattern for a valid number
-     */
-    private final String NUMBER_EXP = "\\-?\\d+([.]{1}\\d+)?";
-
-    /**
      * Finds all parts of the expression which are enclosed in parentheses.
      * Computes such parts and put the value instead of the respective
-     * enclosed part. Removes parentheses respectively. Computes the
-     * remaining arithmetic expression.
+     * enclosed part. Removes parentheses respectively. Computes the remaining
+     * expression
      *
      * @param expression The string contains a valid math expression
-     * @return The string contains an expression with open parentheses
+     * @return The string contains the expression with open parentheses
      * @throws InvalidInputExpressionException If the incoming string has an
      *                                         invalid format
      */
     @Override
     String openParentheses(String expression) throws InvalidInputExpressionException {
         Pattern pattern = Pattern.compile(
-                "\\({1}((" + NUMBER_EXP + ")|((" + NUMBER_EXP + Operators.getRegExp() + ")+" + NUMBER_EXP + ")){1}\\){1}");
+                "\\(((" + NUMBER_EXP + ")|((" + NUMBER_EXP + Operators.getRegExp() + ")+" + NUMBER_EXP + "))\\)");
 
-        for (Matcher matcher = pattern.matcher(expression);
-             matcher.find();
-             matcher = pattern.matcher(expression)) {
-
+        for (Matcher matcher = pattern.matcher(expression); matcher.find(); matcher = pattern.matcher(expression)) {
             expression = normalizeExpression(expression.replace(matcher.group(0), openParentheses(matcher.group(1))));
         }
 
@@ -51,8 +44,8 @@ public class ComputerRegExp extends Computer {
     }
 
     /**
-     * Computes the received expression according to the math rules.
-     * The ideas lie behind the algorithm are next:
+     * Computes the received expression according to the math rules. The ideas
+     * lie behind the algorithm are next:
      * <p>
      *     <ul>
      *         <li>iterates by all possible operators that exist in
@@ -66,26 +59,28 @@ public class ComputerRegExp extends Computer {
      * <p>
      *     "(?<![-])" helps replace expressions that don't have a minus before, i.e.
      *     expression = 1-1-1-1+1-1       binary one = 1-1      computed one = 0.0
-     *     and the result after replacement = 0.0-1-1+0.0
+     *     and the result after replacement = 0.0-1-1+0.0 (NOT 0.0-0.0+0.0 otherwise)
      * </p>
      *
-     * @param expression The string contains a valid math expression without parentheses
+     * @param expression The string contains a valid math expression without
+     *                   parentheses
      * @return The string contains the calculated expression
      * @throws InvalidInputExpressionException If the incoming string has an
      *                                         invalid format
      */
     @Override
     String computeArithmeticExpression(String expression) throws InvalidInputExpressionException {
+
+
+
         for (Operators operator : Operators.values()) {
-            Pattern pattern = Pattern.compile(NUMBER_EXP + "[" + operator.getRegExpRepresentation() + "]{1}" + NUMBER_EXP);
+            Pattern pattern = Pattern.compile(NUMBER_EXP + "[" + operator.getRegExpRepresentation() + "]" + NUMBER_EXP);
 
             for (Matcher matcher = pattern.matcher(expression); matcher.find(); matcher = pattern.matcher(expression)) {
-                String binaryExpression = matcher.group(0);
-
                 expression =
                         expression.
-                                replaceAll("(?<![-])" + Pattern.quote(binaryExpression),
-                                        computeBinaryExpression(binaryExpression, operator));
+                                replaceAll("(?<![-])" + Pattern.quote(matcher.group(0)),
+                                        computeBinaryExpression(matcher.group(0), operator));
             }
         }
 

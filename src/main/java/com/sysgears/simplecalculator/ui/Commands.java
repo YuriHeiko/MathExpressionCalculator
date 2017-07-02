@@ -73,18 +73,9 @@ public enum Commands {
      *
      * @return The string with the description of all the commands
      */
-    public static String getList() {
+    public static String getHelp() {
         return Stream.of(values()).
                 map(e -> "\t" + e.COMMAND + e.DESCRIPTION).
                 collect(Collectors.joining(System.lineSeparator()));
-    }
-
-    /**
-     * Returns the command header with added a line separator
-     *
-     * @return The command header string
-     */
-    public String getHEADER() {
-        return HEADER + System.lineSeparator();
     }
 }

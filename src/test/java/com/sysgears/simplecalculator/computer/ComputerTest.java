@@ -8,16 +8,6 @@ public abstract class ComputerTest {
     static Computer computer = new ComputerRegExp();
 
     @Test
-    public void testValidateString() throws Exception {
-        Assert.assertFalse(computer.isStringInvalid("12+2"));
-    }
-
-    @Test
-    public void testValidateStringFalse() throws Exception {
-        Assert.assertTrue(computer.isStringInvalid("12D+2f"));
-    }
-
-    @Test
     public void testComputeBinaryExpressionAdd() throws Exception {
         Assert.assertEquals("4.0", computer.computeBinaryExpression("2+2", Operators.ADD));
     }
@@ -130,6 +120,11 @@ public abstract class ComputerTest {
     @Test
     public void testComputeEmptyString() throws Exception {
         Assert.assertEquals("", computer.compute(""));
+    }
+
+    @Test
+    public void testComputeEmptyParentheses() throws Exception {
+        Assert.assertEquals("", computer.compute("()"));
     }
 
     @Test

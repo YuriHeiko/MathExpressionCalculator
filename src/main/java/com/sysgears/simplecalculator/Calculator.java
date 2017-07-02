@@ -10,6 +10,8 @@ import com.sysgears.simplecalculator.ui.UIController;
 import java.io.IOException;
 import java.util.Objects;
 
+import static com.sysgears.simplecalculator.ui.Commands.*;
+
 /**
  * Uses {@code UIController} to lead dialog with a user, {@code Computer}
  * to calculate user's math expression and {@code HistoryHolder} to keep
@@ -54,31 +56,30 @@ public final class Calculator {
      * math expressions
      */
     public void run() {
-        String result = "";
-
         try {
-            controller.printLine(
-                    "This application can solve simple math expressions according to their math precedence");
+            controller.printLine("This application can solve simple math expressions according to their math precedence");
 
             while (true) {
-                String line = controller.readLine(
-                        "Type an expression to calculate (or type 'help' for allowed commands):").toLowerCase();
+                String result = "";
 
-                if (line.equals(Commands.EXIT.COMMAND)) {
+                String line = controller.readLine(
+                        "Type an expression to calculate or type 'help' to see a commands list:");
+
+                if (line.equals(EXIT.COMMAND)) {
                     controller.printLine(System.lineSeparator() + "Good bye!");
                     return;
 
-                } else if (line.equals(Commands.HELP.COMMAND)) {
-                    controller.printLine(Commands.HELP.getHEADER(), Commands.getList());
+                } else if (line.equals(HELP.COMMAND)) {
+                    controller.printLine(HELP.HEADER, Commands.getHelp());
 
-                } else if (line.equals(Commands.HISTORY.COMMAND)) {
-                    controller.printLine(Commands.HISTORY.getHEADER(), history.toString());
+                } else if (line.equals(HISTORY.COMMAND)) {
+                    controller.printLine(HISTORY.HEADER, history.toString());
 
-                } else if (line.equals(Commands.UNIQUE_HISTORY.COMMAND)) {
-                    controller.printLine(Commands.UNIQUE_HISTORY.getHEADER(), history.getUniqueHistory());
+                } else if (line.equals(UNIQUE_HISTORY.COMMAND)) {
+                    controller.printLine(UNIQUE_HISTORY.HEADER, history.getUniqueHistory());
 
-                } else if (line.equals(Commands.OPERATORS.COMMAND)) {
-                    controller.printLine(Commands.OPERATORS.getHEADER(), Operators.getList());
+                } else if (line.equals(OPERATORS.COMMAND)) {
+                    controller.printLine(OPERATORS.HEADER, Operators.getList());
 
                 } else {
                     result = CalculateExpression(line);
@@ -94,13 +95,14 @@ public final class Calculator {
         } finally {
             try {
                 controller.close();
-            } catch (IOException e) {}
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     /**
-     * Uses the computer to calculate the expression and history holder to store
-     * events
+     * Uses the computer to calculate the expression.
      * <p>
      *     If the expression has been already computed the result will be gotten
      *     from the history holder, and no calculations will be done.
