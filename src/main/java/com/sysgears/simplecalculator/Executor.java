@@ -15,7 +15,7 @@ public class Executor {
     /**
      * The starting point of a test UI interface
      *
-     * @param args A string array with command line parameters
+     * @param args the string array with command line parameters
      * @throws IOException If an I/O error occurs
      */
     public static void main(String[] args) throws IOException {

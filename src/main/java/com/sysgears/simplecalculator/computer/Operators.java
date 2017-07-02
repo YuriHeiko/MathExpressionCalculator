@@ -1,5 +1,8 @@
 package com.sysgears.simplecalculator.computer;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -8,7 +11,7 @@ import java.util.stream.Stream;
  * Contains allowed math operators and their logic. The precedence of the
  * operators is their order in this class. Minus must be before plus
  * according to algorithms' logic. All the computes heavily rely on
- * {@code double} type, however in Java such calculations lead to round-off
+ * {@code double} type. However, in Java such calculations lead to round-off
  * errors, and this type is constrained by number size. So, it can be
  * changed to {@code BigDecimal} so as to solve problems above.
  * <p>
@@ -18,7 +21,7 @@ import java.util.stream.Stream;
  */
 public enum Operators {
     /**
-     * A math power operator
+     * A power operator
      */
     POWER("^") {
         @Override
@@ -27,12 +30,12 @@ public enum Operators {
         }
     },
     /**
-     * A math power divide
+     * A divide operator
      */
     DIVIDE("/") {
         @Override
         public Double calculate(final double x, final double y) {
-            if (Double.compare(convertNegativeZero(y), 0) == 0) {
+            if (y == 0) {
                 throw new ArithmeticException();
             }
 
@@ -40,7 +43,7 @@ public enum Operators {
         }
     },
     /**
-     * A math multiply operator
+     * A multiply operator
      */
     MULTIPLY("*") {
         @Override
@@ -49,7 +52,7 @@ public enum Operators {
         }
     },
     /**
-     * A math subtract operator
+     * A subtract operator
      */
     SUBTRACT("-") {
         @Override
@@ -58,7 +61,7 @@ public enum Operators {
         }
     },
     /**
-     * A math add operator
+     * A add operator
      */
     ADD("+") {
         @Override
@@ -87,21 +90,16 @@ public enum Operators {
      * @return The RegExp string contains all the operators
      */
     static String getRegExp() {
-        StringBuilder builder = new StringBuilder("[");
-
-        for (Operators operator : values()) {
-            builder.append(operator.getRegExpRepresentation());
-        }
-
-        return builder.append("]{1}").toString();
+        return "[" + Stream.of(values()).map(Operators::getRegExpRepresentation).
+                collect(Collectors.joining()) + "]";
     }
 
     /**
-     * This function convert <code>value</code> to +0.0, if it is equal
+     * This function convert a value to +0.0, if it is equal
      * to -0.0 so as to obtain a predictable behaviour of compare functions
      *
      * @param value a value to convert
-     * @return converted or the same value
+     * @return the same or converted value
      */
     static double convertNegativeZero(double value) {
         if (value == 0.0) {
@@ -109,6 +107,20 @@ public enum Operators {
         }
 
         return value;
+    }
+
+    /**
+     * This function convert value to String frome E-notation to normal
+     * one, i.e. Input: 10E-5   Output: 0.00001
+     *
+     * @param value the value to convert
+     * @return String contains the converted value in decimal notation
+     */
+    static String convertFromScientificNotation(double value) {
+        DecimalFormat df = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+        df.setMaximumFractionDigits(340); //340 = DecimalFormat.DOUBLE_FRACTION_DIGITS
+
+        return df.format(value);
     }
 
     /**
@@ -122,7 +134,7 @@ public enum Operators {
     public abstract Double calculate(final double x, final double y) throws ArithmeticException;
 
     /**
-     * Returns the string representation of the operator
+     * Returns a string representation of the operator
      *
      * @return The string representation of the operator
      */
@@ -140,7 +152,7 @@ public enum Operators {
     }
 
     /**
-     * Builds and returns the string representation of the operator list
+     * Builds and returns a string representation of the operator list
      *
      * @return The string with the description of all the operators
      */

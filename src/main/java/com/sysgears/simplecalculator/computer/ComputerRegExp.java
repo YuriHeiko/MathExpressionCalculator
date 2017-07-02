@@ -22,11 +22,10 @@ import java.util.regex.Pattern;
 public class ComputerRegExp extends Computer {
     /**
      * Finds all parts of the expression which are enclosed in parentheses.
-     * Computes such parts and put the value instead of the respective
-     * enclosed part. Removes parentheses respectively. Computes the remaining
-     * expression
+     * Computes such parts and put the value instead of the corresponding
+     * enclosed part. Removes parentheses respectively.
      *
-     * @param expression The string contains a valid math expression
+     * @param expression The string contains a math expression
      * @return The string contains the expression with open parentheses
      * @throws InvalidInputExpressionException If the incoming string has an
      *                                         invalid format
@@ -34,13 +33,16 @@ public class ComputerRegExp extends Computer {
     @Override
     String openParentheses(String expression) throws InvalidInputExpressionException {
         Pattern pattern = Pattern.compile(
-                "\\(((" + NUMBER_EXP + ")|((" + NUMBER_EXP + Operators.getRegExp() + ")+" + NUMBER_EXP + "))\\)");
+                "\\((" + NUMBER_EXP + "|(" + NUMBER_EXP + Operators.getRegExp() + ")+" + NUMBER_EXP + ")\\)");
 
         for (Matcher matcher = pattern.matcher(expression); matcher.find(); matcher = pattern.matcher(expression)) {
-            expression = normalizeExpression(expression.replace(matcher.group(0), openParentheses(matcher.group(1))));
+            expression =
+                    normalizeExpression(
+                            expression.replace(matcher.group(),
+                                    computeArithmeticExpression(matcher.group(1))));
         }
 
-        return computeArithmeticExpression(expression);
+        return expression;
     }
 
     /**
@@ -48,6 +50,8 @@ public class ComputerRegExp extends Computer {
      * lie behind the algorithm are next:
      * <p>
      *     <ul>
+     *         <li>if the expression contains parentheses, calls {@code
+     *         openParentheses()} to open them</li>
      *         <li>iterates by all possible operators that exist in
      *         {@code Operators} class</li>
      *         <li>finds a binary expression that uses such an operator</li>
@@ -59,19 +63,19 @@ public class ComputerRegExp extends Computer {
      * <p>
      *     "(?<![-])" helps replace expressions that don't have a minus before, i.e.
      *     expression = 1-1-1-1+1-1       binary one = 1-1      computed one = 0.0
-     *     and the result after replacement = 0.0-1-1+0.0 (NOT 0.0-0.0+0.0 otherwise)
+     *     and the result after replacement = 0.0-1-1+0.0 (NOT 0.0-0.0+0.0)
      * </p>
      *
-     * @param expression The string contains a valid math expression without
-     *                   parentheses
+     * @param expression The string contains a math expression
      * @return The string contains the calculated expression
      * @throws InvalidInputExpressionException If the incoming string has an
      *                                         invalid format
      */
     @Override
     String computeArithmeticExpression(String expression) throws InvalidInputExpressionException {
-
-
+        if (expression.contains("(")) {
+            expression = openParentheses(expression);
+        }
 
         for (Operators operator : Operators.values()) {
             Pattern pattern = Pattern.compile(NUMBER_EXP + "[" + operator.getRegExpRepresentation() + "]" + NUMBER_EXP);
@@ -79,8 +83,8 @@ public class ComputerRegExp extends Computer {
             for (Matcher matcher = pattern.matcher(expression); matcher.find(); matcher = pattern.matcher(expression)) {
                 expression =
                         expression.
-                                replaceAll("(?<![-])" + Pattern.quote(matcher.group(0)),
-                                        computeBinaryExpression(matcher.group(0), operator));
+                                replaceAll("(?<![-])" + Pattern.quote(matcher.group()),
+                                        computeBinaryExpression(matcher.group(), operator));
             }
         }
 

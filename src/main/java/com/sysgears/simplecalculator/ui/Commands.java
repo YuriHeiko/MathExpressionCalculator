@@ -38,7 +38,8 @@ public enum Commands {
      */
     ATTENTION(System.lineSeparator() + "ADDITIONAL INFO: ", "",
             "You must NOT use either '+-' or '-+' combinations in your expressions." + System.lineSeparator() +
-                    "You should bear in mind that all the calculations can have some ROUND-OFF errors.");
+                    "You should bear in mind that all the calculations can have some ROUND-OFF errors." +
+                    System.lineSeparator() + "You can use E-notation in your expressions(i.e. 21.1E-2 = 0.211, 1e5 = 100000)");
 
     /**
      * A command string representation
