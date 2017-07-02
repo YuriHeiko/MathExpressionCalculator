@@ -30,7 +30,8 @@ public abstract class Computer {
 
     /**
      * Validates an incoming string. Removes all unnecessary characters.
-     * Replaces all ',' to '.'. Computes the expression.
+     * Replaces all ',' by '.' and '()' by ''. Converts numbers from
+     * E-notation to the decimal one. Computes the expression.
      *
      * @param expression The string contains a math expression. Can be empty
      * @return The string contains the calculated expression
@@ -38,17 +39,13 @@ public abstract class Computer {
      *                                         invalid format, or it is null
      */
     public String compute(String expression) throws InvalidInputExpressionException {
-
         expression = Objects.requireNonNull(expression, "Incoming string cannot be null");
-
         expression = expression.replaceAll("\\s", "").
                                 replaceAll(",", ".").
                                 replace("()", "");
-
         expression = convertFromScientificNotation(expression);
 
         if (!expression.isEmpty()) {
-
             expression = computeArithmeticExpression(expression);
 
             if (!expression.matches(NUMBER_EXP)) {
@@ -133,8 +130,8 @@ public abstract class Computer {
      * Converts all the numbers in the incoming String which are written in
      * E-notation to the same values in decimal notation.
      *
-     * @param expression the string contains a math expression
-     * @return the converted string
+     * @param expression The string contains a math expression
+     * @return The converted string
      * @throws InvalidInputExpressionException If the incoming string has an
      *                                         invalid format
      */

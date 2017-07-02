@@ -56,7 +56,7 @@ public class ComputerRegExp extends Computer {
      *         {@code Operators} class</li>
      *         <li>finds a binary expression that uses such an operator</li>
      *         <li>computes the expression</li>
-     *         <li>puts the value instead of the corresponding part
+     *         <li>puts the value instead of the corresponding parts
      *         <li>continues until all the possible parts are computed</li>
      *         </ul>
      * </p>
