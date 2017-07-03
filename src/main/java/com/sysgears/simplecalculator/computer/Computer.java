@@ -2,7 +2,6 @@ package com.sysgears.simplecalculator.computer;
 
 import com.sysgears.simplecalculator.exceptions.InvalidInputExpressionException;
 
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,7 +16,7 @@ import java.util.regex.Pattern;
  *         <li>calculates the remaining parts of the expression according
  *         to operators precedence</li>
  *         <li>all possible operators are stored in {@code Operators}</li>
- *         </ul>
+ *     </ul>
  * </p>
  * Contains common logic and interface contract for computing algorithms
  */
@@ -26,6 +25,29 @@ public abstract class Computer {
      * A pattern for a valid number
      */
     final String NUMBER_EXP = "-?\\d+([.]\\d+)?";
+
+    /**
+     * A part of a pattern for matching an expression without '-' before.
+     * It helps replace expressions that don't have a minus before, i.e.
+     * expression = 1-1-1-1+1-1    binary one = 1-1   computed one = 0.0
+     * and the result after replacement = 0.0-1-1+0.0  (NOT 0.0-0.0+0.0)
+     */
+    final String NO_MINUS_BEFORE_EXP = "(?<![-])";
+
+    /**
+     * A compiled pattern for E-notation numbers
+     */
+    private final Pattern E_NOTATION_PATTERN = Pattern.compile("\\d+([.,]?\\d+)?[eE]-?\\d+");
+
+    /**
+     * A pattern for the opening of a parentheses expression
+     */
+    String OPEN_EXP = "(";
+
+    /**
+     * A pattern for the closing of a parentheses expression
+     */
+    String CLOSE_EXP = ")";
 
     /**
      * Validates an incoming string. Removes all unnecessary characters.
@@ -37,23 +59,25 @@ public abstract class Computer {
      * @throws InvalidInputExpressionException If the incoming string has an
      *                                         invalid format, or it is null
      */
-    public String compute(String expression) throws InvalidInputExpressionException {
-        expression = Objects.requireNonNull(expression, "Incoming string cannot be null");
-        expression = expression.replaceAll("\\s", "").
-                                replaceAll(",", ".").
-                                replace("()", "");
-        expression = convertFromENotation(expression);
+    public String compute(final String expression) throws InvalidInputExpressionException {
+        if (expression == null) {
+            throw new InvalidInputExpressionException("Incoming string cannot be null");
+        }
 
-        if (!expression.isEmpty()) {
-            expression = computeArithmeticExpression(expression);
+        String result = convertFromENotation(expression.replaceAll("\\s", "").
+                                                        replaceAll(",", ".").
+                                                        replace("()", ""));
 
-            if (!expression.matches(NUMBER_EXP)) {
+        if (!result.isEmpty()) {
+            result = computeArithmeticExpression(result);
+
+            if (!result.matches(NUMBER_EXP) && !(result.equals("-∞") || result.equals("∞"))) {
                 throw new InvalidInputExpressionException(String.format("Input data is invalid cause " +
-                        "the result of calculation: '%s' is not a number.", expression));
+                        "the result of calculation: '%s' is not a number.", result));
             }
         }
 
-        return expression;
+        return result;
     }
 
     /**
@@ -67,7 +91,7 @@ public abstract class Computer {
      * @throws InvalidInputExpressionException If the incoming string has an
      *                                         invalid format
      */
-    abstract String openParentheses(String expression) throws InvalidInputExpressionException;
+    abstract String openParentheses(final String expression) throws InvalidInputExpressionException;
 
     /**
      * Computes the received expression according to the {@code Operators}
@@ -78,7 +102,7 @@ public abstract class Computer {
      * @throws InvalidInputExpressionException If the incoming string has an
      *                                         invalid format
      */
-    abstract String computeArithmeticExpression(String expression) throws InvalidInputExpressionException;
+    abstract String computeArithmeticExpression(final String expression) throws InvalidInputExpressionException;
 
     /**
      * Computes the binary expression.
@@ -88,21 +112,22 @@ public abstract class Computer {
      * @throws InvalidInputExpressionException If the incoming string has an
      *                                         invalid format
      */
-    String computeBinaryExpression(String expression, final Operators operator) throws InvalidInputExpressionException {
-        try {
-            String leftOperand = expression.substring(0, expression.lastIndexOf(operator.getRepresentation()));
-            String rightOperand = expression.substring(expression.lastIndexOf((operator.getRepresentation())) + 1);
+    String computeBinaryExpression(final String expression, final Operators operator) throws InvalidInputExpressionException {
+        String result = expression;
 
-            expression =
-                    Operators.convertFromENotation(
+        try {
+            String leftOperand = result.substring(0, result.lastIndexOf(operator.getRepresentation()));
+            String rightOperand = result.substring(result.lastIndexOf((operator.getRepresentation())) + 1);
+
+            result = Operators.convertFromENotation(
                             operator.calculate(Double.parseDouble(leftOperand), Double.parseDouble(rightOperand)));
 
         } catch (NumberFormatException | StringIndexOutOfBoundsException | ArithmeticException e) {
             throw new InvalidInputExpressionException(String.format("Input data is invalid because of " +
-                    "this part of expression: '%s'", expression));
+                    "this part of expression: '%s'", result));
         }
 
-        return expression;
+        return result;
     }
 
     /**
@@ -135,21 +160,22 @@ public abstract class Computer {
      * @throws InvalidInputExpressionException If the incoming string has an
      *                                         invalid format
      */
-    String convertFromENotation(String expression) throws InvalidInputExpressionException {
-        Pattern pattern = Pattern.compile("\\d+([.,]?\\d+)?[eE]-?\\d+");
+    String convertFromENotation(final String expression) throws InvalidInputExpressionException {
+        String result = expression;
+
         try {
-            for (Matcher matcher = pattern.matcher(expression); matcher.find(); matcher = pattern.matcher(expression)) {
-                expression =
-                        expression.
-                                replace(matcher.group(),
+            for (Matcher matcher = E_NOTATION_PATTERN.matcher(result); matcher.find();
+                 matcher = E_NOTATION_PATTERN.matcher(result)) {
+
+                result = result.replace(matcher.group(),
                                         Operators.convertFromENotation(Double.parseDouble(matcher.group())));
             }
 
         } catch (NumberFormatException e) {
-            throw new InvalidInputExpressionException("Input data is invalid. Some numbers cannot be converted from " +
-                    "E-notation");
+            throw new InvalidInputExpressionException(
+                    "Input data is invalid. Some numbers cannot be converted from E-notation");
         }
 
-        return expression;
+        return result;
     }
 }

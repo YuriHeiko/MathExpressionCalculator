@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 /**
  * Calculates a received math expression according to the {@link Operators}
- * precedence. The ideas lie behind the algorithm are next:
+ * precedence. The ideas that lie behind the algorithm are next:
  * <p>
  *     <ul>
  *         <li>recursively opens all the parentheses by calculating the
@@ -14,30 +14,31 @@ import java.util.regex.Pattern;
  *         <li>calculates the remaining parts of the expression according
  *         to operators precedence</li>
  *         <li>all possible operators are stored in {@code Operators}</li>
- *         </ul>
+ *     </ul>
  * </p>
  */
 public class ComputerBruteForce extends Computer {
     /**
-     * Finds all parts of the expression which are enclosed in parentheses.
-     * Computes such parts and puts the value instead of the corresponding
-     * enclosed part. Removes parentheses respectively.
+     * Finds recursively all parts of the expression which are enclosed in
+     * parentheses. Computes such parts and puts the value instead of the
+     * corresponding enclosed part. Removes parentheses respectively.
      *
      * @param expression The string contains a math expression
      * @return The string contains the expression with open parentheses
      * @throws InvalidInputExpressionException If the incoming string has an
      *                                         invalid format
      */
-    String openParentheses(String expression) throws InvalidInputExpressionException {
-        while (expression.contains("(")) {
-            String parenthesesExpression = getParenthesesExpression(expression);
-            expression =
-                    normalizeExpression(
-                            expression.replace("(" + parenthesesExpression + ")",
-                                    computeArithmeticExpression(parenthesesExpression)));
+    String openParentheses(final String expression) throws InvalidInputExpressionException {
+        String result = expression;
+
+        while (result.contains(OPEN_EXP)) {
+            String parenthesesExpression = getParenthesesExpression(result);
+
+            result = normalizeExpression(result.replace(OPEN_EXP + parenthesesExpression + CLOSE_EXP,
+                                                        computeArithmeticExpression(parenthesesExpression)));
         }
 
-        return expression;
+        return result;
     }
 
     /**
@@ -48,15 +49,15 @@ public class ComputerBruteForce extends Computer {
      * @return The string contains the enclosed expression that can be empty
      */
     String getParenthesesExpression(final String expression) {
-        int startIndex = expression.indexOf('(') + 1;
+        int startIndex = expression.indexOf(OPEN_EXP) + 1;
         int endIndex = startIndex;
 
         try {
             for (int counter = 1; counter > 0; endIndex++) {
-                if (expression.charAt(endIndex) == ')') {
+                if (expression.substring(endIndex, endIndex + 1).equals(CLOSE_EXP)) {
                     counter--;
 
-                } else if (expression.charAt(endIndex) == '(') {
+                } else if (expression.substring(endIndex, endIndex + 1).equals(OPEN_EXP)) {
                     counter++;
                 }
             }
@@ -70,8 +71,8 @@ public class ComputerBruteForce extends Computer {
     }
 
     /**
-     * Computes the received expression according to the {@code Operators}
-     * precedence. The ideas lie behind the algorithm are next:
+     * Computes an expression according to the {@code Operators} precedence.
+     * The ideas that lie behind the algorithm are next:
      * <p>
      *     <ul>
      *         <li>if the expression contains parentheses calls {@code
@@ -82,12 +83,7 @@ public class ComputerBruteForce extends Computer {
      *         <li>computes the expression</li>
      *         <li>puts the value instead of the corresponding parts
      *         <li>continues until all the possible parts are computed</li>
-     *         </ul>
-     * </p>
-     * <p>
-     *     "(?<![-])" helps replace expressions that don't have a minus before, i.e.
-     *     expression = 1-1-1-1+1-1       binary one = 1-1      computed one = 0.0
-     *     and the result after replacement = 0.0-1-1+0.0 (NOT 0.0-0.0+0.0)
+     *     </ul>
      * </p>
      *
      * @param expression The string contains a math expression
@@ -95,22 +91,23 @@ public class ComputerBruteForce extends Computer {
      * @throws InvalidInputExpressionException If the incoming string has an
      *                                         invalid format
      */
-    String computeArithmeticExpression(String expression) throws InvalidInputExpressionException {
-        if (expression.contains("(")) {
-            expression = openParentheses(expression);
+    String computeArithmeticExpression(final String expression) throws InvalidInputExpressionException {
+        String result = expression;
+
+        if (result.contains(OPEN_EXP)) {
+            result = openParentheses(result);
         }
         
         for (Operators operator : Operators.values()) {
-            while (containsOperator(expression, operator)) {
-                String binaryExpression = getBinaryExpression(expression, operator);
-                expression =
-                        normalizeExpression(
-                                expression.replaceAll("(?<![-])" + Pattern.quote(binaryExpression),
-                                        computeBinaryExpression(binaryExpression, operator)));
+            while (containsOperator(result, operator)) {
+                String binaryExpression = getBinaryExpression(result, operator);
+
+                result = normalizeExpression(result.replaceAll(NO_MINUS_BEFORE_EXP + Pattern.quote(binaryExpression),
+                                                                computeBinaryExpression(binaryExpression, operator)));
             }
         }
 
-        return expression;
+        return result;
     }
 
     /**
@@ -121,7 +118,7 @@ public class ComputerBruteForce extends Computer {
      *
      * @param expression The string contains a math expression
      * @param operator   The required operator
-     * @return true if such the operator is found
+     * @return true If the operator is found
      */
     boolean containsOperator(final String expression, final Operators operator) {
         return expression.lastIndexOf(operator.getRepresentation()) > 0;
@@ -159,7 +156,6 @@ public class ComputerBruteForce extends Computer {
 
             rightBound++;
         }
-
 
         return expression.substring(leftBound, rightBound);
     }

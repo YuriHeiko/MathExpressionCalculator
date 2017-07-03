@@ -79,6 +79,15 @@ public class ResultPair {
     }
 
     /**
+     * Returns the time of event creation
+     *
+     * @return The time stamp
+     */
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
+    /**
      * Checks whether the received object is equal to this or not.
      * Takes into account only the value of the key
      *
@@ -112,8 +121,6 @@ public class ResultPair {
      */
     @Override
     public String toString() {
-        return "Expression: '" + key + '\'' +
-                ", Result: " + value +
-                ", Time: " + sdf.format(timeStamp);
+        return '[' + sdf.format(timeStamp) + "]\t" + key + (value.isEmpty()?"" : " = ") + value;
     }
 }

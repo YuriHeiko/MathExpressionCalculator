@@ -7,7 +7,6 @@ import com.sysgears.simplecalculator.history.HistoryHolder;
 import com.sysgears.simplecalculator.ui.Commands;
 import com.sysgears.simplecalculator.ui.UIController;
 
-import java.io.IOException;
 import java.util.Objects;
 
 import static com.sysgears.simplecalculator.ui.Commands.*;
@@ -57,7 +56,7 @@ public final class Calculator {
      */
     public void run() {
         try {
-            controller.printLine("This application can solve simple math expressions according to their math precedence");
+            controller.printLine("This application can solve simple math expressions according to the math precedence");
 
             while (true) {
                 String result = "";
@@ -82,7 +81,7 @@ public final class Calculator {
                     controller.printLine(OPERATORS.HEADER, Operators.getList());
 
                 } else {
-                    result = CalculateExpression(line);
+                    result = calculateExpression(line);
                     controller.printLine("", result);
                 }
 
@@ -104,7 +103,7 @@ public final class Calculator {
      * @param expression The math expression string
      * @return The string with the computed expression or an error description
      */
-    String CalculateExpression(final String expression) {
+    String calculateExpression(final String expression) {
         String result = history.getResult(expression);
 
         if (result == null) {
@@ -112,7 +111,7 @@ public final class Calculator {
                 result = computer.compute(expression);
 
             } catch (InvalidInputExpressionException | NullPointerException e) {
-                result = e.getMessage() + System.lineSeparator() + "\tPlease read the instructions carefully.";
+                result = e.getMessage() + " Please read the instructions carefully.";
             }
         }
 

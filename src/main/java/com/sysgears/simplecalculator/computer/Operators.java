@@ -95,45 +95,6 @@ public enum Operators {
     }
 
     /**
-     * Builds a RegExp string contains all the operators
-     *
-     * @return The RegExp string contains all the operators
-     */
-    static String getRegExp() {
-        return "[" + Stream.of(values()).map(Operators::getRegExpRepresentation).
-                collect(Collectors.joining()) + "]";
-    }
-
-    /**
-     * This function convert a value to +0.0, if it is equal
-     * to -0.0 so as to obtain a predictable behaviour of compare functions
-     *
-     * @param value a value to convert
-     * @return the same or converted value
-     */
-    static double convertNegativeZero(double value) {
-        if (value == 0.0) {
-            value = 0.0;  // convert -0.0 to +0.0
-        }
-
-        return value;
-    }
-
-    /**
-     * This function convert value to String frome E-notation to normal
-     * one, i.e. Input: 10E-5   Output: 0.00001
-     *
-     * @param value the value to convert
-     * @return String contains the converted value in decimal notation
-     */
-    static String convertFromENotation(double value) {
-        DecimalFormat df = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
-        df.setMaximumFractionDigits(340); //340 = DecimalFormat.DOUBLE_FRACTION_DIGITS
-
-        return df.format(value);
-    }
-
-    /**
      * Returns a string representation of the operator
      *
      * @return The string representation of the operator
@@ -149,6 +110,45 @@ public enum Operators {
      */
     public String getRegExpRepresentation() {
         return Pattern.quote(representation);
+    }
+
+    /**
+     * Builds a RegExp string contains all the operators
+     *
+     * @return The RegExp string contains all the operators
+     */
+    static String getRegExp() {
+        return "[" + Stream.of(values()).map(Operators::getRegExpRepresentation).
+                collect(Collectors.joining()) + "]";
+    }
+
+    /**
+     * This function convert a value to +0.0, if it is equal to -0.0
+     * so as to obtain a predictable behaviour of compare functions
+     *
+     * @param value a value to convert
+     * @return the same or converted value
+     */
+    static double convertNegativeZero(double value) {
+        if (value == 0.0) {
+            value = 0.0;  // convert -0.0 to +0.0
+        }
+
+        return value;
+    }
+
+    /**
+     * This function convert value to String from E-notation to the regular
+     * one, i.e. Input: 10E-5   Output: 0.00001
+     *
+     * @param value the value to convert
+     * @return String contains the converted value in decimal notation
+     */
+    public static String convertFromENotation(double value) {
+        DecimalFormat df = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+        df.setMaximumFractionDigits(340); //340 = DecimalFormat.DOUBLE_FRACTION_DIGITS
+
+        return df.format(value);
     }
 
     /**

@@ -7,6 +7,13 @@ import org.junit.Test;
 public abstract class ComputerTest {
     static Computer computer = new ComputerRegExp();
 
+/*
+    @Test
+    public void testComputeBinaryEmptyString() throws Exception {
+        Assert.assertEquals("", computer.computeBinaryExpression("", Operators.ADD));
+    }
+*/
+
     @Test
     public void testComputeBinaryExpressionAdd() throws Exception {
         Assert.assertEquals("4", computer.computeBinaryExpression("2+2", Operators.ADD));
@@ -52,6 +59,18 @@ public abstract class ComputerTest {
     public void testComputeBinaryExpressionDivideByZeroError() throws Exception {
         Assert.assertEquals("2.5", computer.computeBinaryExpression("4*8-5/0+3^0", Operators.DIVIDE));
     }
+
+/*
+    @Test
+    public void testOpenParenthesesEmptyString() throws Exception {
+        Assert.assertEquals("", computer.openParentheses(""));
+    }
+
+    @Test
+    public void testOpenParenthesesEmptyParentheses() throws Exception {
+        Assert.assertEquals("", computer.openParentheses("()"));
+    }
+*/
 
     @Test
     public void testOpenParenthesesOne() throws Exception {
@@ -111,6 +130,11 @@ public abstract class ComputerTest {
     }
 
     @Test
+    public void testComputeArithmeticExpressionEmptyString() throws Exception {
+        Assert.assertEquals("", computer.computeArithmeticExpression(""));
+    }
+
+    @Test
     public void testComputeArithmeticExpressionOne() throws Exception {
         Assert.assertEquals("-1", computer.computeArithmeticExpression("-1+1-1+1-1+1-1"));
     }
@@ -159,24 +183,28 @@ public abstract class ComputerTest {
                 " (2+   8) /  6 - 12,8 * 4  ^    1"));
     }
 
+    @Test(expected = InvalidInputExpressionException.class)
+    public void testComputeNull() throws Exception {
+        Assert.assertEquals("", computer.compute(null));
+    }
+
     @Test
     public void testComputeOne() throws Exception {
         Assert.assertEquals("40", computer.compute("45-10-20-45-40-(-10-100)"));
     }
 
-    @Test(expected = NullPointerException.class)
-    public void testComputeNull() throws Exception {
-        Assert.assertEquals("", computer.compute(null));
+    @Test
+    public void testConvertFromENotationEmptyString() throws Exception {
+        Assert.assertEquals("", computer.convertFromENotation(""));
     }
 
-
     @Test
-    public void testConvertFromScientificNotationOne() throws Exception {
+    public void testConvertFromENotationOne() throws Exception {
         Assert.assertEquals("0.00001", computer.convertFromENotation("1E-5"));
     }
 
     @Test
-    public void testConvertFromScientificNotationTwo() throws Exception {
+    public void testConvertFromENotationTwo() throws Exception {
         Assert.assertEquals("100000+0.211*180", computer.convertFromENotation("1E5+21.1E-2*18E1"));
     }
 

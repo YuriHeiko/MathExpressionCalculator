@@ -1,18 +1,40 @@
 package com.sysgears.simplecalculator.ui;
 
-import java.io.BufferedReader;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 /**
  * Uses a system console to get and show information.
  */
 public class ConsoleController implements UIController, Closeable {
+    
     /**
-     * The system console reader
+     * The information reader
      */
-    private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+    private final BufferedReader reader;
+
+    /**
+     * The information writer
+     */
+    private final PrintStream writer; 
+
+    /**
+     * Constructs an object 
+     * 
+     * @param inputStream The {@code InputStream} realization
+     * @param outputStream The {@code OutputStream} realization
+     */
+    public ConsoleController(InputStream inputStream, OutputStream outputStream) {
+        this.reader = new BufferedReader(new InputStreamReader(inputStream));
+        this.writer = new PrintStream(outputStream);
+    }
+
+    /**
+     * Constructs an object. Uses the default system console for
+     * input and output information.
+     */
+    public ConsoleController() {
+        this(System.in, System.out);
+    }
 
     /**
      * Reads the line from the console. Shows the prompt string.
@@ -23,7 +45,7 @@ public class ConsoleController implements UIController, Closeable {
      */
     @Override
     public String readLine(final String promptString) throws IOException {
-        System.out.println(promptString);
+        writer.println(promptString);
 
         return reader.readLine();
     }
@@ -36,8 +58,8 @@ public class ConsoleController implements UIController, Closeable {
      */
     @Override
     public void printLine(final String description, final String outputString) {
-        System.out.println(new String(new byte[75]).replaceAll(".", "-"));
-        System.out.printf("%s%s%n%n", description, outputString);
+        writer.println("--------------------------------------------------------------------------------");
+        writer.printf("%s%s%n%n", description, outputString);
     }
 
     /**
@@ -47,7 +69,7 @@ public class ConsoleController implements UIController, Closeable {
      */
     @Override
     public void printLine(final String line) {
-        System.out.println(line);
+        writer.println(line);
     }
 
     /**

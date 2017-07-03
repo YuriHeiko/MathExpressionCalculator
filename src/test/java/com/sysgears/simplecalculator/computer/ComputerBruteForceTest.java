@@ -1,11 +1,8 @@
 package com.sysgears.simplecalculator.computer;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class ComputerBruteForceTest extends ComputerTest{
     ComputerBruteForce bruteForce = new ComputerBruteForce();
@@ -31,14 +28,26 @@ public class ComputerBruteForceTest extends ComputerTest{
     }
 
     @Test
-    public void testGetParenthesesExpressionShort() {
+    public void testGetParenthesesExpressionLong2() {
+        Assert.assertEquals("-(2+(1-1)*2)", bruteForce.getParenthesesExpression("2+(-(2+(1-1)*2))"));
+    }
+
+/*
+    @Test
+    public void testGetParenthesesExpressionEmptyParentheses() {
         Assert.assertEquals("", bruteForce.getParenthesesExpression("()"));
     }
 
     @Test
-    public void testGetParenthesesExpressionLong2() {
-        Assert.assertEquals("(2+(1-1)*2)", bruteForce.getParenthesesExpression("2+((2+(1-1)*2))"));
+    public void testGetParenthesesExpressionEmptyString() {
+        Assert.assertEquals("", bruteForce.getParenthesesExpression(""));
     }
+
+    @Test
+    public void getBinaryExpressionEmptyString() throws Exception {
+        Assert.assertEquals("", bruteForce.getBinaryExpression("", Operators.ADD));
+    }
+*/
 
     @Test
     public void getBinaryExpressionADD() throws Exception {
@@ -56,12 +65,12 @@ public class ComputerBruteForceTest extends ComputerTest{
     }
 
     @Test
-    public void getBinaryExpressionMultiplty() throws Exception {
+    public void getBinaryExpressionMultiply() throws Exception {
         Assert.assertEquals("-2*4.0", bruteForce.getBinaryExpression("-2*4.0+2^2+4/8", Operators.MULTIPLY));
     }
 
     @Test
-    public void getBinaryExpressionSubstract() throws Exception {
+    public void getBinaryExpressionSubtract() throws Exception {
         Assert.assertEquals("1-0.0", bruteForce.getBinaryExpression("-2*4.0+2^2+4/8+1-0.0", Operators.SUBTRACT));
     }
 }
