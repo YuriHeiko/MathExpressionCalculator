@@ -1,11 +1,12 @@
 package com.sysgears.simplecalculator.ui;
 
+import java.io.Closeable;
 import java.io.IOException;
 
 /**
  * Common UI controller interface
  */
-public interface UIController {
+public interface UIController extends Closeable {
 
     /**
      * Reads the line

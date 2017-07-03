@@ -5,7 +5,7 @@ import com.sysgears.simplecalculator.exceptions.InvalidInputExpressionException;
 import java.util.regex.Pattern;
 
 /**
- * Calculates a received math expression according to the {@code Operators}
+ * Calculates a received math expression according to the {@link Operators}
  * precedence. The ideas lie behind the algorithm are next:
  * <p>
  *     <ul>
@@ -13,14 +13,14 @@ import java.util.regex.Pattern;
  *         enclosed expressions</li>
  *         <li>calculates the remaining parts of the expression according
  *         to operators precedence</li>
- *         <li>all possible operators are stored in {@link Operators}</li>
+ *         <li>all possible operators are stored in {@code Operators}</li>
  *         </ul>
  * </p>
  */
 public class ComputerBruteForce extends Computer {
     /**
      * Finds all parts of the expression which are enclosed in parentheses.
-     * Computes such parts and put the value instead of the corresponding
+     * Computes such parts and puts the value instead of the corresponding
      * enclosed part. Removes parentheses respectively.
      *
      * @param expression The string contains a math expression
@@ -70,8 +70,8 @@ public class ComputerBruteForce extends Computer {
     }
 
     /**
-     * Computes the received expression according to the math rules. The ideas
-     * lie behind the algorithm are next:
+     * Computes the received expression according to the {@code Operators}
+     * precedence. The ideas lie behind the algorithm are next:
      * <p>
      *     <ul>
      *         <li>if the expression contains parentheses calls {@code
@@ -147,9 +147,9 @@ public class ComputerBruteForce extends Computer {
             leftBound--;
         }
 
-        // step back if it is not both zero index and the minus sign index,
-        // i.e. operator = '*', '3+2*10' -> step back -> '2*10'
-        //                      '3-2*10' ->     ok    -> '-2*10'
+        // step back if it is not zero index and the minus sign index, i.e.
+        // operator = '*', '3+2*10' -> step back -> '2*10'
+        //                 '3-2*10' ->     ok    -> '-2*10'
         if (leftBound > 0 && expression.charAt(leftBound) != '-') {
             leftBound++;
         }

@@ -106,6 +106,11 @@ public abstract class ComputerTest {
     }
 
     @Test
+    public void testOpenParenthesesEleven() throws Exception {
+        Assert.assertEquals("45-10-20-45-40+110", computer.openParentheses("45-10-20-45-40-(-10-100)"));
+    }
+
+    @Test
     public void testComputeArithmeticExpressionOne() throws Exception {
         Assert.assertEquals("-1", computer.computeArithmeticExpression("-1+1-1+1-1+1-1"));
     }
@@ -134,6 +139,11 @@ public abstract class ComputerTest {
     }
 
     @Test
+    public void testComputeArithmeticExpressionSix() throws Exception {
+        Assert.assertEquals("40", computer.computeArithmeticExpression("45-10-20-45-40+110"));
+    }
+
+    @Test
     public void testComputeEmptyString() throws Exception {
         Assert.assertEquals("", computer.compute(""));
     }
@@ -149,6 +159,11 @@ public abstract class ComputerTest {
                 " (2+   8) /  6 - 12,8 * 4  ^    1"));
     }
 
+    @Test
+    public void testComputeOne() throws Exception {
+        Assert.assertEquals("40", computer.compute("45-10-20-45-40-(-10-100)"));
+    }
+
     @Test(expected = NullPointerException.class)
     public void testComputeNull() throws Exception {
         Assert.assertEquals("", computer.compute(null));
@@ -157,12 +172,12 @@ public abstract class ComputerTest {
 
     @Test
     public void testConvertFromScientificNotationOne() throws Exception {
-        Assert.assertEquals("0.00001", computer.convertFromScientificNotation("1E-5"));
+        Assert.assertEquals("0.00001", computer.convertFromENotation("1E-5"));
     }
 
     @Test
     public void testConvertFromScientificNotationTwo() throws Exception {
-        Assert.assertEquals("100000+0.211*180", computer.convertFromScientificNotation("1E5+21.1E-2*18E1"));
+        Assert.assertEquals("100000+0.211*180", computer.convertFromENotation("1E5+21.1E-2*18E1"));
     }
 
 }

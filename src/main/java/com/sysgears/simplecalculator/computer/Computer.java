@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Calculates a received math expression according to the {@code Operators}
+ * Calculates a received math expression according to the {@link Operators}
  * precedence. It is based on regular expressions. The ideas lie behind the
  * algorithm are next:
  * <p>
@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
  *         enclosed expressions</li>
  *         <li>calculates the remaining parts of the expression according
  *         to operators precedence</li>
- *         <li>all possible operators are stored in {@link Operators}</li>
+ *         <li>all possible operators are stored in {@code Operators}</li>
  *         </ul>
  * </p>
  * Contains common logic and interface contract for computing algorithms
@@ -26,7 +26,6 @@ public abstract class Computer {
      * A pattern for a valid number
      */
     final String NUMBER_EXP = "-?\\d+([.]\\d+)?";
-
 
     /**
      * Validates an incoming string. Removes all unnecessary characters.
@@ -43,7 +42,7 @@ public abstract class Computer {
         expression = expression.replaceAll("\\s", "").
                                 replaceAll(",", ".").
                                 replace("()", "");
-        expression = convertFromScientificNotation(expression);
+        expression = convertFromENotation(expression);
 
         if (!expression.isEmpty()) {
             expression = computeArithmeticExpression(expression);
@@ -71,7 +70,8 @@ public abstract class Computer {
     abstract String openParentheses(String expression) throws InvalidInputExpressionException;
 
     /**
-     * Computes the received expression according to the math rules.
+     * Computes the received expression according to the {@code Operators}
+     * precedence.
      *
      * @param expression The string contains the math expression
      * @return The string contains the calculated expression
@@ -94,7 +94,7 @@ public abstract class Computer {
             String rightOperand = expression.substring(expression.lastIndexOf((operator.getRepresentation())) + 1);
 
             expression =
-                    Operators.convertFromScientificNotation(
+                    Operators.convertFromENotation(
                             operator.calculate(Double.parseDouble(leftOperand), Double.parseDouble(rightOperand)));
 
         } catch (NumberFormatException | StringIndexOutOfBoundsException | ArithmeticException e) {
@@ -109,10 +109,10 @@ public abstract class Computer {
      * Normalizes an expression according to common math rules
      * <p>
      *     <ul>
-     *         <li> if there is '--' after '(', it is altered by ""</li>
-     *         <li>remaining "--" is altered by "+"</li>
-     *         <li>if the string starts with '+', it is altered by ""</li>
-     *         <li>finally, all the "+-" are altered by "-"</li>
+     *         <li> if there is '--' after '(', it is altered by ''</li>
+     *         <li>remaining '--' is altered by '+'</li>
+     *         <li>if the string starts with '+', it is altered by ''</li>
+     *         <li>finally, all the '+-' are altered by '-'</li>
      *     </ul>
      * </p>
      *
@@ -127,7 +127,7 @@ public abstract class Computer {
     }
 
     /**
-     * Converts all the numbers in the incoming String which are written in
+     * Converts all the numbers in an incoming String which are written in
      * E-notation to the same values in decimal notation.
      *
      * @param expression The string contains a math expression
@@ -135,14 +135,14 @@ public abstract class Computer {
      * @throws InvalidInputExpressionException If the incoming string has an
      *                                         invalid format
      */
-    String convertFromScientificNotation(String expression) throws InvalidInputExpressionException {
+    String convertFromENotation(String expression) throws InvalidInputExpressionException {
         Pattern pattern = Pattern.compile("\\d+([.,]?\\d+)?[eE]-?\\d+");
         try {
             for (Matcher matcher = pattern.matcher(expression); matcher.find(); matcher = pattern.matcher(expression)) {
                 expression =
                         expression.
                                 replace(matcher.group(),
-                                        Operators.convertFromScientificNotation(Double.parseDouble(matcher.group())));
+                                        Operators.convertFromENotation(Double.parseDouble(matcher.group())));
             }
 
         } catch (NumberFormatException e) {

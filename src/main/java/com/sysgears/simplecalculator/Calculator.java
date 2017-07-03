@@ -13,8 +13,8 @@ import java.util.Objects;
 import static com.sysgears.simplecalculator.ui.Commands.*;
 
 /**
- * Uses {@code UIController} to lead dialog with a user, {@code Computer}
- * to calculate user's math expression and {@code HistoryHolder} to keep
+ * Uses {@link UIController} to lead dialog with a user, {@link Computer}
+ * to calculate user's math expression and {@link HistoryHolder} to keep
  * and show history.
  * <p>
  *     If a new expression has been already computed it will the result
@@ -24,7 +24,7 @@ import static com.sysgears.simplecalculator.ui.Commands.*;
  */
 public final class Calculator {
     /**
-     * A UI controller object
+     * A UI controller
      */
     private final UIController controller;
 
@@ -91,13 +91,6 @@ public final class Calculator {
 
         } catch (Exception e) {
             e.printStackTrace();
-
-        } finally {
-            try {
-                controller.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 

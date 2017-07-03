@@ -10,8 +10,8 @@ import java.util.stream.Stream;
 /**
  * Contains allowed math operators and their logic. The precedence of the
  * operators is their order in this class. Minus must be before plus
- * according to algorithms' logic. All the computes heavily rely on
- * {@code double} type. However, in Java such calculations lead to round-off
+ * according to algorithms' logic. All the computes heavily rely on {@code
+ * Double} type. However, in Java such calculations lead to round-off
  * errors, and this type is constrained by number size. So, it can be
  * changed to {@code BigDecimal} so as to solve problems above.
  * <p>
@@ -61,7 +61,7 @@ public enum Operators {
         }
     },
     /**
-     * A add operator
+     * An add operator
      */
     ADD("+") {
         @Override
@@ -74,6 +74,16 @@ public enum Operators {
      * The string representation of the operator
      */
     private String representation;
+
+    /**
+     * Contains the calculating logic of the operator
+     *
+     * @param x The left operand
+     * @param y The right operand
+     * @return The computed value
+     * @throws ArithmeticException If an arithmetic error is happen
+     */
+    public abstract Double calculate(final double x, final double y) throws ArithmeticException;
 
     /**
      * Constructs an object
@@ -116,22 +126,12 @@ public enum Operators {
      * @param value the value to convert
      * @return String contains the converted value in decimal notation
      */
-    static String convertFromScientificNotation(double value) {
+    static String convertFromENotation(double value) {
         DecimalFormat df = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
         df.setMaximumFractionDigits(340); //340 = DecimalFormat.DOUBLE_FRACTION_DIGITS
 
         return df.format(value);
     }
-
-    /**
-     * Contains the math logic of the operator
-     *
-     * @param x The left operand
-     * @param y The right operand
-     * @return The computed value
-     * @throws ArithmeticException If an arithmetic error is happen
-     */
-    public abstract Double calculate(final double x, final double y) throws ArithmeticException;
 
     /**
      * Returns a string representation of the operator

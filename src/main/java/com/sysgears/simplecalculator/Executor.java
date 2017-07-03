@@ -16,15 +16,16 @@ public class Executor {
      * The starting point of a test UI interface
      *
      * @param args the string array with command line parameters
-     * @throws IOException If an I/O error occurs
      */
-    public static void main(String[] args) throws IOException {
-        UIController controller = new ConsoleController();
-        HistoryHolder history = new HistoryHolder();
-        Computer computer = new ComputerRegExp();
+    public static void main(String[] args) {
+        try (UIController controller = new ConsoleController()) {
+            HistoryHolder history = new HistoryHolder();
+            Computer computer = new ComputerRegExp();
 
-        new Calculator(controller, history, computer).run();
+            new Calculator(controller, history, computer).run();
 
-        controller.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

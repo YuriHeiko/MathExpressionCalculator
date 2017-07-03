@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Calculates a received math expression according to the {@code Operators}
+ * Calculates a received math expression according to the {@link Operators}
  * precedence. It is based on regular expressions. The ideas lie behind the
  * algorithm are next:
  * <p>
@@ -15,14 +15,14 @@ import java.util.regex.Pattern;
  *         enclosed expressions</li>
  *         <li>calculates the remaining parts of the expression according
  *         to operators precedence</li>
- *         <li>all possible operators are stored in {@link Operators}</li>
+ *         <li>all possible operators are stored in {@code Operators}</li>
  *         </ul>
  * </p>
  */
 public class ComputerRegExp extends Computer {
     /**
      * Finds all parts of the expression which are enclosed in parentheses.
-     * Computes such parts and put the value instead of the corresponding
+     * Computes such parts and puts the value instead of the corresponding
      * enclosed part. Removes parentheses respectively.
      *
      * @param expression The string contains a math expression
@@ -46,8 +46,8 @@ public class ComputerRegExp extends Computer {
     }
 
     /**
-     * Computes the received expression according to the math rules. The ideas
-     * lie behind the algorithm are next:
+     * Computes the received expression according to the {@code Operators} precedence.
+     * The ideas lie behind the algorithm are next:
      * <p>
      *     <ul>
      *         <li>if the expression contains parentheses, calls {@code

@@ -20,12 +20,13 @@ public enum Commands {
     /**
      * A command to show the list of history events
      */
-    HISTORY("history", "History:", "          - to see the calculation history"),
+    HISTORY("history", "History:" + System.lineSeparator(), "          - to see the calculation history"),
 
     /**
      * A command to show the list of history events without duplicates
      */
-    UNIQUE_HISTORY("history unique", "Unique history:", "   - to see the calculation history without duplicates"),
+    UNIQUE_HISTORY("history unique", "Unique history:" + System.lineSeparator(),
+            "   - to see the calculation history without duplicates"),
 
     /**
      * A command to show the list of allowed math operators

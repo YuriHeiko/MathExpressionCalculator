@@ -1,13 +1,14 @@
 package com.sysgears.simplecalculator.ui;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
  * Uses a system console to get and show information.
  */
-public class ConsoleController implements UIController {
+public class ConsoleController implements UIController, Closeable {
     /**
      * The system console reader
      */
