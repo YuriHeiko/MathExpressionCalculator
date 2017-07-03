@@ -13,7 +13,7 @@ import java.io.IOException;
  */
 public class Executor {
     /**
-     * The starting point of a test UI interface
+     * The starting point of the UI interface demo
      *
      * @param args the string array with command line parameters
      */

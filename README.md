@@ -5,7 +5,7 @@ You have to create a Calculator app. It should solve simple math expressions wit
 
     (2 + 3) * 4
 
-All the operations should calculate according to their math precedence.    
+All the operations should be calculated according to their math precedence.    
 
 _Optional:_  
 <ol>
@@ -17,11 +17,11 @@ _Optional:_
 </ol>
 
 **The description of app work**  
-A user runs the app and type an expression to calculate. The application returns the evaluated 
+A user runs the app and types an expression to calculate. The application returns the evaluated 
 result and prompt to either do another calculation or exit. 
 
 **Incoming parameters**  
-A string that represents a simple math expression that can be empty ot contain an ivalid expression.
+A string that represents a simple math expression that can be empty ot contain an invalid expression.
 
 **Result**  
-A result of an evaluated expression or invalid format message otherwise.
+The result of the evaluated expression or error message otherwise.
