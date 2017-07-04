@@ -4,6 +4,8 @@ import com.sysgears.simplecalculator.exceptions.InvalidInputExpressionException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Calculates a received math expression according to the {@link Operators}
@@ -22,9 +24,24 @@ import java.util.regex.Pattern;
  */
 public abstract class Computer {
     /**
+     * A pattern for the opening of a parentheses expression
+     */
+    final String OPEN_EXP = "(";
+
+    /**
+     * A pattern for the closing of a parentheses expression
+     */
+    final String CLOSE_EXP = ")";
+
+    /**
      * A compiled pattern for E-notation numbers
      */
     private final Pattern E_NOTATION_PATTERN = Pattern.compile("\\d+([.,]?\\d+)?[eE]-?\\d+");
+
+    /**
+     * A compiled pattern for  functions
+     */
+    private final Pattern FUNCTIONS_PATTERN = Pattern.compile(Operators.getFunctionsRegExp(OPEN_EXP) + "\\" + OPEN_EXP);
 
     /**
      * A pattern for a '--' only after parentheses
@@ -45,16 +62,6 @@ public abstract class Computer {
     final String NO_MINUS_BEFORE_EXP = "(?<![-])";
 
     /**
-     * A pattern for the opening of a parentheses expression
-     */
-    final String OPEN_EXP = "(";
-
-    /**
-     * A pattern for the closing of a parentheses expression
-     */
-    final String CLOSE_EXP = ")";
-
-    /**
      * Validates an incoming string. Removes all unnecessary characters.
      * Replaces all ',' by '.' and '()' by ''. Converts numbers from
      * E-notation to the decimal one. Computes the expression.
@@ -70,11 +77,11 @@ public abstract class Computer {
         }
 
         String result = convertFromENotation(expression.replaceAll("\\s", "").
-                                                        replaceAll(",", ".").
+//                                                        replaceAll(",", ".").
                                                         replace("()", ""));
 
         if (!result.isEmpty()) {
-            result = computeArithmeticExpression(result);
+            result = computeArithmeticExpression(computeFunctions(result));
 
             if (!result.matches(NUMBER_EXP) && !(result.equals("-∞") || result.equals("∞"))) {
                 throw new InvalidInputExpressionException(String.format("Input data is invalid cause " +
@@ -83,6 +90,73 @@ public abstract class Computer {
         }
 
         return result;
+    }
+
+    /**
+     *
+     * @param expression
+     * @return
+     */
+    String computeFunctions(final String expression) {
+        String result = expression;
+
+        for (Matcher matcher = FUNCTIONS_PATTERN.matcher(result); matcher.find();
+             matcher = FUNCTIONS_PATTERN.matcher(result)) {
+            String enclosedExpression = getEnclosedExpression(result, matcher.group());
+
+            Double[] functionArguments = Stream.of(enclosedExpression.split(",")).
+                                                map(this::computeArithmeticExpression).
+                                                map(Double::parseDouble).
+                                                collect(Collectors.toList()).
+                                                toArray(new Double[0]);
+
+            String functionResult = Operators.
+                                        valueOf(matcher.group(1).toUpperCase()).calculate(functionArguments).toString();
+
+            result = normalizeExpression(result.replaceAll(Pattern.quote(matcher.group() + enclosedExpression + CLOSE_EXP),
+                                                                            convertFromENotation(functionResult)));
+        }
+
+        return result;
+    }
+
+    /**
+     * Finds and returns a part of the expression which is enclosed in
+     * parentheses. Searching starts from the left side of the expression.
+     *
+     * @param expression The string contains a math expression
+     * @return The string contains the enclosed expression that can be empty
+     */
+    String getEnclosedExpression(final String expression, final String openExp) {
+        int startIndex = expression.indexOf(openExp) + openExp.length();
+        int endIndex = startIndex;
+
+        try {
+            for (int counter = 1; counter > 0; endIndex++) {
+                if (expression.substring(endIndex, endIndex + 1).equals(CLOSE_EXP)) {
+                    counter--;
+
+                } else if (expression.substring(endIndex, endIndex + 1).equals(OPEN_EXP)) {
+                    counter++;
+                }
+            }
+
+        } catch (StringIndexOutOfBoundsException e) {
+            throw new InvalidInputExpressionException(String.format("Input data is invalid because of " +
+                    "this part of expression: '%s'", expression));
+        }
+
+        return expression.substring(startIndex, endIndex - 1);
+    }
+
+    /**
+     * Checks whether a String contains any function
+     *
+     * @param expression The expression string
+     * @return true if there is a function
+     */
+    boolean hasFunction(final String expression) {
+        return FUNCTIONS_PATTERN.matcher(expression).find();
     }
 
     /**
@@ -96,7 +170,7 @@ public abstract class Computer {
      * @throws InvalidInputExpressionException If the incoming string has an
      *                                         invalid format
      */
-    abstract String openParentheses(final String expression) throws InvalidInputExpressionException;
+    abstract String openEnclosedExpression(final String expression) throws InvalidInputExpressionException;
 
     /**
      * Computes the received expression according to the {@code Operators}
@@ -108,6 +182,17 @@ public abstract class Computer {
      *                                         invalid format
      */
     abstract String computeArithmeticExpression(final String expression) throws InvalidInputExpressionException;
+
+    /**
+     * Checks whether a String contains any expression enclosed within
+     * {@code OPEN_EXP} and {@code CLOSE_EXP}
+     *
+     * @param expression The expression string
+     * @return true if there is an enclosed expression
+     */
+    boolean hasEnclosedExpression(final String expression) {
+        return expression.contains(OPEN_EXP);
+    }
 
     /**
      * Computes the binary expression.

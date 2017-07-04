@@ -21,10 +21,11 @@ import java.util.regex.Pattern;
  */
 public class ComputerRegExp extends Computer {
     /**
-     *
+     * A pattern for an expression enclosed within {@code OPEN_EXP} and
+     * {@code CLOSE_EXP}
      */
-    final Pattern PARENTHESES_PATTERN = Pattern.compile(
-            "\\((" + NUMBER_EXP + "|(" + NUMBER_EXP + Operators.getRegExp() + ")+" + NUMBER_EXP + ")\\)");
+    final Pattern ENCLOSED_EXP_PATTERN = Pattern.compile("\\" + OPEN_EXP + "(" + NUMBER_EXP + "|(" + NUMBER_EXP +
+                                            Operators.getOperatorsRegExp() + ")+" + NUMBER_EXP + ")" + "\\" + CLOSE_EXP);
 
     /**
      * Finds recursively all parts of the expression which are enclosed in
@@ -37,11 +38,11 @@ public class ComputerRegExp extends Computer {
      *                                         invalid format
      */
     @Override
-    String openParentheses(final String expression) throws InvalidInputExpressionException {
+    String openEnclosedExpression(final String expression) throws InvalidInputExpressionException {
         String result = expression;
 
-        for (Matcher matcher = PARENTHESES_PATTERN.matcher(result); matcher.find();
-             matcher = PARENTHESES_PATTERN.matcher(result)) {
+        for (Matcher matcher = ENCLOSED_EXP_PATTERN.matcher(result); matcher.find();
+             matcher = ENCLOSED_EXP_PATTERN.matcher(result)) {
 
             result = normalizeExpression(result.replace(matcher.group(0),
                                         computeArithmeticExpression(matcher.group(1))));
@@ -56,7 +57,7 @@ public class ComputerRegExp extends Computer {
      * <p>
      *     <ul>
      *         <li>if the expression contains parentheses, calls {@code
-     *         openParentheses()} to open them</li>
+     *         openEnclosedExpression()} to open them</li>
      *         <li>iterates by all possible operators that exist in
      *         {@code Operators} class</li>
      *         <li>finds a binary expression that uses such an operator</li>
@@ -75,11 +76,15 @@ public class ComputerRegExp extends Computer {
     String computeArithmeticExpression(final String expression) throws InvalidInputExpressionException {
         String result = expression;
 
-        if (result.contains(OPEN_EXP)) {
-            result = openParentheses(result);
+        if (hasFunction(result)) {
+            result = computeFunctions(result);
         }
 
-        for (Operators operator : Operators.values()) {
+        if (hasEnclosedExpression(expression)) {
+            result = openEnclosedExpression(result);
+        }
+
+        for (Operators operator : Operators.getOperatorsByPrecedence()) {
             Pattern pattern = Pattern.compile(NUMBER_EXP + "[" + operator.getRegExpRepresentation() + "]" + NUMBER_EXP);
 
             for (Matcher matcher = pattern.matcher(result); matcher.find(); matcher = pattern.matcher(result)) {

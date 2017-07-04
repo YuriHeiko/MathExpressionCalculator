@@ -2,10 +2,14 @@ package com.sysgears.simplecalculator.computer;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Locale;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static java.lang.Math.*;
 
 /**
  * Contains allowed math operators and their logic. The precedence of the
@@ -21,12 +25,48 @@ import java.util.stream.Stream;
  */
 public enum Operators {
     /**
+     * A square root function
+     */
+    SQRT("sqrt", 1020, true){
+        @Override
+        public Double calculate(final Double... x) throws ArithmeticException {
+            return convertNegativeZero(sqrt(x[0]));
+        }
+    },
+    /**
+     * A cosines function
+     */
+    SIN("sin", 1015, true){
+        @Override
+        public Double calculate(final Double... x) throws ArithmeticException {
+            return convertNegativeZero(sin(x[0]));
+        }
+    },
+    /**
+     * A cosines function
+     */
+    COS("cos", 1010, true){
+        @Override
+        public Double calculate(final Double... x) throws ArithmeticException {
+            return convertNegativeZero(cos(x[0]));
+        }
+    },
+    /**
+     * A power function
+     */
+    POW("pow", 1000, true) {
+        @Override
+        public Double calculate(final Double... x) {
+            return convertNegativeZero((x[0] < 0 ? -1 : 1) * Math.pow(x[0], x[1]));
+        }
+    },
+    /**
      * A power operator
      */
     POWER("^", 50, false) {
         @Override
-        public Double calculate(final double x, final double y) {
-            return convertNegativeZero((x < 0 ? -1 : 1) * Math.pow(x, y));
+        public Double calculate(final Double... x) {
+            return convertNegativeZero((x[0] < 0 ? -1 : 1) * Math.pow(x[0], x[1]));
         }
     },
     /**
@@ -34,12 +74,12 @@ public enum Operators {
      */
     DIVIDE("/", 40, false) {
         @Override
-        public Double calculate(final double x, final double y) {
-            if (y == 0) {
+        public Double calculate(final Double... x) {
+            if (x[1] == 0) {
                 throw new ArithmeticException();
             }
 
-            return convertNegativeZero(x / y);
+            return convertNegativeZero(x[0] / x[1]);
         }
     },
     /**
@@ -47,8 +87,8 @@ public enum Operators {
      */
     MULTIPLY("*", 30, false) {
         @Override
-        public Double calculate(final double x, final double y) {
-            return convertNegativeZero(x * y);
+        public Double calculate(final Double... x) {
+            return convertNegativeZero(x[0] * x[1]);
         }
     },
     /**
@@ -56,8 +96,8 @@ public enum Operators {
      */
     SUBTRACT("-", 20, false) {
         @Override
-        public Double calculate(final double x, final double y) {
-            return convertNegativeZero(x - y);
+        public Double calculate(final Double... x) {
+            return convertNegativeZero(x[0] - x[1]);
         }
     },
     /**
@@ -65,8 +105,8 @@ public enum Operators {
      */
     ADD("+", 10, false) {
         @Override
-        public Double calculate(final double x, final double y) {
-            return convertNegativeZero(x + y);
+        public Double calculate(final Double... x) {
+            return convertNegativeZero(x[0] + x[1]);
         }
     };
 
@@ -78,22 +118,21 @@ public enum Operators {
     /**
      * The math precedence of the operator
      */
-    final private int precedence;
+    final private Integer precedence;
 
     /**
-     * The function flag
+     * Whether it is a functions or binary operator
      */
     final boolean isFunction;
 
     /**
      * Contains the calculating logic of the operator
      *
-     * @param x The left operand
-     * @param y The right operand
+     * @param x The operands
      * @return The computed value
      * @throws ArithmeticException If an arithmetic error is happen
      */
-    public abstract Double calculate(final double x, final double y) throws ArithmeticException;
+    public abstract Double calculate(final Double... x) throws ArithmeticException;
 
     /**
      * Constructs an object
@@ -127,13 +166,29 @@ public enum Operators {
     }
 
     /**
-     * Builds a RegExp string contains all the operators
+     * Builds a RegExp string contains all the functions
+     *
+     * @return The RegExp string contains all the functions
+     */
+    static String getFunctionsRegExp(final String OPEN_EXP) {
+        // TODO the last '(' should be a constant
+        return getFunctionsByPrecedence().stream().
+                        filter(e -> e.isFunction).
+                        map(e -> "(" + e.getRegExpRepresentation() + ")\\" + OPEN_EXP).
+                        collect(Collectors.joining("|"));
+    }
+
+    /**
+     * Builds a RegExp string contains all the binary operators
      *
      * @return The RegExp string contains all the operators
      */
-    static String getRegExp() {
-        return "[" + Stream.of(values()).map(Operators::getRegExpRepresentation).
-                collect(Collectors.joining()) + "]";
+    static String getOperatorsRegExp() {
+        return "[" +
+                getOperatorsByPrecedence().stream().
+                        filter(e -> !e.isFunction).
+                        map(Operators::getRegExpRepresentation).
+                        collect(Collectors.joining()) + "]";
     }
 
     /**
@@ -174,5 +229,33 @@ public enum Operators {
         return Stream.of(values()).
                 map(e -> "\t" + e + "(" + e.getRepresentation() + ")").
                 collect(Collectors.joining(System.lineSeparator()));
+    }
+
+    /**
+     * Returns a descending sorted by {@code precedence} collection of
+     * only functions
+     *
+     * @return The sorted collection of functions
+     */
+    public static Collection<Operators> getFunctionsByPrecedence() {
+        return Arrays.
+                stream(values()).
+                filter(e -> e.isFunction).
+                sorted((e1, e2) -> e2.precedence.compareTo(e1.precedence)).
+                collect(Collectors.toList());
+    }
+
+    /**
+     * Returns a descending sorted by {@code precedence} collection of
+     * only binary operators
+     *
+     * @return The sorted collection of operators
+     */
+    public static Collection<Operators> getOperatorsByPrecedence() {
+        return Arrays.
+                stream(values()).
+                filter(e -> !e.isFunction).
+                sorted((e1, e2) -> e2.precedence.compareTo(e1.precedence)).
+                collect(Collectors.toList());
     }
 }

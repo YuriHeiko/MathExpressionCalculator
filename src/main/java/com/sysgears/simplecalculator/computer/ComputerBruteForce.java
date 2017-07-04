@@ -29,11 +29,11 @@ public class ComputerBruteForce extends Computer {
      * @throws InvalidInputExpressionException If the incoming string has an
      *                                         invalid format
      */
-    String openParentheses(final String expression) throws InvalidInputExpressionException {
+    String openEnclosedExpression(final String expression) throws InvalidInputExpressionException {
         String result = expression;
 
-        while (result.contains(OPEN_EXP)) {
-            String parenthesesExpression = getParenthesesExpression(result);
+        while (hasEnclosedExpression(result)) {
+            String parenthesesExpression = getEnclosedExpression(result, OPEN_EXP);
 
             result = normalizeExpression(result.replace(OPEN_EXP + parenthesesExpression + CLOSE_EXP,
                                                         computeArithmeticExpression(parenthesesExpression)));
@@ -43,41 +43,12 @@ public class ComputerBruteForce extends Computer {
     }
 
     /**
-     * Finds and returns a part of the expression which is enclosed in
-     * parentheses. Searching starts from the left side of the expression.
-     *
-     * @param expression The string contains a math expression
-     * @return The string contains the enclosed expression that can be empty
-     */
-    String getParenthesesExpression(final String expression) {
-        int startIndex = expression.indexOf(OPEN_EXP) + 1;
-        int endIndex = startIndex;
-
-        try {
-            for (int counter = 1; counter > 0; endIndex++) {
-                if (expression.substring(endIndex, endIndex + 1).equals(CLOSE_EXP)) {
-                    counter--;
-
-                } else if (expression.substring(endIndex, endIndex + 1).equals(OPEN_EXP)) {
-                    counter++;
-                }
-            }
-
-        } catch (StringIndexOutOfBoundsException e) {
-            throw new InvalidInputExpressionException(String.format("Input data is invalid because of " +
-                    "this part of expression: '%s'", expression));
-        }
-
-        return expression.substring(startIndex, endIndex - 1);
-    }
-
-    /**
      * Computes an expression according to the {@code Operators} precedence.
      * The ideas that lie behind the algorithm are next:
      * <p>
      *     <ul>
      *         <li>if the expression contains parentheses calls {@code
-     *         openParentheses()} to open them</li>
+     *         openEnclosedExpression()} to open them</li>
      *         <li>iterates by all possible operators that exist in
      *         {@code Operators} class</li>
      *         <li>finds a binary expression that uses such an operator</li>
@@ -95,8 +66,12 @@ public class ComputerBruteForce extends Computer {
     String computeArithmeticExpression(final String expression) throws InvalidInputExpressionException {
         String result = expression;
 
-        if (result.contains(OPEN_EXP)) {
-            result = openParentheses(result);
+        if (hasFunction(result)) {
+            result = compute(result);
+        }
+
+        if (hasEnclosedExpression(result)) {
+            result = openEnclosedExpression(result);
         }
         
         for (Operators operator : Operators.values()) {

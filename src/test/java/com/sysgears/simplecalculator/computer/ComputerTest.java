@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public abstract class ComputerTest {
     static Computer computer = new ComputerRegExp();
-
+    final String OPEN_EXP = "("; 
 /*
     @Test
     public void testComputeBinaryEmptyString() throws Exception {
@@ -63,70 +63,70 @@ public abstract class ComputerTest {
 /*
     @Test
     public void testOpenParenthesesEmptyString() throws Exception {
-        Assert.assertEquals("", computer.openParentheses(""));
+        Assert.assertEquals("", computer.openEnclosedExpression(""));
     }
 
     @Test
     public void testOpenParenthesesEmptyParentheses() throws Exception {
-        Assert.assertEquals("", computer.openParentheses("()"));
+        Assert.assertEquals("", computer.openEnclosedExpression("()"));
     }
 */
 
     @Test
     public void testOpenParenthesesOne() throws Exception {
-        Assert.assertEquals("4", computer.openParentheses("(2+2)"));
+        Assert.assertEquals("4", computer.openEnclosedExpression("(2+2)"));
     }
 
     @Test
     public void testOpenParenthesesTwo() throws Exception {
-        Assert.assertEquals("8", computer.openParentheses("(2+(1*8)-2)"));
+        Assert.assertEquals("8", computer.openEnclosedExpression("(2+(1*8)-2)"));
     }
 
     @Test
     public void testOpenParenthesesThree() throws Exception {
-        Assert.assertEquals("8-5", computer.openParentheses("(2+(1*8)-2)-5"));
+        Assert.assertEquals("8-5", computer.openEnclosedExpression("(2+(1*8)-2)-5"));
     }
 
     @Test
     public void testOpenParenthesesFour() throws Exception {
-        Assert.assertEquals("10*-12-5", computer.openParentheses("10*(-2+(-1*8)-2)-5"));
+        Assert.assertEquals("10*-12-5", computer.openEnclosedExpression("10*(-2+(-1*8)-2)-5"));
     }
 
     @Test
     public void testOpenParenthesesFive() throws Exception {
-        Assert.assertEquals("1-1+1-1-1-1", computer.openParentheses("1-1-(1-2)-(2-1)-1-1"));
+        Assert.assertEquals("1-1+1-1-1-1", computer.openEnclosedExpression("1-1-(1-2)-(2-1)-1-1"));
     }
 
     @Test
     public void testOpenParenthesesSix() throws Exception {
-        Assert.assertEquals("-1+1-1+1-1+1-1", computer.openParentheses("-1+1-1+1-1+1-1"));
+        Assert.assertEquals("-1+1-1+1-1+1-1", computer.openEnclosedExpression("-1+1-1+1-1+1-1"));
     }
 
     @Test
     public void testOpenParenthesesSeven() throws Exception {
-        Assert.assertEquals("-19*9-1000*2+0", computer.openParentheses(
+        Assert.assertEquals("-19*9-1000*2+0", computer.openEnclosedExpression(
                 "(-(12-7)*(6-2)+4/(7-3))*9-1000*2+(10-10)"));
     }
 
     @Test
     public void testOpenParenthesesEight() throws Exception {
-        Assert.assertEquals("10^2+8^2", computer.openParentheses("(12-2)^2+8^2"));
+        Assert.assertEquals("10^2+8^2", computer.openEnclosedExpression("(12-2)^2+8^2"));
     }
 
     @Test
     public void testOpenParenthesesNine() throws Exception {
-        Assert.assertEquals("-0.8793103448275862*2.9999+10.98", computer.openParentheses(
+        Assert.assertEquals("-0.8793103448275862*2.9999+10.98", computer.openEnclosedExpression(
                 "(-(12.1-7)/5.8)*2.9999+10.98"));
     }
 
     @Test
     public void testOpenParenthesesTen() throws Exception {
-        Assert.assertEquals("30", computer.openParentheses("-(-(-(-10-20)))"));
+        Assert.assertEquals("30", computer.openEnclosedExpression("-(-(-(-10-20)))"));
     }
 
     @Test
     public void testOpenParenthesesEleven() throws Exception {
-        Assert.assertEquals("45-10-20-45-40+110", computer.openParentheses("45-10-20-45-40-(-10-100)"));
+        Assert.assertEquals("45-10-20-45-40+110", computer.openEnclosedExpression("45-10-20-45-40-(-10-100)"));
     }
 
     @Test
@@ -208,4 +208,60 @@ public abstract class ComputerTest {
         Assert.assertEquals("100000+0.211*180", computer.convertFromENotation("1E5+21.1E-2*18E1"));
     }
 
+    @Test
+    public void testGetParenthesesExpression() {
+        Assert.assertEquals("2+2", computer.getEnclosedExpression("(2+2)*2", OPEN_EXP));
+    }
+
+    @Test
+    public void testGetParenthesesExpressionLeadingMinus() {
+        Assert.assertEquals("-2+2", computer.getEnclosedExpression("(-2+2)*2", OPEN_EXP));
+    }
+
+    @Test
+    public void testGetParenthesesExpressionLong() {
+        Assert.assertEquals("(2+2)", computer.getEnclosedExpression("2+((2+2))", OPEN_EXP));
+    }
+
+    @Test
+    public void testGetParenthesesExpressionLong2() {
+        Assert.assertEquals("-(2+(1-1)*2)", computer.getEnclosedExpression("2+(-(2+(1-1)*2))", OPEN_EXP));
+    }
+
+/*
+    @Test
+    public void testGetParenthesesExpressionEmptyParentheses() {
+        Assert.assertEquals("", bruteForce.getEnclosedExpression("()"));
+    }
+
+    @Test
+    public void testGetParenthesesExpressionEmptyString() {
+        Assert.assertEquals("", bruteForce.getEnclosedExpression(""));
+    }
+
+    @Test
+    public void getBinaryExpressionEmptyString() throws Exception {
+        Assert.assertEquals("", bruteForce.getBinaryExpression("", Operators.ADD));
+    }
+*/
+
+    @Test
+    public void testComputeFunctionsOne() {
+        Assert.assertEquals("-0.4480736161291702", computer.computeFunctions("cos(90)"));
+    }
+
+    @Test
+    public void testComputeFunctionsTwo() {
+        Assert.assertEquals("0.8262041463870422", computer.computeFunctions("cos(cos(180))"));
+    }
+
+    @Test
+    public void testComputeFunctionsThree() {
+        Assert.assertEquals("0.8262041463870422", computer.computeFunctions("cos(-cos(180))"));
+    }
+
+    @Test
+    public void testComputeFunctionsFour() {
+        Assert.assertEquals("0.8262041463870422", computer.computeFunctions("pow(12-cos(12),2)+cos(cos(24)-sin(6))*sqrt(cos(4)+pow(10,2))+(21-8*45-10-20-45-40-(-10-100)"));
+    }
 }

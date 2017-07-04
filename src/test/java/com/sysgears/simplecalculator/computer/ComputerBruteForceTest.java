@@ -13,43 +13,6 @@ public class ComputerBruteForceTest extends ComputerTest{
     }
 
     @Test
-    public void testGetParenthesesExpression() {
-        Assert.assertEquals("2+2", bruteForce.getParenthesesExpression("(2+2)*2"));
-    }
-
-    @Test
-    public void testGetParenthesesExpressionLeadingMinus() {
-        Assert.assertEquals("-2+2", bruteForce.getParenthesesExpression("(-2+2)*2"));
-    }
-
-    @Test
-    public void testGetParenthesesExpressionLong() {
-        Assert.assertEquals("(2+2)", bruteForce.getParenthesesExpression("2+((2+2))"));
-    }
-
-    @Test
-    public void testGetParenthesesExpressionLong2() {
-        Assert.assertEquals("-(2+(1-1)*2)", bruteForce.getParenthesesExpression("2+(-(2+(1-1)*2))"));
-    }
-
-/*
-    @Test
-    public void testGetParenthesesExpressionEmptyParentheses() {
-        Assert.assertEquals("", bruteForce.getParenthesesExpression("()"));
-    }
-
-    @Test
-    public void testGetParenthesesExpressionEmptyString() {
-        Assert.assertEquals("", bruteForce.getParenthesesExpression(""));
-    }
-
-    @Test
-    public void getBinaryExpressionEmptyString() throws Exception {
-        Assert.assertEquals("", bruteForce.getBinaryExpression("", Operators.ADD));
-    }
-*/
-
-    @Test
     public void getBinaryExpressionADD() throws Exception {
         Assert.assertEquals("2+2", bruteForce.getBinaryExpression("2+2", Operators.ADD));
     }
