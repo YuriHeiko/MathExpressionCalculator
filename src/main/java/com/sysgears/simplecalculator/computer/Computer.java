@@ -22,6 +22,16 @@ import java.util.regex.Pattern;
  */
 public abstract class Computer {
     /**
+     * A compiled pattern for E-notation numbers
+     */
+    private final Pattern E_NOTATION_PATTERN = Pattern.compile("\\d+([.,]?\\d+)?[eE]-?\\d+");
+
+    /**
+     * A pattern for a '--' only after parentheses
+     */
+    private final String DOUBLE_MINUS_AFTER_PARENTHESES_EXP = "(?<=[(])--";
+
+    /**
      * A pattern for a valid number
      */
     final String NUMBER_EXP = "-?\\d+([.]\\d+)?";
@@ -35,19 +45,14 @@ public abstract class Computer {
     final String NO_MINUS_BEFORE_EXP = "(?<![-])";
 
     /**
-     * A compiled pattern for E-notation numbers
-     */
-    private final Pattern E_NOTATION_PATTERN = Pattern.compile("\\d+([.,]?\\d+)?[eE]-?\\d+");
-
-    /**
      * A pattern for the opening of a parentheses expression
      */
-    String OPEN_EXP = "(";
+    final String OPEN_EXP = "(";
 
     /**
      * A pattern for the closing of a parentheses expression
      */
-    String CLOSE_EXP = ")";
+    final String CLOSE_EXP = ")";
 
     /**
      * Validates an incoming string. Removes all unnecessary characters.
@@ -145,7 +150,7 @@ public abstract class Computer {
      * @return The normalized expression
      */
     String normalizeExpression(final String expression) {
-        return expression.replaceAll("(?<=[(])--", "").
+        return expression.replaceAll(DOUBLE_MINUS_AFTER_PARENTHESES_EXP, "").
                         replaceAll("--", "+").
                         replaceAll("^\\+", "").
                         replaceAll("\\+-|-\\+", "-");

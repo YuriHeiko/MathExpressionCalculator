@@ -23,7 +23,7 @@ public enum Operators {
     /**
      * A power operator
      */
-    POWER("^") {
+    POWER("^", 50, false) {
         @Override
         public Double calculate(final double x, final double y) {
             return convertNegativeZero((x < 0 ? -1 : 1) * Math.pow(x, y));
@@ -32,7 +32,7 @@ public enum Operators {
     /**
      * A divide operator
      */
-    DIVIDE("/") {
+    DIVIDE("/", 40, false) {
         @Override
         public Double calculate(final double x, final double y) {
             if (y == 0) {
@@ -45,7 +45,7 @@ public enum Operators {
     /**
      * A multiply operator
      */
-    MULTIPLY("*") {
+    MULTIPLY("*", 30, false) {
         @Override
         public Double calculate(final double x, final double y) {
             return convertNegativeZero(x * y);
@@ -54,7 +54,7 @@ public enum Operators {
     /**
      * A subtract operator
      */
-    SUBTRACT("-") {
+    SUBTRACT("-", 20, false) {
         @Override
         public Double calculate(final double x, final double y) {
             return convertNegativeZero(x - y);
@@ -63,7 +63,7 @@ public enum Operators {
     /**
      * An add operator
      */
-    ADD("+") {
+    ADD("+", 10, false) {
         @Override
         public Double calculate(final double x, final double y) {
             return convertNegativeZero(x + y);
@@ -73,7 +73,17 @@ public enum Operators {
     /**
      * The string representation of the operator
      */
-    private String representation;
+    final private String representation;
+
+    /**
+     * The math precedence of the operator
+     */
+    final private int precedence;
+
+    /**
+     * The function flag
+     */
+    final boolean isFunction;
 
     /**
      * Contains the calculating logic of the operator
@@ -89,9 +99,13 @@ public enum Operators {
      * Constructs an object
      *
      * @param representation The string representation of the operator
+     * @param precedence The math precedence of the operator
+     * @param isFunction true if it is a function
      */
-    Operators(String representation) {
+    Operators(final String representation, final int precedence, final boolean isFunction) {
         this.representation = representation;
+        this.precedence = precedence;
+        this.isFunction = isFunction;
     }
 
     /**
@@ -144,7 +158,7 @@ public enum Operators {
      * @param value the value to convert
      * @return String contains the converted value in decimal notation
      */
-    public static String convertFromENotation(double value) {
+    public static String convertFromENotation(final double value) {
         DecimalFormat df = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
         df.setMaximumFractionDigits(340); //340 = DecimalFormat.DOUBLE_FRACTION_DIGITS
 

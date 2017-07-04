@@ -23,7 +23,7 @@ public class ComputerRegExp extends Computer {
     /**
      *
      */
-    Pattern PARENTHESES_PATTERN = Pattern.compile(
+    final Pattern PARENTHESES_PATTERN = Pattern.compile(
             "\\((" + NUMBER_EXP + "|(" + NUMBER_EXP + Operators.getRegExp() + ")+" + NUMBER_EXP + ")\\)");
 
     /**
@@ -43,10 +43,8 @@ public class ComputerRegExp extends Computer {
         for (Matcher matcher = PARENTHESES_PATTERN.matcher(result); matcher.find();
              matcher = PARENTHESES_PATTERN.matcher(result)) {
 
-            result =
-                    normalizeExpression(
-                            result.replace(matcher.group(0),
-                                    computeArithmeticExpression(matcher.group(1))));
+            result = normalizeExpression(result.replace(matcher.group(0),
+                                        computeArithmeticExpression(matcher.group(1))));
         }
 
         return result;
@@ -85,9 +83,7 @@ public class ComputerRegExp extends Computer {
             Pattern pattern = Pattern.compile(NUMBER_EXP + "[" + operator.getRegExpRepresentation() + "]" + NUMBER_EXP);
 
             for (Matcher matcher = pattern.matcher(result); matcher.find(); matcher = pattern.matcher(result)) {
-                result =
-                        result.
-                                replaceAll(NO_MINUS_BEFORE_EXP + Pattern.quote(matcher.group()),
+                result = result.replaceAll(NO_MINUS_BEFORE_EXP + Pattern.quote(matcher.group()),
                                         computeBinaryExpression(matcher.group(), operator));
             }
         }
