@@ -1,15 +1,13 @@
 package com.sysgears.simplecalculator;
 
 import com.sysgears.simplecalculator.computer.Computer;
-import com.sysgears.simplecalculator.computer.Operators;
 import com.sysgears.simplecalculator.exceptions.InvalidInputExpressionException;
 import com.sysgears.simplecalculator.history.HistoryHolder;
 import com.sysgears.simplecalculator.ui.Commands;
+import com.sysgears.simplecalculator.ui.CommandsHandler;
 import com.sysgears.simplecalculator.ui.UIController;
 
 import java.util.Objects;
-
-import static com.sysgears.simplecalculator.ui.Commands.*;
 
 /**
  * Uses {@link UIController} to lead dialog with a user, {@link Computer}
@@ -64,24 +62,22 @@ public final class Calculator {
                 String line = controller.readLine(
                         "Type an expression to calculate or type 'help' to see a commands list:");
 
-                if (line.equals(EXIT.COMMAND)) {
-                    controller.printLine(System.lineSeparator() + "Good bye!");
-                    return;
-
-                } else if (line.equals(HELP.COMMAND)) {
-                    controller.printLine(HELP.HEADER, Commands.getHelp());
-
-                } else if (line.equals(HISTORY.COMMAND)) {
-                    controller.printLine(HISTORY.HEADER, history.toString());
-
-                } else if (line.equals(UNIQUE_HISTORY.COMMAND)) {
-                    controller.printLine(UNIQUE_HISTORY.HEADER, history.getUniqueHistory());
-
-                } else if (line.equals(OPERATORS.COMMAND)) {
-                    controller.printLine(OPERATORS.HEADER, Operators.getList());
+                if (Commands.isCommand(line)) {
+                    CommandsHandler.handle(Commands.valueOf(line.toUpperCase().replace(" ", "_")), controller, history);
 
                 } else {
-                    result = calculateExpression(line);
+                    line = line.replaceAll("\\s", "");
+                    result = history.getResult(line);
+
+                    if (result.isEmpty()) {
+                        try {
+                            result = computer.compute(line);
+
+                        } catch (InvalidInputExpressionException e) {
+                            result = e.getMessage() + " Please read the instructions carefully.";
+                        }
+                    }
+
                     controller.printLine("", result);
                 }
 
@@ -91,30 +87,5 @@ public final class Calculator {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Uses the computer to calculate the expression.
-     * <p>
-     *     If the expression has been already computed the result will be gotten
-     *     from the history holder, and no calculations will be done.
-     * </p>
-     *
-     * @param expression The math expression string
-     * @return The string with the computed expression or an error description
-     */
-    String calculateExpression(final String expression) {
-        String result = history.getResult(expression);
-
-        if (result == null) {
-            try {
-                result = computer.compute(expression);
-
-            } catch (InvalidInputExpressionException | NullPointerException e) {
-                result = e.getMessage() + " Please read the instructions carefully.";
-            }
-        }
-
-        return result;
     }
 }

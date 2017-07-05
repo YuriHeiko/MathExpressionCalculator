@@ -6,7 +6,6 @@ import org.junit.Test;
 
 public abstract class ComputerTest {
     static Computer computer = new ComputerRegExp();
-    final String OPEN_EXP = "("; 
 /*
     @Test
     public void testComputeBinaryEmptyString() throws Exception {
@@ -179,8 +178,7 @@ public abstract class ComputerTest {
 
     @Test
     public void testComputeWhiteSpaces() throws Exception {
-        Assert.assertEquals("-49.53333333333334", computer.compute(
-                " (2+   8) /  6 - 12.8 * 4  ^    1"));
+        Assert.assertEquals("-49.53333333333334", computer.compute("(2+8)/6-12.8*4^1"));
     }
 
     @Test(expected = InvalidInputExpressionException.class)
@@ -195,7 +193,8 @@ public abstract class ComputerTest {
 
     @Test
     public void testComputeTwo() throws Exception {
-        Assert.assertEquals("-211.94015116045406", computer.compute("pow(12-cos(12),2)+cos(cos(24)-sin(6))*sqrt(cos(4)+pow(10,2))+(21-8*45-10-20-45-40-(-10-100))"));
+        Assert.assertEquals("-211.94015116045406",
+                computer.compute("pow(12-cos(12),2)+cos(cos(24)-sin(6))*sqrt(cos(4)+pow(10,2))+(21-8*45-10-20-45-40-(-10-100))"));
     }
 
     @Test
@@ -215,22 +214,22 @@ public abstract class ComputerTest {
 
     @Test
     public void testGetParenthesesExpression() {
-        Assert.assertEquals("2+2", computer.getEnclosedExpression("(2+2)*2", OPEN_EXP));
+        Assert.assertEquals("2+2", computer.getEnclosedExpression("(2+2)*2", "("));
     }
 
     @Test
     public void testGetParenthesesExpressionLeadingMinus() {
-        Assert.assertEquals("-2+2", computer.getEnclosedExpression("(-2+2)*2", OPEN_EXP));
+        Assert.assertEquals("-2+2", computer.getEnclosedExpression("(-2+2)*2", "("));
     }
 
     @Test
     public void testGetParenthesesExpressionLong() {
-        Assert.assertEquals("(2+2)", computer.getEnclosedExpression("2+((2+2))", OPEN_EXP));
+        Assert.assertEquals("(2+2)", computer.getEnclosedExpression("2+((2+2))", "("));
     }
 
     @Test
     public void testGetParenthesesExpressionLong2() {
-        Assert.assertEquals("-(2+(1-1)*2)", computer.getEnclosedExpression("2+(-(2+(1-1)*2))", OPEN_EXP));
+        Assert.assertEquals("-(2+(1-1)*2)", computer.getEnclosedExpression("2+(-(2+(1-1)*2))", "("));
     }
 
 /*
@@ -277,6 +276,7 @@ public abstract class ComputerTest {
 
     @Test
     public void testComputeFunctionsSix() {
-        Assert.assertEquals("124.45959449408869+0.7625216071729388*9.96726423744933+(21-8*45-10-20-45-40-(-10-100))", computer.computeFunctions("pow(12-cos(12),2)+cos(cos(24)-sin(6))*sqrt(cos(4)+pow(10,2))+(21-8*45-10-20-45-40-(-10-100))"));
+        Assert.assertEquals("124.45959449408869+0.7625216071729388*9.96726423744933+(21-8*45-10-20-45-40-(-10-100))",
+                computer.computeFunctions("pow(12-cos(12),2)+cos(cos(24)-sin(6))*sqrt(cos(4)+pow(10,2))+(21-8*45-10-20-45-40-(-10-100))"));
     }
 }

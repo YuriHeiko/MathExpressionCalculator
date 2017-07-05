@@ -1,5 +1,7 @@
 package com.sysgears.simplecalculator.computer;
 
+import com.sysgears.simplecalculator.exceptions.InvalidInputExpressionException;
+
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Arrays;
@@ -27,86 +29,104 @@ public enum Operators {
     /**
      * A square root function
      */
-    SQRT("sqrt", 1020, true){
+    SQRT("sqrt", 1020, true, 1) {
         @Override
-        public Double calculate(final Double... x) throws ArithmeticException {
-            return convertNegativeZero(sqrt(x[0]));
+        public Double calculate(final Double... arguments) throws InvalidInputExpressionException {
+            super.calculate(arguments);
+
+            return convertNegativeZero(sqrt(arguments[0]));
         }
     },
     /**
      * A cosines function
      */
-    SIN("sin", 1015, true){
+    SIN("sin", 1015, true, 1) {
         @Override
-        public Double calculate(final Double... x) throws ArithmeticException {
-            return convertNegativeZero(sin(x[0]));
+        public Double calculate(final Double... arguments) throws InvalidInputExpressionException {
+            super.calculate(arguments);
+
+            return convertNegativeZero(sin(arguments[0]));
         }
     },
     /**
      * A cosines function
      */
-    COS("cos", 1010, true){
+    COS("cos", 1010, true, 1) {
         @Override
-        public Double calculate(final Double... x) throws ArithmeticException {
-            return convertNegativeZero(cos(x[0]));
+        public Double calculate(final Double... arguments) throws InvalidInputExpressionException {
+            super.calculate(arguments);
+
+            return convertNegativeZero(cos(arguments[0]));
         }
     },
     /**
      * A power function
      */
-    POW("pow", 1000, true) {
+    POW("pow", 1000, true, 2) {
         @Override
-        public Double calculate(final Double... x) {
-            return convertNegativeZero((x[0] < 0 ? -1 : 1) * Math.pow(x[0], x[1]));
+        public Double calculate(final Double... arguments) throws InvalidInputExpressionException {
+            super.calculate(arguments);
+
+            return convertNegativeZero((arguments[0] < 0 ? -1 : 1) * Math.pow(arguments[0], arguments[1]));
         }
     },
     /**
      * A power operator
      */
-    POWER("^", 50, false) {
+    POWER("^", 50, false, 2) {
         @Override
-        public Double calculate(final Double... x) {
-            return convertNegativeZero((x[0] < 0 ? -1 : 1) * Math.pow(x[0], x[1]));
+        public Double calculate(final Double... operands) throws InvalidInputExpressionException {
+            super.calculate(operands);
+
+            return convertNegativeZero((operands[0] < 0 ? -1 : 1) * Math.pow(operands[0], operands[1]));
         }
     },
     /**
      * A divide operator
      */
-    DIVIDE("/", 40, false) {
+    DIVIDE("/", 40, false, 2) {
         @Override
-        public Double calculate(final Double... x) {
-            if (x[1] == 0) {
+        public Double calculate(final Double... operands) throws ArithmeticException, InvalidInputExpressionException {
+            super.calculate(operands);
+
+            if (operands[1] == 0) {
                 throw new ArithmeticException();
             }
 
-            return convertNegativeZero(x[0] / x[1]);
+            return convertNegativeZero(operands[0] / operands[1]);
         }
     },
     /**
      * A multiply operator
      */
-    MULTIPLY("*", 30, false) {
+    MULTIPLY("*", 30, false, 2) {
         @Override
-        public Double calculate(final Double... x) {
-            return convertNegativeZero(x[0] * x[1]);
+        public Double calculate(final Double... operands) throws InvalidInputExpressionException {
+            super.calculate(operands);
+
+            return convertNegativeZero(operands[0] * operands[1]);
         }
     },
     /**
      * A subtract operator
      */
-    SUBTRACT("-", 20, false) {
+    SUBTRACT("-", 20, false, 2) {
         @Override
-        public Double calculate(final Double... x) {
-            return convertNegativeZero(x[0] - x[1]);
+        public Double calculate(final Double... operands) throws InvalidInputExpressionException {
+            super.calculate(operands);
+
+            return convertNegativeZero(operands[0] - operands[1]);
         }
     },
     /**
      * An add operator
      */
-    ADD("+", 10, false) {
+    ADD("+", 10, false, 2) {
         @Override
-        public Double calculate(final Double... x) {
-            return convertNegativeZero(x[0] + x[1]);
+        public Double calculate(final Double... operands) throws InvalidInputExpressionException {
+            super.calculate(operands);
+
+            return convertNegativeZero(operands[0] + operands[1]);
         }
     };
 
@@ -126,25 +146,38 @@ public enum Operators {
     final boolean isFunction;
 
     /**
-     * Contains the calculating logic of the operator
-     *
-     * @param x The operands
-     * @return The computed value
-     * @throws ArithmeticException If an arithmetic error is happen
+     * Whether it is a functions or binary operator
      */
-    public abstract Double calculate(final Double... x) throws ArithmeticException;
+    final int argumentsNumber;
 
     /**
      * Constructs an object
      *
      * @param representation The string representation of the operator
-     * @param precedence The math precedence of the operator
-     * @param isFunction true if it is a function
+     * @param precedence     The math precedence of the operator
+     * @param isFunction     true if it is a function
      */
-    Operators(final String representation, final int precedence, final boolean isFunction) {
+    Operators(final String representation, final int precedence, final boolean isFunction, final int argumentsNumber) {
         this.representation = representation;
         this.precedence = precedence;
         this.isFunction = isFunction;
+        this.argumentsNumber = argumentsNumber;
+    }
+
+    /**
+     * Contains the calculating logic of the operator. Checks whether
+     * number of arguments is right.
+     *
+     * @param arguments The arguments
+     * @return The computed value
+     * @throws ArithmeticException If an arithmetic error is happen
+     */
+    public Double calculate(final Double... arguments) throws ArithmeticException, InvalidInputExpressionException {
+        if (this.argumentsNumber != arguments.length) {
+            throw new InvalidInputExpressionException(arguments.length + " instead of " + this.argumentsNumber);
+        }
+
+        return 0.0;
     }
 
     /**
@@ -172,8 +205,8 @@ public enum Operators {
      */
     static String getFunctionsRegExp(final String OPEN_EXP) {
         return getFunctionsByPrecedence().stream().filter(e -> e.isFunction).
-                                                    map(Operators::getRepresentation).
-                                                    collect(Collectors.joining("|", "(", ")"));
+                map(Operators::getRepresentation).
+                collect(Collectors.joining("|", "(", ")"));
     }
 
     /**
@@ -183,8 +216,8 @@ public enum Operators {
      */
     static String getOperatorsRegExp() {
         return getOperatorsByPrecedence().stream().filter(e -> !e.isFunction).
-                                                    map(Operators::getRegExpRepresentation).
-                                                    collect(Collectors.joining("", "[", "]"));
+                map(Operators::getRegExpRepresentation).
+                collect(Collectors.joining("", "[", "]"));
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.sysgears.simplecalculator.ui;
 
+import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -25,7 +26,7 @@ public enum Commands {
     /**
      * A command to show the list of history events without duplicates
      */
-    UNIQUE_HISTORY("history unique", "Unique history:" + System.lineSeparator(),
+    HISTORY_UNIQUE("history unique", "Unique history:" + System.lineSeparator(),
             "   - to see the calculation history without duplicates"),
 
     /**
@@ -79,5 +80,9 @@ public enum Commands {
         return Stream.of(values()).
                 map(e -> "\t" + e.COMMAND + e.DESCRIPTION).
                 collect(Collectors.joining(System.lineSeparator()));
+    }
+
+    public static boolean isCommand(final String line) {
+        return Arrays.stream(values()).anyMatch(v -> v.COMMAND.equals(line));
     }
 }

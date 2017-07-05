@@ -11,8 +11,8 @@ import java.util.stream.Stream;
 
 /**
  * Calculates a received math expression according to the {@link Operators}
- * precedence. It is based on regular expressions. The ideas lie behind the
- * algorithm are next:
+ * precedence. An incoming string cannot contain white spaces. The ideas lie
+ * behind the algorithm are next:
  * <p>
  *     <ul>
  *         <li>recursively opens all the parentheses by calculating the
@@ -86,9 +86,7 @@ public abstract class Computer {
             throw new InvalidInputExpressionException("Incoming string cannot be null");
         }
 
-        String result = convertFromENotation(expression.replaceAll("\\s", ""));
-
-        result = computeArithmeticExpression(computeFunctions(result));
+        String result = computeArithmeticExpression(computeFunctions(convertFromENotation(expression)));
 
         if (!(result.isEmpty() || result.matches(NUMBER_EXP)) && !(result.equals("-∞") || result.equals("∞"))) {
             throw new InvalidInputExpressionException(String.format("Input data is invalid cause " +
@@ -257,7 +255,9 @@ public abstract class Computer {
      * @throws InvalidInputExpressionException If the incoming string has an
      *                                         invalid format
      */
-    String computeBinaryExpression(final String expression, final Operators operator) throws InvalidInputExpressionException {
+    String computeBinaryExpression(final String expression, final Operators operator)
+            throws InvalidInputExpressionException {
+
         String result = expression;
 
         try {

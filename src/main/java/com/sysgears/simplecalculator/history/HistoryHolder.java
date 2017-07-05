@@ -30,7 +30,7 @@ public class HistoryHolder {
      * @param value The value
      */
     public void addEvent(String key, String value) {
-        history.add(new ResultPair(key, value));
+        history.add(new ResultPairWithTimeStamp(key, value));
     }
 
     /**
@@ -40,10 +40,10 @@ public class HistoryHolder {
      * @return The value associated with the key
      */
     public String getResult(String key) {
-        int index = history.indexOf(new ResultPair(key));
+        int index = history.indexOf(new ResultPairWithTimeStamp(key));
 
         if (index == -1) {
-            return null;
+            return "";
         } else {
             return history.get(index).getValue();
         }
@@ -55,7 +55,7 @@ public class HistoryHolder {
      * @return History without duplicates
      */
     public String getUniqueHistory() {
-        return buildString(new LinkedHashSet<>(history));
+        return buildString(new LinkedHashSet<>(history), false);
     }
 
     /**
@@ -65,7 +65,7 @@ public class HistoryHolder {
      */
     @Override
     public String toString() {
-        return buildString(history);
+        return buildString(history, true);
     }
 
     /**
@@ -74,8 +74,9 @@ public class HistoryHolder {
      * @param pairs The collection contains history events
      * @return The string contains the history events
      */
-    private String buildString(Collection<ResultPair> pairs) {
+    private String buildString(final Collection<ResultPair> pairs, final boolean withTime) {
         return "\t" + pairs.stream().
+                map(e -> withTime ? (ResultPairWithTimeStamp) e: e).
                 map(ResultPair::toString).
                 collect(Collectors.joining(System.lineSeparator() + "\t"));
     }

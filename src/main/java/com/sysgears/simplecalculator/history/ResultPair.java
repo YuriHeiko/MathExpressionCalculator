@@ -1,7 +1,5 @@
 package com.sysgears.simplecalculator.history;
 
-import java.text.SimpleDateFormat;
-
 /**
  * Keeps an associated pair and a time stamp when the object
  * was created.
@@ -16,16 +14,6 @@ public class ResultPair {
      * A value
      */
     private String value;
-
-    /**
-     * A time stamp of a history event creation
-     */
-    private long timeStamp;
-
-    /**
-     * A Date formatter
-     */
-    private SimpleDateFormat sdf = new SimpleDateFormat("dd MMM HH:mm:ss");
 
     /**
      * Constructs an object with the only key. It is needed to
@@ -44,20 +32,8 @@ public class ResultPair {
      * @param value The value
      */
     public ResultPair(String key, String value) {
-        this(key, value, System.currentTimeMillis());
-    }
-
-    /**
-     * Constructs an object and store the time of its creation
-     *
-     * @param key       the key
-     * @param value     The value
-     * @param timeStamp The time
-     */
-    private ResultPair(String key, String value, long timeStamp) {
         this.key = key;
         this.value = value;
-        this.timeStamp = timeStamp;
     }
 
     /**
@@ -76,15 +52,6 @@ public class ResultPair {
      */
     public String getValue() {
         return value;
-    }
-
-    /**
-     * Returns the time of event creation
-     *
-     * @return The time stamp
-     */
-    public long getTimeStamp() {
-        return timeStamp;
     }
 
     /**
@@ -119,8 +86,7 @@ public class ResultPair {
      *
      * @return The string representation of the object
      */
-    @Override
     public String toString() {
-        return '[' + sdf.format(timeStamp) + "]\t" + key + (value.isEmpty()?"" : " = ") + value;
+        return "\t" + key + (value.isEmpty()?"" : " = ") + value;
     }
 }
