@@ -180,7 +180,7 @@ public abstract class ComputerTest {
     @Test
     public void testComputeWhiteSpaces() throws Exception {
         Assert.assertEquals("-49.53333333333334", computer.compute(
-                " (2+   8) /  6 - 12,8 * 4  ^    1"));
+                " (2+   8) /  6 - 12.8 * 4  ^    1"));
     }
 
     @Test(expected = InvalidInputExpressionException.class)
@@ -191,6 +191,11 @@ public abstract class ComputerTest {
     @Test
     public void testComputeOne() throws Exception {
         Assert.assertEquals("40", computer.compute("45-10-20-45-40-(-10-100)"));
+    }
+
+    @Test
+    public void testComputeTwo() throws Exception {
+        Assert.assertEquals("-211.94015116045406", computer.compute("pow(12-cos(12),2)+cos(cos(24)-sin(6))*sqrt(cos(4)+pow(10,2))+(21-8*45-10-20-45-40-(-10-100))"));
     }
 
     @Test
@@ -262,6 +267,16 @@ public abstract class ComputerTest {
 
     @Test
     public void testComputeFunctionsFour() {
-        Assert.assertEquals("0.8262041463870422", computer.computeFunctions("pow(12-cos(12),2)+cos(cos(24)-sin(6))*sqrt(cos(4)+pow(10,2))+(21-8*45-10-20-45-40-(-10-100)"));
+        Assert.assertEquals("124.45959449408869", computer.computeFunctions("pow(12-cos(12),2)"));
+    }
+
+    @Test
+    public void testComputeFunctionsFive() {
+        Assert.assertEquals("9.96726423744933", computer.computeFunctions("sqrt(cos(4)+pow(10,2))"));
+    }
+
+    @Test
+    public void testComputeFunctionsSix() {
+        Assert.assertEquals("124.45959449408869+0.7625216071729388*9.96726423744933+(21-8*45-10-20-45-40-(-10-100))", computer.computeFunctions("pow(12-cos(12),2)+cos(cos(24)-sin(6))*sqrt(cos(4)+pow(10,2))+(21-8*45-10-20-45-40-(-10-100))"));
     }
 }

@@ -93,6 +93,6 @@ public class ComputerRegExp extends Computer {
             }
         }
 
-        return result;
+        return result.equals(OPEN_EXP + CLOSE_EXP) ? "" : result;
     }
 }

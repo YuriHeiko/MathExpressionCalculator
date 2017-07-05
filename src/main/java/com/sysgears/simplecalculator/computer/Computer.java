@@ -2,6 +2,8 @@ package com.sysgears.simplecalculator.computer;
 
 import com.sysgears.simplecalculator.exceptions.InvalidInputExpressionException;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -25,23 +27,21 @@ import java.util.stream.Stream;
 public abstract class Computer {
     /**
      * A pattern for the opening of a parentheses expression
+     * Cannot contain more than one symbol
      */
     final String OPEN_EXP = "(";
 
     /**
      * A pattern for the closing of a parentheses expression
+     * Cannot contain more than one symbol
      */
     final String CLOSE_EXP = ")";
 
     /**
-     * A compiled pattern for E-notation numbers
+     * A pattern for the delimiter of function's arguments
+     * Cannot contain more than one symbol
      */
-    private final Pattern E_NOTATION_PATTERN = Pattern.compile("\\d+([.,]?\\d+)?[eE]-?\\d+");
-
-    /**
-     * A compiled pattern for  functions
-     */
-    private final Pattern FUNCTIONS_PATTERN = Pattern.compile(Operators.getFunctionsRegExp(OPEN_EXP) + "\\" + OPEN_EXP);
+    private final String ARGUMENTS_DELIMITER = ",";
 
     /**
      * A pattern for a '--' only after parentheses
@@ -62,6 +62,16 @@ public abstract class Computer {
     final String NO_MINUS_BEFORE_EXP = "(?<![-])";
 
     /**
+     * A compiled pattern for E-notation numbers
+     */
+    private final Pattern E_NOTATION_PATTERN = Pattern.compile("\\d+([.,]?\\d+)?[eE]-?\\d+");
+
+    /**
+     * A compiled pattern for  functions
+     */
+    private final Pattern FUNCTIONS_PATTERN = Pattern.compile(Operators.getFunctionsRegExp(OPEN_EXP) + "\\" + OPEN_EXP);
+
+    /**
      * Validates an incoming string. Removes all unnecessary characters.
      * Replaces all ',' by '.' and '()' by ''. Converts numbers from
      * E-notation to the decimal one. Computes the expression.
@@ -76,16 +86,49 @@ public abstract class Computer {
             throw new InvalidInputExpressionException("Incoming string cannot be null");
         }
 
-        String result = convertFromENotation(expression.replaceAll("\\s", "").
-//                                                        replaceAll(",", ".").
-                                                        replace("()", ""));
+        String result = convertFromENotation(expression.replaceAll("\\s", ""));
 
-        if (!result.isEmpty()) {
-            result = computeArithmeticExpression(computeFunctions(result));
+        result = computeArithmeticExpression(computeFunctions(result));
 
-            if (!result.matches(NUMBER_EXP) && !(result.equals("-∞") || result.equals("∞"))) {
+        if (!(result.isEmpty() || result.matches(NUMBER_EXP)) && !(result.equals("-∞") || result.equals("∞"))) {
+            throw new InvalidInputExpressionException(String.format("Input data is invalid cause " +
+                    "the result of calculation: '%s' is not a number.", result));
+        }
+
+        return result;
+    }
+
+    /**
+     * Finds and computes all functions. Searching starts from the
+     * left bound of an expression.
+     *
+     * @param expression The string contains a math expression. Can be empty
+     * @return The string contains the expression with substituted functions'
+     * results
+     * @throws InvalidInputExpressionException If the incoming string has an
+     *                                         invalid format, or it is null
+     */
+    String computeFunctions(final String expression) throws InvalidInputExpressionException {
+        String result = expression;
+
+        for (Matcher matcher = FUNCTIONS_PATTERN.matcher(result); matcher.find();
+             matcher = FUNCTIONS_PATTERN.matcher(result)) {
+            String enclosedExpression = getEnclosedExpression(result, matcher.group());
+
+            Double[] functionArguments = Stream.of(splitArgumentsByDelimiter(enclosedExpression)).
+                                                map(e -> Double.valueOf(computeArithmeticExpression(e))).
+                                                collect(Collectors.toList()).
+                                                toArray(new Double[0]);
+            try {
+                Double functionResult = Operators.valueOf(matcher.group(1).toUpperCase()).calculate(functionArguments);
+
+                result = normalizeExpression(
+                                    result.replaceAll(Pattern.quote(matcher.group() + enclosedExpression + CLOSE_EXP),
+                                                                    convertFromENotation(functionResult.toString())));
+
+            } catch (InvalidInputExpressionException e) {
                 throw new InvalidInputExpressionException(String.format("Input data is invalid cause " +
-                        "the result of calculation: '%s' is not a number.", result));
+                        "the function: '%s' has %s", matcher.group() + enclosedExpression + CLOSE_EXP, e.getMessage()));
             }
         }
 
@@ -93,28 +136,38 @@ public abstract class Computer {
     }
 
     /**
+     * Breaks an argument string by {@code ARGUMENTS_DELIMITER} and combines
+     * arguments into a String array.
      *
-     * @param expression
-     * @return
+     * @param arguments The string contains arguments
+     * @return The String array with arguments
+     * @throws InvalidInputExpressionException If the incoming string has an
+     *                                         invalid format, or it is null
      */
-    String computeFunctions(final String expression) {
-        String result = expression;
+    String[] splitArgumentsByDelimiter(final String arguments) throws InvalidInputExpressionException {
+        List<String> list = new LinkedList<>();
+        String[] result;
 
-        for (Matcher matcher = FUNCTIONS_PATTERN.matcher(result); matcher.find();
-             matcher = FUNCTIONS_PATTERN.matcher(result)) {
-            String enclosedExpression = getEnclosedExpression(result, matcher.group());
+        if (arguments.contains(OPEN_EXP) && arguments.contains(ARGUMENTS_DELIMITER)) {
+            int leftBound;
+            int rightBound;
 
-            Double[] functionArguments = Stream.of(enclosedExpression.split(",")).
-                                                map(this::computeArithmeticExpression).
-                                                map(Double::parseDouble).
-                                                collect(Collectors.toList()).
-                                                toArray(new Double[0]);
+            for (leftBound = 0, rightBound = 0; rightBound < arguments.length(); rightBound++) {
+                if (arguments.charAt(rightBound) == OPEN_EXP.charAt(0)) {
+                    // skip enclosed expression
+                    rightBound += getEnclosedExpression(arguments.substring(rightBound), OPEN_EXP).length() + 1;
 
-            String functionResult = Operators.valueOf(matcher.group(1).toUpperCase()).
-                                                                                calculate(functionArguments).toString();
+                } else if (arguments.charAt(rightBound) == ARGUMENTS_DELIMITER.charAt(0)) {
+                    list.add(arguments.substring(leftBound, rightBound));
+                    leftBound += rightBound + 1;
+                }
+            }
+            list.add(arguments.substring(leftBound, rightBound));
 
-            result = normalizeExpression(result.replaceAll(Pattern.quote(matcher.group() + enclosedExpression + CLOSE_EXP),
-                                                                            convertFromENotation(functionResult)));
+            result = list.toArray(new String[0]);
+
+        } else {
+            result = arguments.split(ARGUMENTS_DELIMITER);
         }
 
         return result;
@@ -126,17 +179,19 @@ public abstract class Computer {
      *
      * @param expression The string contains a math expression
      * @return The string contains the enclosed expression that can be empty
+     * @throws InvalidInputExpressionException If the incoming string has an
+     *                                         invalid format, or it is null
      */
-    String getEnclosedExpression(final String expression, final String openExp) {
-        int startIndex = expression.indexOf(openExp) + openExp.length();
-        int endIndex = startIndex;
+    String getEnclosedExpression(final String expression, final String openExp) throws InvalidInputExpressionException {
+        int leftBound = expression.indexOf(openExp) + openExp.length();
+        int rightBound = leftBound;
 
         try {
-            for (int counter = 1; counter > 0; endIndex++) {
-                if (expression.substring(endIndex, endIndex + 1).equals(CLOSE_EXP)) {
+            for (int counter = 1; counter > 0; rightBound++) {
+                if (expression.substring(rightBound, rightBound + 1).equals(CLOSE_EXP)) {
                     counter--;
 
-                } else if (expression.substring(endIndex, endIndex + 1).equals(OPEN_EXP)) {
+                } else if (expression.substring(rightBound, rightBound + 1).equals(OPEN_EXP)) {
                     counter++;
                 }
             }
@@ -146,11 +201,7 @@ public abstract class Computer {
                     "this part of expression: '%s'", expression));
         }
 
-        return expression.substring(startIndex, endIndex - 1);
-    }
-
-    String[] splitArgumentsByDelimeter(final String arguments) {
-
+        return expression.substring(leftBound, rightBound - 1);
     }
 
     /**
