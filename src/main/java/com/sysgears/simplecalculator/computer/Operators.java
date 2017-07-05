@@ -171,11 +171,16 @@ public enum Operators {
      * @return The RegExp string contains all the functions
      */
     static String getFunctionsRegExp(final String OPEN_EXP) {
-        // TODO the last '(' should be a constant
+        return "(" + getFunctionsByPrecedence().stream().
+                        filter(e -> e.isFunction).
+                        map(Operators::getRepresentation).
+                        collect(Collectors.joining("|")) + ")";
+/*
         return getFunctionsByPrecedence().stream().
                         filter(e -> e.isFunction).
                         map(e -> "(" + e.getRegExpRepresentation() + ")\\" + OPEN_EXP).
                         collect(Collectors.joining("|"));
+*/
     }
 
     /**

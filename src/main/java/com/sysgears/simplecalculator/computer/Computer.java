@@ -110,8 +110,8 @@ public abstract class Computer {
                                                 collect(Collectors.toList()).
                                                 toArray(new Double[0]);
 
-            String functionResult = Operators.
-                                        valueOf(matcher.group(1).toUpperCase()).calculate(functionArguments).toString();
+            String functionResult = Operators.valueOf(matcher.group(1).toUpperCase()).
+                                                                                calculate(functionArguments).toString();
 
             result = normalizeExpression(result.replaceAll(Pattern.quote(matcher.group() + enclosedExpression + CLOSE_EXP),
                                                                             convertFromENotation(functionResult)));
@@ -147,6 +147,10 @@ public abstract class Computer {
         }
 
         return expression.substring(startIndex, endIndex - 1);
+    }
+
+    String[] splitArgumentsByDelimeter(final String arguments) {
+
     }
 
     /**
