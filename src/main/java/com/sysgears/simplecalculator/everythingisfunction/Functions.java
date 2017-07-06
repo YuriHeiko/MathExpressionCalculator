@@ -165,10 +165,10 @@ public enum Functions {
      *
      * @return The RegExp string contains all the functions
      */
-    static String getFunctionsRegExp(final String OPEN_EXP) {
+    static String getRegExp() {
         return Stream.of(values()).
-                map(Functions::getRepresentation).
-                collect(Collectors.joining("|", "(", ")"));
+                map(Functions::getRegExpRepresentation).
+                collect(Collectors.joining("|", "(", ")\\("));
     }
 
     /**

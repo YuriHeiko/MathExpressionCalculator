@@ -106,7 +106,6 @@ public enum Operators {
                 collect(Collectors.joining(System.lineSeparator()));
     }
 
-
     /**
      * Returns a descending sorted by {@code precedence} collection of
      * operators
@@ -115,5 +114,10 @@ public enum Operators {
      */
     public static Collection<Operators> getOperatorsByPrecedence() {
         return Stream.of(values()).sorted((e1, e2) -> e2.precedence.compareTo(e1.precedence)).collect(Collectors.toList());
+    }
+
+    public static String getFunction(final Operators operator, final String arguments) {
+        return Stream.of(arguments.split(operator.getRegExpRepresentation())).
+                collect(Collectors.joining("", operator.function.getRepresentation() + "(", ")"));
     }
 }
