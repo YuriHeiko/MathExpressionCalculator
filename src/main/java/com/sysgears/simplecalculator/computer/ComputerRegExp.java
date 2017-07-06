@@ -89,7 +89,7 @@ public class ComputerRegExp extends Computer {
 
             for (Matcher matcher = pattern.matcher(result); matcher.find(); matcher = pattern.matcher(result)) {
                 result = result.replaceAll(NO_MINUS_BEFORE_EXP + Pattern.quote(matcher.group()),
-                                        computeBinaryExpression(matcher.group(), operator));
+                                            computeBinaryExpression(matcher.group(), operator));
             }
         }
 

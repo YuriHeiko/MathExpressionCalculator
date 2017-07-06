@@ -15,6 +15,7 @@ import java.util.stream.Stream;
  * behind the algorithm are next:
  * <p>
  *     <ul>
+ *         <li> recursively computes all the functions</li>
  *         <li>recursively opens all the parentheses by calculating the
  *         enclosed expressions</li>
  *         <li>calculates the remaining parts of the expression according
@@ -97,8 +98,8 @@ public abstract class Computer {
     }
 
     /**
-     * Finds and computes all functions. Searching starts from the
-     * left bound of an expression.
+     * Finds and computes all functions. Searching starts from the left bound
+     * of an expression.
      *
      * @param expression The string contains a math expression. Can be empty
      * @return The string contains the expression with substituted functions'
@@ -317,8 +318,8 @@ public abstract class Computer {
             }
 
         } catch (NumberFormatException e) {
-            throw new InvalidInputExpressionException(
-                    "Input data is invalid. Some numbers cannot be converted from E-notation");
+            throw new InvalidInputExpressionException("Input data is invalid. Some numbers cannot be converted from " +
+                                                        "E-notation");
         }
 
         return result;
