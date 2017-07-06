@@ -29,7 +29,14 @@ public enum Operators {
     /**
      * A subtract operator
      */
-    SUBTRACT("-", Functions.SUM, 20, true),
+    SUBTRACT("-", Functions.SUBTRACT, 20, true) {
+        @Override
+        public String getFunction(String[] arguments, String splitter) {
+            String[] arguments1 = Stream.of(arguments).map(s -> s.isEmpty() ? "0" : s).
+                    collect(Collectors.toList()).toArray(new String[0]);
+            return super.getFunction(arguments1, splitter);
+        }
+    },
     /**
      * An add operator
      */
@@ -38,10 +45,10 @@ public enum Operators {
     /**
      * The string representation of the operator
      */
-    private final String representation;
+    private final String image;
 
     /**
-     * The string representation of the operator
+     * The corresponding function
      */
     private final Functions function;
 
@@ -58,15 +65,19 @@ public enum Operators {
     /**
      * Constructs an object
      *
-     * @param representation The string representation of the operator
+     * @param image The string representation of the operator
      * @param precedence     The math precedence of the operator
      * @param direction      true if it is a function
      */
-    Operators(final String representation, final Functions function, final int precedence, final boolean direction) {
-        this.representation = representation;
+    Operators(final String image, final Functions function, final int precedence, final boolean direction) {
+        this.image = image;
         this.function = function;
         this.precedence = precedence;
         this.direction = direction;
+    }
+
+    public String getFunction(final String[] arguments, final String splitter) {
+        return Stream.of(arguments).collect(Collectors.joining(splitter, this.function.getRepresentation() + "(", ")"));
     }
 
     /**
@@ -74,8 +85,8 @@ public enum Operators {
      *
      * @return The string representation of the operator
      */
-    public String getRepresentation() {
-        return representation;
+    public String getImage() {
+        return image;
     }
 
     /**
@@ -84,7 +95,7 @@ public enum Operators {
      * @return The normalized string representation of the operator
      */
     public String getRegExpRepresentation() {
-        return Pattern.quote(representation);
+        return Pattern.quote(image);
     }
 
     /**
@@ -102,7 +113,7 @@ public enum Operators {
      * @return The string with the description of all the operators
      */
     public static String getList() {
-        return getOperatorsByPrecedence().stream().map(e -> "\t" + e + "(" + e.getRepresentation() + ")").
+        return getOperatorsByPrecedence().stream().map(e -> "\t" + e + "(" + e.getImage() + ")").
                 collect(Collectors.joining(System.lineSeparator()));
     }
 
@@ -114,10 +125,5 @@ public enum Operators {
      */
     public static Collection<Operators> getOperatorsByPrecedence() {
         return Stream.of(values()).sorted((e1, e2) -> e2.precedence.compareTo(e1.precedence)).collect(Collectors.toList());
-    }
-
-    public static String getFunction(final Operators operator, final String arguments) {
-        return Stream.of(arguments.split(operator.getRegExpRepresentation())).
-                collect(Collectors.joining("", operator.function.getRepresentation() + "(", ")"));
     }
 }

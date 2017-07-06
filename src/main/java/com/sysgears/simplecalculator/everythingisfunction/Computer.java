@@ -2,6 +2,8 @@ package com.sysgears.simplecalculator.everythingisfunction;
 
 import com.sysgears.simplecalculator.exceptions.InvalidInputExpressionException;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -70,6 +72,14 @@ public class Computer {
      */
     private final Pattern FUNCTIONS_PATTERN = Pattern.compile(Functions.getRegExp());
 
+
+
+    private final int LEFT = -1;
+
+    private final int RIGHT = 1;
+
+
+
     /**
      * A pattern for an expression enclosed within {@code OPEN_EXP} and
      * {@code CLOSE_EXP}
@@ -103,9 +113,6 @@ public class Computer {
         return result;
     }
 
-    private final int LEFT = -1;
-    private final int RIGHT = 1;
-
     /**
      * Replaces all the {@link Operators} by this corresponding functions
      * according to Operator's precedence.
@@ -117,11 +124,56 @@ public class Computer {
         String result = expression;
 
         for (Operators operator : Operators.getOperatorsByPrecedence()) {
-            while (result.contains(operator.getRepresentation())) {
-                String left = getOperands(result, operator, LEFT);
-                String right = getOperands(result, operator, RIGHT);
-                result = result.replaceAll(left + right, Operators.getFunction(operator, arguments));
+            while (result.contains(operator.getImage())) {
+                String rawArguments = result.substring(getBound(result, operator, LEFT),
+                        result.indexOf(operator.getImage()) + getBound(result, operator, RIGHT));
+
+                String function = operator.getFunction(splitArgumentsByDelimiter(rawArguments,operator.getImage()),
+                                                        ARGUMENTS_DELIMITER);
+
+                result = result.replace(rawArguments, function);
             }
+        }
+
+        return result;
+    }
+
+    /**
+     * Breaks an argument string by {@code ARGUMENTS_DELIMITER} and combines
+     * arguments into a String array.
+     *
+     * @param arguments The string contains arguments
+     * @return The String array with arguments
+     * @throws InvalidInputExpressionException If the incoming string has an
+     *                                         invalid format, or it is null
+     */
+    String[] splitArgumentsByDelimiter(final String arguments, final String delimiter)
+            throws InvalidInputExpressionException {
+
+        List<String> list = new LinkedList<>();
+        String[] result;
+
+        if (arguments.contains(OPEN_EXP) && arguments.contains(delimiter)) {
+            int leftBound;
+            int rightBound;
+
+            for (leftBound = 0, rightBound = 0; rightBound < arguments.length(); rightBound++) {
+                if (arguments.charAt(rightBound) == OPEN_EXP.charAt(0)) {
+                    // skip enclosed expression
+                    rightBound +=
+                            getEnclosedExpression(arguments.substring(rightBound), OPEN_EXP, CLOSE_EXP).length() + 1;
+
+                } else if (arguments.charAt(rightBound) == delimiter.charAt(0)) {
+                    list.add(arguments.substring(leftBound, rightBound));
+                    leftBound += rightBound + 1;
+                }
+            }
+            list.add(arguments.substring(leftBound, rightBound));
+
+            result = list.toArray(new String[0]);
+
+        } else {
+            result = arguments.split(Pattern.quote(delimiter));
         }
 
         return result;
@@ -135,32 +187,34 @@ public class Computer {
      * @return
      * @throws InvalidInputExpressionException
      */
-    String getOperands(final String expression, final Operators operator, final int direction)
+    int getBound(final String expression, final Operators operator, final int direction)
             throws InvalidInputExpressionException {
 
-        int start = expression.indexOf(operator.getRepresentation());
+        int start = expression.indexOf(operator.getImage());
         StringBuilder result = new StringBuilder(expression.substring((direction == RIGHT ? start + 1 : 0), 
                                                                     (direction == RIGHT ? expression.length() : start)));
         result = (direction == RIGHT ? result : result.reverse());
         
         String openExp = (direction == RIGHT ? OPEN_EXP : CLOSE_EXP);
         String closeExp = (direction == RIGHT ? CLOSE_EXP : OPEN_EXP);
-        String constraints = Stream.of(Operators.values()).filter(v -> v != operator).map(Operators::getRepresentation).
-                            collect(Collectors.joining("", closeExp, ""));
+        String constraints = Stream.of(Operators.values()).filter(v -> v != operator).map(Operators::getImage).
+                            collect(Collectors.joining("", closeExp, ARGUMENTS_DELIMITER));
 
         int end;
         for (end = 0; end < result.length() && constraints.indexOf(result.charAt(end)) == -1; end++) {
             if (result.charAt(end) == openExp.charAt(0)) {
                 // skip enclosed expression
-                end += getEnclosedExpression(result.toString(), openExp, closeExp).length();
+                end += getEnclosedExpression(result.toString(), openExp, closeExp).length() + 1;
             }
         }
 
         if (direction != RIGHT) {
-            end = result.length() - end + 1;
+            end = result.length() - end;
+        } else {
+            end++;
         }
 
-        return (direction == RIGHT ? result : result.reverse()).substring(0, end);
+        return end;
     }
 
     /**
@@ -180,10 +234,10 @@ public class Computer {
 
         try {
             for (int counter = 1; counter > 0; rightBound++) {
-                if (expression.substring(rightBound, rightBound + 1).equals(CLOSE_EXP)) {
+                if (expression.substring(rightBound, rightBound + 1).equals(closeExp)) {
                     counter--;
 
-                } else if (expression.substring(rightBound, rightBound + 1).equals(OPEN_EXP)) {
+                } else if (expression.substring(rightBound, rightBound + 1).equals(openExp)) {
                     counter++;
                 }
             }

@@ -90,8 +90,17 @@ public enum Functions {
      */
     MULTIPLY("mult", null) {
         @Override
-        public Double calculate(final Double... operands) throws InvalidInputExpressionException {
-            return convertNegativeZero(Arrays.stream(operands).reduce((v1, v2) -> v1 * v2).orElse(0.0));
+        public Double calculate(final Double... arguments) throws InvalidInputExpressionException {
+            return convertNegativeZero(Arrays.stream(arguments).reduce((v1, v2) -> v1 * v2).orElse(0.0));
+        }
+    },
+    /**
+     * A sum function
+     */
+    SUBTRACT("subtract", null) {
+        @Override
+        public Double calculate(final Double... arguments) throws InvalidInputExpressionException {
+            return convertNegativeZero(Arrays.stream(arguments).reduce((v1, v2) -> v1 - v2).orElse(0.0));
         }
     },
     /**
@@ -99,8 +108,8 @@ public enum Functions {
      */
     SUM("sum", null) {
         @Override
-        public Double calculate(final Double... operands) throws InvalidInputExpressionException {
-            return convertNegativeZero(Arrays.stream(operands).reduce((v1, v2) -> v1 + v2).orElse(0.0));
+        public Double calculate ( final Double...arguments) throws InvalidInputExpressionException {
+            return convertNegativeZero(Arrays.stream(arguments).reduce((v1, v2) -> v1 + v2).orElse(0.0));
         }
     };
 
