@@ -198,6 +198,11 @@ public abstract class ComputerTest {
     }
 
     @Test
+    public void testComputeThree() throws Exception {
+        Assert.assertEquals("512", computer.compute("2^3^2"));
+    }
+
+    @Test
     public void testConvertFromENotationEmptyString() throws Exception {
         Assert.assertEquals("", computer.convertFromENotation(""));
     }
