@@ -45,12 +45,18 @@ public class ComputerTest {
 
     @Test
     public void changeOperatorsToFunctions6() throws Exception {
-        Assert.assertEquals("subtract(0,10)",
-                computer.changeOperatorsToFunctions("(2-(-10-100))"));
+        Assert.assertEquals("(subtract(2,(subtract(0,10,100))))",
+                computer.changeOperatorsToFunctions("(21-8-40-(-10-100))"));
     }
 
     @Test
     public void changeOperatorsToFunctions7() throws Exception {
+        Assert.assertEquals("sum(pow(subtract(12,cos(12)),2),mult(cos(subtract(cos(24),sin(6))),sqrt(sum(cos(4),pow(10,2)))))",
+                computer.changeOperatorsToFunctions("pow(12-cos(12),2)+cos(cos(24)-sin(6))*sqrt(cos(4)+pow(10,2))"));
+    }
+
+    @Test
+    public void changeOperatorsToFunctions8() throws Exception {
         Assert.assertEquals("subtract(0,10)",
                 computer.changeOperatorsToFunctions("pow(12-cos(12),2)+cos(cos(24)-sin(6))*sqrt(cos(4)+pow(10,2))+" +
                         "(21-8*45-10-20-45-40-(-10-100))"));

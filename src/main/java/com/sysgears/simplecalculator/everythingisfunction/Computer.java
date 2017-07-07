@@ -84,8 +84,8 @@ public class Computer {
      * A pattern for an expression enclosed within {@code OPEN_EXP} and
      * {@code CLOSE_EXP}
      */
-//    final Pattern ENCLOSED_EXP_PATTERN = Pattern.compile("\\" + OPEN_EXP + "(" + NUMBER_EXP + "|(" + NUMBER_EXP +
-//            com.sysgears.simplecalculator.computer.Operators.getRegExp() + ")+" + NUMBER_EXP + ")" + "\\" + CLOSE_EXP);
+    final Pattern ENCLOSED_EXP_PATTERN = Pattern.compile("\\" + OPEN_EXP + "(" + NUMBER_EXP + "|(" + NUMBER_EXP +
+                                                    Operators.getRegExp() + ")+" + NUMBER_EXP + ")" + "\\" + CLOSE_EXP);
 
     /**
      * Validates an incoming string. Removes all unnecessary characters.
@@ -126,7 +126,11 @@ public class Computer {
         for (Operators operator : Operators.getOperatorsByPrecedence()) {
             while (result.contains(operator.getImage())) {
                 String rawArguments = result.substring(getBound(result, operator, LEFT),
-                        result.indexOf(operator.getImage()) + getBound(result, operator, RIGHT));
+                                            result.indexOf(operator.getImage()) + getBound(result, operator, RIGHT));
+
+                if (hasEnclosedExpression(rawArguments)) {
+                    rawArguments = openEnclosedExpression(rawArguments);
+                }
 
                 String function = operator.getFunction(splitArgumentsByDelimiter(rawArguments,operator.getImage()),
                                                         ARGUMENTS_DELIMITER);
@@ -136,6 +140,17 @@ public class Computer {
         }
 
         return result;
+    }
+
+    /**
+     * Checks whether a String contains any expression enclosed within
+     * {@code OPEN_EXP} and {@code CLOSE_EXP}
+     *
+     * @param expression The expression string
+     * @return true if there is an enclosed expression
+     */
+    boolean hasEnclosedExpression(final String expression) {
+        return expression.contains(OPEN_EXP);
     }
 
     /**
@@ -248,6 +263,28 @@ public class Computer {
         }
 
         return expression.substring(leftBound, rightBound - 1);
+    }
+
+    /**
+     * Finds recursively all parts of the expression which are enclosed in
+     * parentheses. Computes such parts and puts the value instead of the
+     * corresponding enclosed part. Removes parentheses respectively.
+     *
+     * @param expression The string contains a math expression
+     * @return The string contains the expression with open parentheses
+     * @throws InvalidInputExpressionException If the incoming string has an
+     *                                         invalid format
+     */
+    String openEnclosedExpression(final String expression) throws InvalidInputExpressionException {
+        String result = expression;
+
+        for (Matcher matcher = ENCLOSED_EXP_PATTERN.matcher(result); matcher.find();){
+//             matcher = ENCLOSED_EXP_PATTERN.matcher(result)) {
+
+            result = result.replace(matcher.group(1), changeOperatorsToFunctions(matcher.group(1)));
+        }
+
+        return result;
     }
 
     /**

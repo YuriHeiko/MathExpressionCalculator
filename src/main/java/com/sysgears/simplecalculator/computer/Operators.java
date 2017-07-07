@@ -38,7 +38,7 @@ public enum Operators {
         }
     },
     /**
-     * A cosines function
+     * A sinuses function
      */
     SIN("sin", 1015, true, 1) {
         @Override
