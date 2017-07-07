@@ -71,7 +71,7 @@ public abstract class OperatorsComputer implements Computer {
     /**
      * A compiled pattern for  functions
      */
-    private final Pattern FUNCTIONS_PATTERN = Pattern.compile(Operators.getFunctionsRegExp(OPEN_EXP) + "\\" + OPEN_EXP);
+    private final Pattern FUNCTIONS_PATTERN = Pattern.compile(Operators.getFunctionsRegExp() + "\\" + OPEN_EXP);
 
     /**
      * Validates an incoming string. Removes all unnecessary characters.

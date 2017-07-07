@@ -15,7 +15,7 @@ public class ResultPairWithTimeStamp extends ResultPair {
     /**
      * A Date formatter
      */
-    private SimpleDateFormat sdf = new SimpleDateFormat("dd MMM HH:mm:ss");
+    private final SimpleDateFormat sdf = new SimpleDateFormat("dd MMM HH:mm:ss");
 
     /**
      * Constructs an object with the only key. It is needed to

@@ -8,7 +8,7 @@ public class ResultPair {
     /**
      * A key
      */
-    private String key;
+    private final String key;
 
     /**
      * A value

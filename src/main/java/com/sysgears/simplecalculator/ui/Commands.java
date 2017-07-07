@@ -46,7 +46,7 @@ public enum Commands {
     /**
      * A command string representation
      */
-    public final String COMMAND;
+    private final String COMMAND;
 
     /**
      * A command header string representation
@@ -56,7 +56,7 @@ public enum Commands {
     /**
      * A command description string representation
      */
-    public final String DESCRIPTION;
+    private final String DESCRIPTION;
 
     /**
      * Constructs an object

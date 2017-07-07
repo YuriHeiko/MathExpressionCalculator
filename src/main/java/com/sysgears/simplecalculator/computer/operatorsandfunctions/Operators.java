@@ -203,7 +203,7 @@ public enum Operators {
      *
      * @return The RegExp string contains all the functions
      */
-    static String getFunctionsRegExp(final String OPEN_EXP) {
+    static String getFunctionsRegExp() {
         return getFunctionsByPrecedence().stream().filter(e -> e.isFunction).
                 map(Operators::getRepresentation).
                 collect(Collectors.joining("|", "(", ")"));

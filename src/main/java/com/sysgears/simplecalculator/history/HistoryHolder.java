@@ -14,7 +14,7 @@ public class HistoryHolder {
      * A {@code List} collection holds {@code ResultPair} objects which
      * keeps history events
      */
-    private List<ResultPair> history;
+    private final List<ResultPair> history;
 
     /**
      * Constructs an object

@@ -58,7 +58,7 @@ public class FunctionComputer implements Computer {
     /**
      * A compiled pattern for all the functions
      */
-    private Pattern FUNCTIONS_PATTERN = Pattern.compile(Functions.getRegExp());
+    private final Pattern FUNCTIONS_PATTERN = Pattern.compile(Functions.getRegExp());
 
     /**
      * Validates an incoming string. Removes all unnecessary characters.

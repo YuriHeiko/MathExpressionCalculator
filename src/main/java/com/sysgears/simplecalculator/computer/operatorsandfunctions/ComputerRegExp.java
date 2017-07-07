@@ -24,7 +24,7 @@ public class ComputerRegExp extends OperatorsComputer {
      * A pattern for an expression enclosed within {@code OPEN_EXP} and
      * {@code CLOSE_EXP}
      */
-    final Pattern ENCLOSED_EXP_PATTERN = Pattern.compile("\\" + OPEN_EXP + "(" + NUMBER_EXP + "|(" + NUMBER_EXP +
+    private final Pattern ENCLOSED_EXP_PATTERN = Pattern.compile("\\" + OPEN_EXP + "(" + NUMBER_EXP + "|(" + NUMBER_EXP +
                                             Operators.getOperatorsRegExp() + ")+" + NUMBER_EXP + ")" + "\\" + CLOSE_EXP);
 
     /**
