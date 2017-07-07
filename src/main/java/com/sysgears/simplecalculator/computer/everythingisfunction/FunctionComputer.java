@@ -213,7 +213,8 @@ public class FunctionComputer implements Computer {
 
         String openExp = (direction == RIGHT ? OPEN_EXP : CLOSE_EXP);
         String closeExp = (direction == RIGHT ? CLOSE_EXP : OPEN_EXP);
-        String constraints = Stream.of(Operators.values()).filter(v -> v != operator).
+        String constraints = Stream.of(Operators.values()).
+                                    filter(v -> v != operator).
                                     map(Operators::getImage).
                                     collect(Collectors.joining("", closeExp, ARGUMENTS_DELIMITER));
 
@@ -264,7 +265,7 @@ public class FunctionComputer implements Computer {
 
         } catch (StringIndexOutOfBoundsException e) {
             throw new InvalidInputExpressionException(String.format("Input data is invalid because of " +
-                    "this part of expression: '%s'", expression));
+                                                                    "this part of expression: '%s'", expression));
         }
 
         return expression.substring(leftBound, rightBound - 1);

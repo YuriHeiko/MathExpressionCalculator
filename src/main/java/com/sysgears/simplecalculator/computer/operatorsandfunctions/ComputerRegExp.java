@@ -58,8 +58,8 @@ public class ComputerRegExp extends OperatorsComputer {
      *     <ul>
      *         <li>if the expression contains parentheses, calls {@code
      *         openEnclosedExpression()} to open them</li>
-     *         <li>iterates by all possible operators that exist in
-     *         {@code Operators} class</li>
+     *         <li>iterates by all possible operators that exist in {@code
+     *         Operators} class</li>
      *         <li>finds a binary expression that uses such an operator</li>
      *         <li>computes the expression</li>
      *         <li>puts the value instead of the corresponding parts
