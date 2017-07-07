@@ -1,7 +1,7 @@
 package com.sysgears.simplecalculator;
 
 import com.sysgears.simplecalculator.computer.Computer;
-import com.sysgears.simplecalculator.exceptions.InvalidInputExpressionException;
+import com.sysgears.simplecalculator.computer.exceptions.InvalidInputExpressionException;
 import com.sysgears.simplecalculator.history.HistoryHolder;
 import com.sysgears.simplecalculator.ui.Commands;
 import com.sysgears.simplecalculator.ui.CommandsHandler;

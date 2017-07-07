@@ -1,4 +1,4 @@
-package com.sysgears.simplecalculator.exceptions;
+package com.sysgears.simplecalculator.computer.exceptions;
 
 /**
  * Thrown to indicate that the application has attempted to calculate

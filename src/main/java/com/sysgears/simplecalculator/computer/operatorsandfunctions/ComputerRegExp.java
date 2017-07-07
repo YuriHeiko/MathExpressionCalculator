@@ -1,6 +1,6 @@
-package com.sysgears.simplecalculator.computer;
+package com.sysgears.simplecalculator.computer.operatorsandfunctions;
 
-import com.sysgears.simplecalculator.exceptions.InvalidInputExpressionException;
+import com.sysgears.simplecalculator.computer.exceptions.InvalidInputExpressionException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
  *     </ul>
  * </p>
  */
-public class ComputerRegExp extends Computer {
+public class ComputerRegExp extends OperatorsComputer {
     /**
      * A pattern for an expression enclosed within {@code OPEN_EXP} and
      * {@code CLOSE_EXP}

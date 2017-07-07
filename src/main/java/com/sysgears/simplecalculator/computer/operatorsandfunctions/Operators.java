@@ -1,6 +1,6 @@
-package com.sysgears.simplecalculator.computer;
+package com.sysgears.simplecalculator.computer.operatorsandfunctions;
 
-import com.sysgears.simplecalculator.exceptions.InvalidInputExpressionException;
+import com.sysgears.simplecalculator.computer.exceptions.InvalidInputExpressionException;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;

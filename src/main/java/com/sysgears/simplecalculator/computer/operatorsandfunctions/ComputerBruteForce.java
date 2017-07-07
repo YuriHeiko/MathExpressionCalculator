@@ -1,7 +1,7 @@
-package com.sysgears.simplecalculator.computer;
+package com.sysgears.simplecalculator.computer.operatorsandfunctions;
 
 
-import com.sysgears.simplecalculator.exceptions.InvalidInputExpressionException;
+import com.sysgears.simplecalculator.computer.exceptions.InvalidInputExpressionException;
 
 import java.util.regex.Pattern;
 
@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
  *     </ul>
  * </p>
  */
-public class ComputerBruteForce extends Computer {
+public class ComputerBruteForce extends OperatorsComputer {
     /**
      * Finds recursively all parts of the expression which are enclosed in
      * parentheses. Computes such parts and puts the value instead of the

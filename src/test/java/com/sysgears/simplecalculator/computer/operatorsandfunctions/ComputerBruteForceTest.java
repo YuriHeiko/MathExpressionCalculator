@@ -1,4 +1,4 @@
-package com.sysgears.simplecalculator.computer;
+package com.sysgears.simplecalculator.computer.operatorsandfunctions;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -9,7 +9,7 @@ public class ComputerBruteForceTest extends ComputerTest{
 
     @BeforeClass
     public static void setUp() throws Exception {
-        computer = new ComputerBruteForce();
+        operatorsComputer = new ComputerBruteForce();
     }
 
     @Test
