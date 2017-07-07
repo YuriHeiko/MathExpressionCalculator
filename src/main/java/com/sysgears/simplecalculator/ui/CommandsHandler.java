@@ -22,6 +22,7 @@ public class CommandsHandler {
         switch (command) {
             case EXIT:
                 controller.printLine(System.lineSeparator() + "Good bye!");
+                System.exit(0);
                 break;
 
             case HELP:

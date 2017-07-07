@@ -137,7 +137,8 @@ public enum Functions {
      */
     public Double calculate(final Double... arguments) throws InvalidInputExpressionException {
         if (argumentsNumber != null && argumentsNumber != arguments.length) {
-            throw new InvalidInputExpressionException(arguments.length + " arguments instead of " + this.argumentsNumber);
+            throw new InvalidInputExpressionException("Input data is invalid cause this part cause the function " +
+                            this + " contains " + arguments.length + " arguments instead of " + this.argumentsNumber);
         }
 
         return 0.0;

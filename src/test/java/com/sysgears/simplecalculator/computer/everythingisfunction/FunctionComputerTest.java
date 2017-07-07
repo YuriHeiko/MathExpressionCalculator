@@ -69,6 +69,18 @@ public class FunctionComputerTest {
     }
 
     @Test
+    public void testChangeOperatorsToFunctions10() throws Exception {
+        Assert.assertEquals("sum(2,pow(3,2))", functionComputer.convertOperatorsToFunctions("2+3^2"));
+    }
+
+/*
+    @Test
+    public void testChangeOperatorsToFunctions11() throws Exception {
+        Assert.assertEquals("mult(2,subtract(0,2))", functionComputer.convertOperatorsToFunctions("2*-2"));
+    }
+*/
+
+    @Test
     public void testGetOperands() throws Exception {
     }
 

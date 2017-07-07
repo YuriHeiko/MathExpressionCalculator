@@ -1,5 +1,7 @@
 package com.sysgears.simplecalculator.history;
 
+import java.text.SimpleDateFormat;
+
 /**
  * Keeps an associated pair and a time stamp when the object
  * was created.
@@ -16,8 +18,18 @@ public class ResultPair {
     private String value;
 
     /**
+     * A time stamp of a history event creation
+     */
+    private long timeStamp;
+
+    /**
+     * A Date formatter
+     */
+    private final SimpleDateFormat sdf = new SimpleDateFormat("dd MMM HH:mm:ss");
+
+    /**
      * Constructs an object with the only key. It is needed to
-     * provide search by the key in the collection of these
+     * provide search by the key
      *
      * @param key The key
      */
@@ -32,8 +44,20 @@ public class ResultPair {
      * @param value The value
      */
     public ResultPair(String key, String value) {
+        this(key, value, System.currentTimeMillis());
+}
+
+    /**
+     * Constructs an object and store the time of its creation
+     *
+     * @param key       the key
+     * @param value     The value
+     * @param timeStamp The time
+     */
+    private ResultPair(String key, String value, long timeStamp) {
         this.key = key;
         this.value = value;
+        this.timeStamp = timeStamp;
     }
 
     /**
@@ -63,8 +87,13 @@ public class ResultPair {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         ResultPair that = (ResultPair) o;
 
@@ -79,6 +108,19 @@ public class ResultPair {
     @Override
     public int hashCode() {
         return key.hashCode();
+    }
+
+    /**
+     * Returns the string representation of the object
+     *
+     * @return The string representation of the object
+     */
+    public String getDescription(boolean withTime) {
+        if (withTime) {
+            return '[' + sdf.format(timeStamp) + "]" + toString();
+        } else {
+            return toString();
+        }
     }
 
     /**

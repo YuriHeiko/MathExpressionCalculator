@@ -11,37 +11,36 @@ public enum Commands {
     /**
      * A command to end application work
      */
-    EXIT("exit", "", "             - to close the application"),
+    EXIT("exit", "", "\t\t\t- to close the application"),
 
     /**
      * A command to show help
      */
-    HELP("help", "You can use next commands:" + System.lineSeparator(), "             - to get this description"),
+    HELP("help", "You can use next commands:" + System.lineSeparator(), "\t\t\t- to get this description"),
 
     /**
      * A command to show the list of history events
      */
-    HISTORY("history", "History:" + System.lineSeparator(), "          - to see the calculation history"),
+    HISTORY("history", "History:" + System.lineSeparator(), "\t\t\t- to see the calculation history"),
 
     /**
      * A command to show the list of history events without duplicates
      */
     HISTORY_UNIQUE("history unique", "Unique history:" + System.lineSeparator(),
-            "   - to see the calculation history without duplicates"),
+            "\t- to see the calculation history without duplicates"),
 
     /**
      * A command to show the list of allowed math operators
      */
     OPERATORS("operators", "The operators list, sorted in ascending order by their precedence:" + System.lineSeparator(),
-            "        - to see the operators list"),
+            "\t\t- to see the operators list"),
 
     /**
      * Additional information
      */
     ATTENTION(System.lineSeparator() + "ADDITIONAL INFO: ", "",
             "You must NOT use either '+-' or '-+' combinations in your expressions." + System.lineSeparator() +
-                    "You should bear in mind that all the calculations can have some ROUND-OFF errors." +
-                    System.lineSeparator() + "You can use E-notation in your expressions(i.e. 21.1E-2 = 0.211, 1e5 = 100000)");
+                    "You should bear in mind that all the calculations can have some ROUND-OFF errors.");
 
     /**
      * A command string representation

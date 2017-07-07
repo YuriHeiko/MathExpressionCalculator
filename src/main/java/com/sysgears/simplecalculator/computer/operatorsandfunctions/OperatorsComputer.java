@@ -74,9 +74,8 @@ public abstract class OperatorsComputer implements Computer {
     private final Pattern FUNCTIONS_PATTERN = Pattern.compile(Operators.getFunctionsRegExp() + "\\" + OPEN_EXP);
 
     /**
-     * Validates an incoming string. Removes all unnecessary characters.
-     * Replaces all ',' by '.' and '()' by ''. Converts numbers from
-     * E-notation to the decimal one. Computes the expression.
+     * Validates an incoming string. Converts numbers from E-notation to the
+     * decimal one. Computes the expression.
      *
      * @param expression The string contains a math expression. Can be empty
      * @return The string contains the calculated expression
@@ -91,9 +90,13 @@ public abstract class OperatorsComputer implements Computer {
 
         String result = computeArithmeticExpression(computeFunctions(convertFromENotation(expression)));
 
-        if (!(result.isEmpty() || result.matches(NUMBER_EXP)) && !(result.equals("-∞") || result.equals("∞"))) {
+        if (!(result.isEmpty() || result.matches(NUMBER_EXP))) {
             throw new InvalidInputExpressionException(String.format("Input data is invalid cause " +
                     "the result of calculation: '%s' is not a number.", result));
+
+        } else if (result.equals("-∞") || result.equals("∞")) {
+            throw new InvalidInputExpressionException(String.format("Input data is invalid cause " +
+                    "the result of calculation is Infinity(%s)", result));
         }
 
         return result;
@@ -115,28 +118,26 @@ public abstract class OperatorsComputer implements Computer {
         for (Matcher matcher = FUNCTIONS_PATTERN.matcher(result); matcher.find();
              matcher = FUNCTIONS_PATTERN.matcher(result)) {
             String enclosedExpression = getEnclosedExpression(result, matcher.group());
-            Double[] functionArguments;
 
             try {
-                functionArguments = Stream.of(splitArgumentsByDelimiter(enclosedExpression)).
-                                            map(e -> Double.valueOf(computeArithmeticExpression(e))).
-                                            collect(Collectors.toList()).
-                                            toArray(new Double[0]);
-            } catch (NumberFormatException e) {
-                throw new InvalidInputExpressionException(String.format("Input data is invalid cause " +
-                        "this function: '%s' is wrong", matcher.group() + enclosedExpression + CLOSE_EXP));
-            }
+                Double[] functionArguments = Stream.of(splitArgumentsByDelimiter(enclosedExpression)).
+                        map(e -> Double.valueOf(computeArithmeticExpression(e))).
+                        collect(Collectors.toList()).
+                        toArray(new Double[0]);
 
-            try {
                 Double functionResult = Operators.valueOf(matcher.group(1).toUpperCase()).calculate(functionArguments);
 
                 result = normalizeExpression(
                                     result.replaceAll(Pattern.quote(matcher.group() + enclosedExpression + CLOSE_EXP),
                                                                     convertFromENotation(functionResult.toString())));
 
-            } catch (InvalidInputExpressionException e) {
-                throw new InvalidInputExpressionException(String.format("Input data is invalid cause " +
-                        "the function: '%s' has %s", matcher.group() + enclosedExpression + CLOSE_EXP, e.getMessage()));
+            } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
+                throw new InvalidInputExpressionException(String.format("Input data is invalid cause this part " +
+                        "'%s' has a wrong argument", enclosedExpression));
+
+            } catch (ArithmeticException e) {
+                throw new InvalidInputExpressionException(String.format("Input data is invalid cause this part " +
+                        "'%s' tries to divide by zero", enclosedExpression));
             }
         }
 
@@ -275,7 +276,7 @@ public abstract class OperatorsComputer implements Computer {
             String rightOperand = result.substring(result.lastIndexOf((operator.getRepresentation())) + 1);
 
             result = Operators.convertFromENotation(
-                            operator.calculate(Double.parseDouble(leftOperand), Double.parseDouble(rightOperand)));
+                                operator.calculate(Double.parseDouble(leftOperand), Double.parseDouble(rightOperand)));
 
         } catch (NumberFormatException | StringIndexOutOfBoundsException | ArithmeticException e) {
             throw new InvalidInputExpressionException(String.format("Input data is invalid because of " +
