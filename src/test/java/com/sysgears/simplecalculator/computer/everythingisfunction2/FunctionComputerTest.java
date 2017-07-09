@@ -1,4 +1,4 @@
-package com.sysgears.simplecalculator.computer.everythingisfunction;
+package com.sysgears.simplecalculator.computer.everythingisfunction2;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -120,4 +120,31 @@ public class FunctionComputerTest {
     public void testComputeFunction5() throws Exception {
         Assert.assertEquals("512.0", functionComputer.computeFunction("pow(2,3,2)"));
     }
+
+/*
+    @Test
+    public void testGetEnclosedExpressionBound1() throws Exception {
+        Assert.assertEquals(2, functionComputer.getEnclosedExpressionBound("(2)", "(", ")", 0));
+    }
+
+    @Test
+    public void testGetEnclosedExpressionBound2() throws Exception {
+        Assert.assertEquals(13, functionComputer.getEnclosedExpressionBound("(cos(2-(12+5)))", "(", ")", 4));
+    }
+
+    @Test
+    public void testGetBound1() throws Exception {
+        Assert.assertEquals(13, functionComputer.getBound("(cos(2-(12+5)))", 7, "(", ")"));
+    }
+
+    @Test
+    public void testGetOperatorExpression1() throws Exception {
+        Assert.assertEquals("2-(12+5)", functionComputer.getOperatorExpression("(cos(2-(12+5)))", "-"));
+    }
+
+    @Test
+    public void testGetOperatorExpression2() throws Exception {
+        Assert.assertEquals("12+5", functionComputer.getOperatorExpression("(cos(2-(12+5)))", "+"));
+    }
+*/
 }

@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Contains allowed math operators and the relative function. Minus must be before plus
- * according to algorithms' logic.
+ * Contains allowed math operators and link to the relative functions. Minus
+ * must be before plus according to algorithms' logic.
  */
 public enum Operators {
     /**
