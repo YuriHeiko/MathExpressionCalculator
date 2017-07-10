@@ -1,7 +1,7 @@
 package com.sysgears.simplecalculator.ui;
 
 import com.sysgears.simplecalculator.computer.exceptions.InvalidInputExpressionException;
-import com.sysgears.simplecalculator.computer.operatorsandfunctions.Operators;
+import com.sysgears.simplecalculator.computer.everythingisfunction2.*;
 import com.sysgears.simplecalculator.history.HistoryHolder;
 
 import static com.sysgears.simplecalculator.ui.Commands.*;
@@ -39,6 +39,10 @@ public class CommandsHandler {
 
             case OPERATORS:
                 controller.printLine(OPERATORS.HEADER, Operators.getList());
+                break;
+
+            case FUNCTIONS:
+                controller.printLine(OPERATORS.HEADER, Functions.getList());
                 break;
 
             default:

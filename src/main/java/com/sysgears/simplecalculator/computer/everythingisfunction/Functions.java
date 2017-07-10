@@ -133,15 +133,33 @@ public enum Functions {
      *
      * @param arguments The arguments
      * @return The computed value
-     * @throws ArithmeticException If an arithmetic error is happen
+     * @throws ArithmeticException             If an arithmetic error is happen
+     * @throws InvalidInputExpressionException If the incoming string has an
+     *                                         invalid format
      */
     public Double calculate(final Double... arguments) throws InvalidInputExpressionException {
         if (argumentsNumber != null && argumentsNumber != arguments.length) {
             throw new InvalidInputExpressionException("Input data is invalid cause this part cause the function " +
-                            this + " contains " + arguments.length + " arguments instead of " + this.argumentsNumber);
+                    this + " contains " + arguments.length + " arguments instead of " + this.argumentsNumber);
         }
 
         return 0.0;
+    }
+
+    /**
+     * Calculates a function
+     *
+     * @param functions The string representation of the function
+     * @param arguments The function arguments
+     * @return The string contains the computed value
+     * @throws ArithmeticException             If an arithmetic error is happen
+     * @throws InvalidInputExpressionException If the incoming string has an
+     *                                         invalid format
+     */
+    public static String calculate(final String functions, Double... arguments) throws InvalidInputExpressionException,
+            ArithmeticException {
+
+        return valueOf(functions.toUpperCase()).calculate(arguments).toString();
     }
 
     /**
@@ -170,10 +188,15 @@ public enum Functions {
      * @return the same or converted value
      */
     static double convertNegativeZero(double value) {
-        if (value == 0.0) {
-            value = 0.0;  // convert -0.0 to +0.0
-        }
+        return value + 0.0;
+    }
 
-        return value;
+    /**
+     * Builds and returns a string representation of the functions list
+     *
+     * @return The string with the description of all the operators
+     */
+    public static String getList() {
+        return Stream.of(values()).map(e -> "\t" + e.getImage() + "()").collect(Collectors.joining(System.lineSeparator()));
     }
 }

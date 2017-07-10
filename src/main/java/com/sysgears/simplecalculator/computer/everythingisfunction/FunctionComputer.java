@@ -103,7 +103,7 @@ public class FunctionComputer implements Computer {
             String arguments = result.substring(m.group().length(), result.length() - 1);
 
             try {
-                Double[] args = Stream.of(splitArgumentsByDelimiter(arguments, ARGUMENTS_DELIMITER)).
+                Double[] args = Stream.of(splitByDelimiter(arguments, ARGUMENTS_DELIMITER)).
                                             map(e -> computeFunction(removeEnclosingSymbols(e))).
                                             map(Double::valueOf).
                                             collect(Collectors.toList()).
@@ -134,7 +134,7 @@ public class FunctionComputer implements Computer {
      * @throws InvalidInputExpressionException If the incoming string has an
      *                                         invalid format, or it is null
      */
-    String[] splitArgumentsByDelimiter(final String arguments, final String delimiter)
+    String[] splitByDelimiter(final String arguments, final String delimiter)
             throws InvalidInputExpressionException {
 
         List<String> list = new LinkedList<>();
@@ -183,7 +183,7 @@ public class FunctionComputer implements Computer {
                 result = removeEnclosingSymbols(result);
                 String rawArguments = result.substring(getBound(result, operator, LEFT),
                                                 result.indexOf(operator.getImage()) + getBound(result, operator, RIGHT));
-                String function = operator.getFunction(splitArgumentsByDelimiter(rawArguments, operator.getImage()),
+                String function = operator.getFunction(splitByDelimiter(rawArguments, operator.getImage()),
                                                         ARGUMENTS_DELIMITER);
                 result = result.replace(rawArguments, function);
             }

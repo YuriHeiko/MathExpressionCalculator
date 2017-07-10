@@ -50,7 +50,20 @@ public enum Functions {
     /**
      * A power function
      */
-    POW("power") {
+    POWER("power") {
+        /**
+         * Power differentiate from other functions. Since, when it is
+         * written in operators notation, it should be calculated from
+         * right to left, i.e.:
+         * <p>
+         *     RIGHT: 2^3^2 = 2^9 = 512
+         *     WRONG: 2^3^2 = 8^2 = 64
+         * </p>
+         *
+         * @param arguments The arguments
+         * @return
+         * @throws InvalidInputExpressionException
+         */
         @Override
         public Double calculate(final Double... arguments) throws InvalidInputExpressionException {
             super.calculate(arguments);
@@ -65,7 +78,23 @@ public enum Functions {
     DIVIDE("divide") {
         @Override
         public Double calculate(final Double... arguments) throws ArithmeticException, InvalidInputExpressionException {
-            return convertNegativeZero(Stream.of(arguments).reduce((v1, v2) -> v1 / (v2 == 0 ? 0 / 0 : v2)).orElse(0.0));
+            return convertNegativeZero(Stream.of(arguments).reduce((v1, v2) -> v1 / checkZero(v2)).orElse(0.0));
+        }
+
+        /**
+         * Checks if {@code value} is zero. If it is true throws an
+         * exception.
+         *
+         * @param value The value
+         * @return The value
+         * @throws ArithmeticException If the value equals zero
+         */
+        private double checkZero(double value) throws ArithmeticException {
+            if (convertNegativeZero(value) == 0) {
+                throw new ArithmeticException();
+            }
+
+            return value;
         }
     },
     /**
@@ -99,7 +128,7 @@ public enum Functions {
     /**
      * The string representation of the function
      */
-    final String image;
+    private final String image;
 
     /**
      * The math precedence of the function
@@ -133,7 +162,9 @@ public enum Functions {
      *
      * @param arguments The arguments
      * @return The computed value
-     * @throws ArithmeticException If an arithmetic error is happen
+     * @throws ArithmeticException             If an arithmetic error is happen
+     * @throws InvalidInputExpressionException If the incoming string has an
+     *                                         invalid format
      */
     public Double calculate(final Double... arguments) throws InvalidInputExpressionException {
         if (argumentsNumber != null && argumentsNumber != arguments.length) {
@@ -142,6 +173,22 @@ public enum Functions {
         }
 
         return 0.0;
+    }
+
+    /**
+     * Calculates a function
+     *
+     * @param functions The string representation of the function
+     * @param arguments The function arguments
+     * @return The string contains the computed value
+     * @throws ArithmeticException             If an arithmetic error is happen
+     * @throws InvalidInputExpressionException If the incoming string has an
+     *                                         invalid format
+     */
+    public static String calculate(final String functions, Double... arguments) throws InvalidInputExpressionException,
+            ArithmeticException {
+
+        return valueOf(functions.toUpperCase()).calculate(arguments).toString();
     }
 
     /**
@@ -170,10 +217,15 @@ public enum Functions {
      * @return the same or converted value
      */
     static double convertNegativeZero(double value) {
-        if (value == 0.0) {
-            value = 0.0;  // convert -0.0 to +0.0
-        }
+        return value + 0.0;
+    }
 
-        return value;
+    /**
+     * Builds and returns a string representation of the functions list
+     *
+     * @return The string with the description of all the operators
+     */
+    public static String getList() {
+        return Stream.of(values()).map(e -> "\t" + e.getImage() + "()").collect(Collectors.joining(System.lineSeparator()));
     }
 }

@@ -58,7 +58,7 @@ public enum Operators {
     /**
      * The math precedence of the operator
      */
-    final Integer precedence;
+    private final Integer precedence;
 
     /**
      * Constructs an object
@@ -100,5 +100,15 @@ public enum Operators {
      */
     public static Collection<Operators> getOperatorsByPrecedence() {
         return Stream.of(values()).sorted((e1, e2) -> e2.precedence.compareTo(e1.precedence)).collect(Collectors.toList());
+    }
+
+    /**
+     * Builds and returns a string representation of the operator list
+     *
+     * @return The string with the description of all the operators
+     */
+    public static String getList() {
+        return getOperatorsByPrecedence().stream().map(e -> "\t" + e + "(" + e.getImage() + ")").
+                collect(Collectors.joining(System.lineSeparator()));
     }
 }

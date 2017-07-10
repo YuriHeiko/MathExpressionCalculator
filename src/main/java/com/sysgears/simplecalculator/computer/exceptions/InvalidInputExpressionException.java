@@ -6,6 +6,11 @@ package com.sysgears.simplecalculator.computer.exceptions;
  * appropriate format.
  */
 public class InvalidInputExpressionException extends RuntimeException {
+    private String wrongPart;
+
+    public String getWrongPart() {
+        return wrongPart;
+    }
 
     /**
      * Constructs an object. Resend message to the super
@@ -13,7 +18,18 @@ public class InvalidInputExpressionException extends RuntimeException {
      *
      * @param message The string contains an error description
      */
-    public InvalidInputExpressionException(String message) {
+    public InvalidInputExpressionException(final String message) {
         super(message);
+    }
+
+    /**
+     * Constructs an object. Resend message to the super
+     * class constructor
+     *
+     * @param message The string contains an error description
+     */
+    public InvalidInputExpressionException(final String message, final String wrongPart) {
+        super(message);
+        this.wrongPart = wrongPart;
     }
 }

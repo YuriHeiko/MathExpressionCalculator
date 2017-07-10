@@ -36,6 +36,11 @@ public enum Commands {
             "\t\t- to see the operators list"),
 
     /**
+     * A command to show the list of allowed math operators
+     */
+    FUNCTIONS("functions", "The functions list:" + System.lineSeparator(),"\t\t- to see the functions list"),
+
+    /**
      * Additional information
      */
     ATTENTION(System.lineSeparator() + "ADDITIONAL INFO: ", "",

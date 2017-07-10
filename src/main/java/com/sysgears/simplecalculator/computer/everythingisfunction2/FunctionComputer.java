@@ -6,7 +6,6 @@ import com.sysgears.simplecalculator.computer.exceptions.InvalidInputExpressionE
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Calculates a received math expression. An incoming string cannot
@@ -60,21 +59,23 @@ public class FunctionComputer implements Computer {
      */
     @Override
     public String compute(final String expression) throws InvalidInputExpressionException {
+        String result = "";
+
         if (expression == null) {
             throw new InvalidInputExpressionException("Incoming string cannot be null");
+
+        } else if (!expression.isEmpty()) {
+            result = computeFunction(Operators.convertToFunctions(expression));
+
+            if (!(result.isEmpty() || result.matches(NUMBER_EXP))) {
+                throw new InvalidInputExpressionException("Input data is invalid cause the result of calculation: " +
+                        result + " is not a number.");
+
+            } else if (result.equals("-∞") || result.equals("∞")) {
+                throw new InvalidInputExpressionException("Input data is invalid cause the result of calculation is " +
+                        "Infinity" + result);
+            }
         }
-
-        String result = computeFunction(Operators.convertToFunctions(expression));
-
-        if (!(result.isEmpty() || result.matches(NUMBER_EXP))) {
-            throw new InvalidInputExpressionException(String.format("Input data is invalid cause " +
-                    "the result of calculation: '%s' is not a number.", result));
-
-        } else if (result.equals("-∞") || result.equals("∞")) {
-            throw new InvalidInputExpressionException(String.format("Input data is invalid cause " +
-                    "the result of calculation is Infinity(%s)", result));
-        }
-
         return result;
     }
 
@@ -85,33 +86,49 @@ public class FunctionComputer implements Computer {
      *                   functions
      * @return The string contains the calculated expression
      */
-    //TODO reverse + infinity check
     String computeFunction(final String expression) throws InvalidInputExpressionException {
-        String result = expression;
+        String result = removeEnclosingSymbols(expression);
 
         for (Matcher m = FUNCTIONS_PATTERN.matcher(result); m.find(); m = FUNCTIONS_PATTERN.matcher(result)) {
             String arguments = result.substring(m.group().length(), result.length() - 1);
 
             try {
-                Double[] args = Stream.of(arguments.split(Pattern.quote(DELIMITER))).
-                                          map(e -> Double.valueOf(computeFunction(e))).
-                                          collect(Collectors.toList()).
-                                          toArray(new Double[0]);
+                // Take arguments. Compute argument if it is a function
+                Double[] argsValues = Operators.splitByDelimiter(arguments, DELIMITER).
+                                            map(argument -> Double.valueOf(computeFunction(argument))).
+                                            collect(Collectors.toList()).
+                                            toArray(new Double[0]);
 
                 result = result.replaceAll(Pattern.quote(m.group() + arguments + CLOSE_EXP),
-                                            Functions.valueOf(m.group(1).toUpperCase()).calculate(args).toString());
+                                            Functions.calculate(m.group(1), argsValues));
 
             } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
-                throw new InvalidInputExpressionException(String.format("Input data is invalid cause this part " +
-                                                                        "'%s' has a wrong argument", arguments));
+                throw new InvalidInputExpressionException("Input data is invalid cause this part " + m.group() +
+                                    arguments + CLOSE_EXP + " has a wrong argument", m.group() + arguments + CLOSE_EXP);
 
             } catch (ArithmeticException e) {
-                throw new InvalidInputExpressionException(String.format("Input data is invalid cause this part " +
-                                                                        "'%s' tries to divide by zero", arguments));
+                throw new InvalidInputExpressionException("Input data is invalid cause this part " + m.group() +
+                                arguments + CLOSE_EXP + " tries to divide by zero", m.group() + arguments + CLOSE_EXP);
             }
         }
 
         return result;
     }
 
+    /**
+     * Removes enclosing symbols, i.e. '(cos(2))' => 'cos(2)'
+     *
+     * @param expression The math expression
+     * @return The open expression
+     */
+    String removeEnclosingSymbols(final String expression) {
+        String result = expression;
+
+        while (result.charAt(0) == OPEN_EXP.charAt(0)) {
+            int endIndex = Operators.getEnclosedExpressionBound(result, OPEN_EXP, CLOSE_EXP, 0);
+            result = result.substring(1, endIndex) + result.substring(endIndex + 1, result.length());
+        }
+
+        return result;
+    }
 }

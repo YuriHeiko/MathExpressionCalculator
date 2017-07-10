@@ -26,13 +26,13 @@ public class FunctionComputerTest {
 
     @Test
     public void testComputeFunction1() throws Exception {
-        Assert.assertEquals("-1.5657424899641503", functionComputer.computeFunction("sum(cos(pow(2,4)),sin(cos(4)))"));
+        Assert.assertEquals("-1.5657424899641503", functionComputer.computeFunction("sum(cos(power(2,4)),sin(cos(4)))"));
     }
 
     @Test
     public void testComputeFunction2() throws Exception {
         Assert.assertEquals("0.17506738369244146",
-                functionComputer.computeFunction("sum(cos(pow(subtract(2,8),sum(4,3))),sin(cos(subtract(0,multiply(4,2)))))"));
+                functionComputer.computeFunction("sum(cos(power(subtract(2,8),sum(4,3))),sin(cos(subtract(0,multiply(4,2)))))"));
     }
 
     @Test
@@ -44,12 +44,12 @@ public class FunctionComputerTest {
     @Test
     public void testComputeFunction4() throws Exception {
         Assert.assertEquals("-211.9401511604541",
-                functionComputer.computeFunction("sum(pow(subtract(12,cos(12)),2),multiply(cos(subtract(cos(24),sin(6))),sqrt(sum(cos(4),pow(10,2)))),(subtract(21,multiply(8,45),10,20,45,40,(subtract(0,10,100)))))"));
+                functionComputer.computeFunction("sum(power(subtract(12,cos(12)),2),multiply(cos(subtract(cos(24),sin(6))),sqrt(sum(cos(4),power(10,2)))),(subtract(21,multiply(8,45),10,20,45,40,(subtract(0,10,100)))))"));
     }
 
     @Test
     public void testComputeFunction5() throws Exception {
-        Assert.assertEquals("512.0", functionComputer.computeFunction("pow(2,3,2)"));
+        Assert.assertEquals("512.0", functionComputer.computeFunction("power(2,3,2)"));
     }
 
 /*
