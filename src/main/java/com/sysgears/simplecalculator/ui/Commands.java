@@ -38,7 +38,12 @@ public enum Commands {
     /**
      * A command to show the list of allowed math operators
      */
-    FUNCTIONS("functions", "The functions list:" + System.lineSeparator(),"\t\t- to see the functions list"),
+    USER_FUNCTIONS("user functions", "The User's functions list:" + System.lineSeparator(),"\t- to see User's functions list"),
+
+    /**
+     * A command to show the list of allowed math operators
+     */
+    FUNCTIONS("functions", "The Math's functions list:" + System.lineSeparator(),"\t\t- to see Math's functions list"),
 
     /**
      * Additional information
@@ -87,6 +92,6 @@ public enum Commands {
     }
 
     public static boolean isCommand(final String line) {
-        return Arrays.stream(values()).anyMatch(v -> v.COMMAND.equals(line));
+        return Stream.of(values()).anyMatch(v -> v.COMMAND.equals(line));
     }
 }

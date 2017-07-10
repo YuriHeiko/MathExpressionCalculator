@@ -42,7 +42,11 @@ public class CommandsHandler {
                 break;
 
             case FUNCTIONS:
-                controller.printLine(OPERATORS.HEADER, Functions.getList());
+                controller.printLine(OPERATORS.HEADER, Functions.getMathList());
+                break;
+
+            case USER_FUNCTIONS:
+                controller.printLine(USER_FUNCTIONS.HEADER, Functions.getList());
                 break;
 
             default:

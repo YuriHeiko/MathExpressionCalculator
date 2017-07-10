@@ -1,5 +1,7 @@
 package com.sysgears.simplecalculator.computer.everythingisfunction2;
 
+import com.sysgears.simplecalculator.computer.exceptions.InvalidInputExpressionException;
+
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,7 +35,10 @@ public enum Operators {
         /**
          * If there is a minus in front of an operand returns the subtract
          * function with the argument as the second one and zero as the
-         * first one.
+         * first one, i.e.:
+         * <p>
+         *     -2*1 = multiply(subtract(0,2),1)
+         * </p>
          *
          * @param arguments The stream of arguments
          * @return {@code String} contains function
@@ -51,6 +56,9 @@ public enum Operators {
          * If there is a plus in front of an operand returns the sum
          * function with the argument as the second one and zero as the
          * first one.
+         * <p>
+         *     +2-1 = subtract(sum(0,2),1)
+         * </p>
          *
          * @param arguments The stream of arguments
          * @return {@code String} contains function
@@ -72,7 +80,8 @@ public enum Operators {
     private final Functions function;
 
     /**
-     * The math precedence of the operator
+     * The math precedence of the operator as higher the value
+     * as higher the precedence
      */
     private final Integer precedence;
 
@@ -120,13 +129,13 @@ public enum Operators {
 
 
     /**
-     * Returns constraints string except for this operator
+     * Returns constraints string except for this
      *
      * @param closeExp The string contains the close expression representation
      * @return The constraints string
      */
     String getConstraints(final String closeExp) {
-        return Stream.of(Operators.values()).map(Operators::getImage).filter(e -> !e.equals(image)).
+        return Stream.of(values()).map(Operators::getImage).filter(e -> !e.equals(image)).
                                              collect(Collectors.joining("", DELIMITER, closeExp));
     }
 
@@ -151,8 +160,13 @@ public enum Operators {
 
         for (Operators operator : getOperatorsByPrecedence()) {
             while (result.contains(operator.image)) {
-                String operatorExp = operator.getOperatorExpression(result, operator.image);
-                result = result.replace(operatorExp, operator.getFunction(splitByDelimiter(operatorExp, operator.image)));
+                try {
+                    String operatorExp = operator.getOperatorExpression(result, operator.image);
+                    result = result.replace(operatorExp, operator.getFunction(splitByDelimiter(operatorExp, operator.image)));
+
+                } catch (StringIndexOutOfBoundsException e) {
+                    throw new InvalidInputExpressionException("Converting operators to functions error " + result + ".");
+                }
             }
         }
 
@@ -160,7 +174,11 @@ public enum Operators {
     }
 
     /**
-     * Finds the left and right operands of the expression.
+     * Finds the left and right operands of the expression. Consider the sequence
+     * of the same operators as one function, i.e.:
+     * <p>
+     *     2+2+2 = sum(2,2,2)
+     * </p>
      *
      * @param expression The string contains a math expression
      * @param image      The string representation of the operator
@@ -180,9 +198,9 @@ public enum Operators {
     }
 
     /**
-     * Breaks an argument string by delimiter and combines arguments into a
-     * String array. Considers as one arguments everything enclosed in {@code
-     * FunctionComputer.OPEN_EXP} and {@code FunctionComputer.CLOSE_EXP}
+     * Breaks a string by the delimiter and combines arguments into a {@code
+     * Stream}. Considers as one argument everything enclosed between {@code
+     * OPEN_EXP} and {@code CLOSE_EXP}
      *
      * @param expression The string contains the expression
      * @param image      The string representation of the operator
@@ -218,8 +236,7 @@ public enum Operators {
     }
 
     /**
-     * Finds a bound of operand of the incoming expression. The side of the operand is
-     * set by {@code direction}
+     * Finds operands' bound of the incoming expression of the specified operator
      *
      * @param expression    The math expression
      * @param operatorIndex The index of the first occurrence of the operator
@@ -233,7 +250,6 @@ public enum Operators {
 
         while (bound < expression.length() && constraints.indexOf(expression.charAt(bound)) == -1) {
             if (expression.charAt(bound) == openExp.charAt(0)) {
-                // skip enclosed expression
                 bound = getEnclosedExpressionBound(expression, openExp, closeExp, bound);
             }
             bound++;
@@ -243,8 +259,8 @@ public enum Operators {
     }
 
     /**
-     * Finds and returns an enclosed part of the expression. Searching starts
-     * from the left side of the expression.
+     * Finds and returns a right bound of enclosed part of the expression.
+     * Searching starts from the left.
      *
      * @param expression The string contains a math expression
      * @param openExp    The string contains the open expression representation
@@ -256,13 +272,17 @@ public enum Operators {
                                           final int leftBound) {
         int rightBound = leftBound + 1;
 
-        for (int counter = 1; counter > 0; rightBound++) {
-            if (expression.charAt(rightBound) == closeExp.charAt(0)) {
-                counter--;
+        try {
+            for (int counter = 1; counter > 0; rightBound++) {
+                if (expression.charAt(rightBound) == closeExp.charAt(0)) {
+                    counter--;
 
-            } else if (expression.charAt(rightBound) == openExp.charAt(0)) {
-                counter++;
+                } else if (expression.charAt(rightBound) == openExp.charAt(0)) {
+                    counter++;
+                }
             }
+        } catch (StringIndexOutOfBoundsException e) {
+            throw new InvalidInputExpressionException("Input data is invalid cause this part " + expression + " is wrong.");
         }
 
         return rightBound - 1;

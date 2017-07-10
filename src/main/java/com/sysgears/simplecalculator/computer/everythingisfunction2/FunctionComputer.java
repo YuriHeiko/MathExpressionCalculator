@@ -62,7 +62,7 @@ public class FunctionComputer implements Computer {
         String result = "";
 
         if (expression == null) {
-            throw new InvalidInputExpressionException("Incoming string cannot be null");
+            throw new InvalidInputExpressionException("Incoming string cannot be null.");
 
         } else if (!expression.isEmpty()) {
             result = computeFunction(Operators.convertToFunctions(expression));
@@ -73,7 +73,7 @@ public class FunctionComputer implements Computer {
 
             } else if (result.equals("-∞") || result.equals("∞")) {
                 throw new InvalidInputExpressionException("Input data is invalid cause the result of calculation is " +
-                        "Infinity" + result);
+                        "Infinity." + result);
             }
         }
         return result;
@@ -90,6 +90,11 @@ public class FunctionComputer implements Computer {
         String result = removeEnclosingSymbols(expression);
 
         for (Matcher m = FUNCTIONS_PATTERN.matcher(result); m.find(); m = FUNCTIONS_PATTERN.matcher(result)) {
+            if (result.charAt(result.length() - 1) != CLOSE_EXP.charAt(0)) {
+                throw new InvalidInputExpressionException("Input data is invalid cause this part " + result +
+                                                            " does not have the close symbol.", result);
+            }
+
             String arguments = result.substring(m.group().length(), result.length() - 1);
 
             try {
@@ -104,11 +109,11 @@ public class FunctionComputer implements Computer {
 
             } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
                 throw new InvalidInputExpressionException("Input data is invalid cause this part " + m.group() +
-                                    arguments + CLOSE_EXP + " has a wrong argument", m.group() + arguments + CLOSE_EXP);
+                                    arguments + CLOSE_EXP + " has a wrong argument.", m.group() + arguments + CLOSE_EXP);
 
             } catch (ArithmeticException e) {
                 throw new InvalidInputExpressionException("Input data is invalid cause this part " + m.group() +
-                                arguments + CLOSE_EXP + " tries to divide by zero", m.group() + arguments + CLOSE_EXP);
+                                arguments + CLOSE_EXP + " tries to divide by zero.", m.group() + arguments + CLOSE_EXP);
             }
         }
 

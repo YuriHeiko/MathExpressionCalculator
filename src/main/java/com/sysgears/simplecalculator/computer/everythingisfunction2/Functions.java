@@ -2,10 +2,19 @@ package com.sysgears.simplecalculator.computer.everythingisfunction2;
 
 import com.sysgears.simplecalculator.computer.exceptions.InvalidInputExpressionException;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import static com.sysgears.simplecalculator.computer.everythingisfunction2.FunctionComputer.CLOSE_EXP;
+import static com.sysgears.simplecalculator.computer.everythingisfunction2.FunctionComputer.OPEN_EXP;
 
 /**
  * Contains allowed math functions and their logic. All the computes
@@ -14,39 +23,6 @@ import java.util.stream.Stream;
  * changed to {@code BigDecimal} so as to solve problems above.
  */
 public enum Functions {
-    /**
-     * A square root function
-     */
-    SQRT("sqrt", 1) {
-        @Override
-        public Double calculate(final Double... arguments) throws InvalidInputExpressionException {
-            super.calculate(arguments);
-
-            return convertNegativeZero(Math.sqrt(arguments[0]));
-        }
-    },
-    /**
-     * A sinuses function
-     */
-    SIN("sin", 1) {
-        @Override
-        public Double calculate(final Double... arguments) throws InvalidInputExpressionException {
-            super.calculate(arguments);
-
-            return convertNegativeZero(Math.sin(arguments[0]));
-        }
-    },
-    /**
-     * A cosines function
-     */
-    COS("cos", 1) {
-        @Override
-        public Double calculate(final Double... arguments) throws InvalidInputExpressionException {
-            super.calculate(arguments);
-
-            return convertNegativeZero(Math.cos(arguments[0]));
-        }
-    },
     /**
      * A power function
      */
@@ -61,13 +37,13 @@ public enum Functions {
          * </p>
          *
          * @param arguments The arguments
-         * @return
-         * @throws InvalidInputExpressionException
+         * @return The computed value
+         * @throws InvalidInputExpressionException If the incoming string has an
+         *                                         invalid format
          */
         @Override
         public Double calculate(final Double... arguments) throws InvalidInputExpressionException {
             super.calculate(arguments);
-
             return convertNegativeZero(IntStream.range(1 - arguments.length, 1).mapToDouble(i -> arguments[-i]).
                                                  reduce((v1, v2) -> (v1 < 0 ? -1 : 1) * Math.pow(v2, v1)).orElse(0.0));
         }
@@ -136,6 +112,26 @@ public enum Functions {
     private final Integer argumentsNumber;
 
     /**
+     * The {@code Map} contains all Math class methods
+     */
+    private static Map<String, String[]> mathFunctions = new TreeMap<>();
+
+    /**
+     * Fills {@code mathFunctions} with all methods from {@code Math}
+     * class
+     */
+    static {
+        for (Method method : Math.class.getDeclaredMethods()) {
+            if (Modifier.isPublic(method.getModifiers()) && method.getReturnType() == double.class) {
+                mathFunctions.put(method.getName(), Stream.of(method.getParameterTypes()).map(Class::toString).
+                                                                collect(Collectors.toList()).toArray(new String[0]));
+            }
+        }
+    }
+
+    private static Object mathList;
+
+    /**
      * Constructs an object with virtually endless number of arguments
      *
      * @param image           The string representation of the function
@@ -166,7 +162,7 @@ public enum Functions {
      * @throws InvalidInputExpressionException If the incoming string has an
      *                                         invalid format
      */
-    public Double calculate(final Double... arguments) throws InvalidInputExpressionException {
+    Double calculate(final Double... arguments) throws InvalidInputExpressionException {
         if (argumentsNumber != null && argumentsNumber != arguments.length) {
             throw new InvalidInputExpressionException("Input data is invalid cause this part cause the function " +
                             this + " contains " + arguments.length + " arguments instead of " + this.argumentsNumber);
@@ -178,17 +174,42 @@ public enum Functions {
     /**
      * Calculates a function
      *
-     * @param functions The string representation of the function
+     * @param function The string representation of the function
      * @param arguments The function arguments
      * @return The string contains the computed value
      * @throws ArithmeticException             If an arithmetic error is happen
      * @throws InvalidInputExpressionException If the incoming string has an
      *                                         invalid format
      */
-    public static String calculate(final String functions, Double... arguments) throws InvalidInputExpressionException,
+    public static String calculate(final String function, Double... arguments) throws InvalidInputExpressionException,
             ArithmeticException {
 
-        return valueOf(functions.toUpperCase()).calculate(arguments).toString();
+        String value = "";
+
+        if (Stream.of(values()).anyMatch(f -> f.getImage().equals(function))) {
+            value = valueOf(function.toUpperCase()).calculate(arguments).toString();
+        } else if (mathFunctions.containsKey(function)) {
+            String[] args = mathFunctions.get(function);
+            if (arguments.length == args.length) {
+                try {
+                    Class<?>[] a = new Class[args.length];
+                    for (int i = 0; i < a.length; i++) {
+                        a[i] = double.class;
+                    }
+
+                    value = Math.class.getMethod(function, a).invoke(Functions.class, (Object[]) arguments).toString();
+
+                } catch (Exception e) {
+                    throw new InvalidInputExpressionException("Input data is invalid cause this part contains " +
+                                                                "an unknown function");
+                }
+            } else {
+                throw new InvalidInputExpressionException("Input data is invalid cause this part cause the function " +
+                        function + " contains " + arguments.length + " arguments instead of " + args.length);
+            }
+        }
+
+        return value;
     }
 
     /**
@@ -206,7 +227,10 @@ public enum Functions {
      * @return The RegExp string contains all the functions
      */
     static String getRegExp() {
-        return Stream.of(values()).map(v -> Pattern.quote(v.image)).collect(Collectors.joining("|", "(", ")\\("));
+        List<String> functions = new LinkedList<>(mathFunctions.keySet());
+        functions.addAll(Stream.of(values()).map(Functions::getImage).collect(Collectors.toList()));
+
+        return functions.stream().map(Pattern::quote).collect(Collectors.joining("|", "(", ")\\("));
     }
 
     /**
@@ -221,11 +245,27 @@ public enum Functions {
     }
 
     /**
-     * Builds and returns a string representation of the functions list
+     * Builds and returns a string representation of the User's functions list
      *
-     * @return The string with the description of all the operators
+     * @return The string with the description of all the functions
      */
     public static String getList() {
-        return Stream.of(values()).map(e -> "\t" + e.getImage() + "()").collect(Collectors.joining(System.lineSeparator()));
+        return Stream.of(values()).map(e -> {
+            String arguments = IntStream.range(1, e.argumentsNumber == null ? 0 : e.argumentsNumber).
+                                         mapToObj(i -> "x" + i).collect(Collectors.joining(", ", OPEN_EXP, CLOSE_EXP));
+            return "\t" + e.getImage() +
+                            (arguments.equals(OPEN_EXP + CLOSE_EXP) ? OPEN_EXP + "x1, x2 ... xN" + CLOSE_EXP : arguments);
+        }).collect(Collectors.joining(System.lineSeparator()));
+    }
+
+    /**
+     * Builds and returns a string representation of the Math functions list
+     *
+     * @return The string with the description of all the Math functions
+     */
+    public static String getMathList() {
+        return mathFunctions.keySet().stream().
+                map(e -> "\t" + e + IntStream.range(1, mathFunctions.get(e).length + 1).mapToObj(i -> "x" + i).
+                        collect(Collectors.joining(", ", OPEN_EXP, CLOSE_EXP))).collect(Collectors.joining(System.lineSeparator()));
     }
 }

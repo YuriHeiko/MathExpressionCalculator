@@ -60,7 +60,7 @@ public final class Calculator {
                 String result = "";
 
                 String line = controller.readLine(
-                        "Type an expression to calculate or type 'help' to see a commands list:");
+                        "Type an expression to calculate or 'help' to see the commands list:");
 
                 if (Commands.isCommand(line)) {
                     CommandsHandler.handle(Commands.valueOf(line.toUpperCase().replace(" ", "_")), controller, history);

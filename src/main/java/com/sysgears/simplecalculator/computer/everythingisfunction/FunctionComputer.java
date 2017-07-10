@@ -183,8 +183,7 @@ public class FunctionComputer implements Computer {
                 result = removeEnclosingSymbols(result);
                 String rawArguments = result.substring(getBound(result, operator, LEFT),
                                                 result.indexOf(operator.getImage()) + getBound(result, operator, RIGHT));
-                String function = operator.getFunction(splitByDelimiter(rawArguments, operator.getImage()),
-                                                        ARGUMENTS_DELIMITER);
+                String function = operator.getFunction(splitByDelimiter(rawArguments, operator.getImage()), ARGUMENTS_DELIMITER);
                 result = result.replace(rawArguments, function);
             }
         }
