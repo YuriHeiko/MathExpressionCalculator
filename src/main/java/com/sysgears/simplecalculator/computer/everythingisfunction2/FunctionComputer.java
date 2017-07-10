@@ -64,7 +64,7 @@ public class FunctionComputer implements Computer {
             throw new InvalidInputExpressionException("Incoming string cannot be null");
         }
 
-        String result = computeFunction(Operators.convertOperatorsToFunctions(expression));
+        String result = computeFunction(Operators.convertToFunctions(expression));
 
         if (!(result.isEmpty() || result.matches(NUMBER_EXP))) {
             throw new InvalidInputExpressionException(String.format("Input data is invalid cause " +
