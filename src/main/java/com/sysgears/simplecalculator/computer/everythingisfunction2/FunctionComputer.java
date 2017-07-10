@@ -49,8 +49,7 @@ public class FunctionComputer implements Computer {
     private final Pattern FUNCTIONS_PATTERN = Pattern.compile(Functions.getRegExp());
 
     /**
-     * Validates an incoming string. Removes all unnecessary characters.
-     * Computes the expression.
+     * Validates an incoming string. Computes the expression.
      *
      * @param expression The string contains a math expression
      * @return The string contains the calculated expression
@@ -62,7 +61,10 @@ public class FunctionComputer implements Computer {
         String result = "";
 
         if (expression == null) {
-            throw new InvalidInputExpressionException("Incoming string cannot be null.");
+            throw new InvalidInputExpressionException("Incoming string cannot be null");
+
+        } else if (!(expression.contains("++") || expression.contains("--"))) {
+            throw new InvalidInputExpressionException("Incoming string cannot contain either '++' or '--'");
 
         } else if (!expression.isEmpty()) {
             result = computeFunction(Operators.convertToFunctions(expression));
@@ -90,15 +92,10 @@ public class FunctionComputer implements Computer {
         String result = removeEnclosingSymbols(expression);
 
         for (Matcher m = FUNCTIONS_PATTERN.matcher(result); m.find(); m = FUNCTIONS_PATTERN.matcher(result)) {
-            if (result.charAt(result.length() - 1) != CLOSE_EXP.charAt(0)) {
-                throw new InvalidInputExpressionException("Input data is invalid cause this part " + result +
-                                                            " does not have the close symbol.", result);
-            }
-
             String arguments = result.substring(m.group().length(), result.length() - 1);
 
             try {
-                // Take arguments. Compute argument if it is a function
+                // Take arguments. Compute arguments if they are functions.
                 Double[] argsValues = Operators.splitByDelimiter(arguments, DELIMITER).
                                             map(argument -> Double.valueOf(computeFunction(argument))).
                                             collect(Collectors.toList()).
@@ -125,9 +122,16 @@ public class FunctionComputer implements Computer {
      *
      * @param expression The math expression
      * @return The open expression
+     * @throws InvalidInputExpressionException If the incoming string has an
+     *                                         invalid format
      */
-    String removeEnclosingSymbols(final String expression) {
+    String removeEnclosingSymbols(final String expression) throws InvalidInputExpressionException {
         String result = expression;
+
+        if (result.charAt(result.length() - 1) != CLOSE_EXP.charAt(0)) {
+            throw new InvalidInputExpressionException("Input data is invalid cause this part " + result +
+                    " does not have the closing symbol: '" + CLOSE_EXP + "'.", result);
+        }
 
         while (result.charAt(0) == OPEN_EXP.charAt(0)) {
             int endIndex = Operators.getEnclosedExpressionBound(result, OPEN_EXP, CLOSE_EXP, 0);

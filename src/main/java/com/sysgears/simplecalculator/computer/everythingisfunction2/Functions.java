@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -17,10 +18,11 @@ import static com.sysgears.simplecalculator.computer.everythingisfunction2.Funct
 import static com.sysgears.simplecalculator.computer.everythingisfunction2.FunctionComputer.OPEN_EXP;
 
 /**
- * Contains allowed math functions and their logic. All the computes
- * heavily rely on {@code Double} type. However, it lead to round-off
- * errors, and this type is constrained by number size. So, it can be
- * changed to {@code BigDecimal} so as to solve problems above.
+ * Contains allowed math functions and their logic. It also uses {@code
+ * Math} functions. All the computes heavily rely on {@code Double} type.
+ * However, it lead to round-off errors, and this type is constrained by
+ * number size. So, it can be changed to {@code BigDecimal} so as to solve
+ * problems above.
  */
 public enum Functions {
     /**
@@ -171,10 +173,28 @@ public enum Functions {
         return 0.0;
     }
 
+    private static Map<String, String[]> getMathClassFunctions() {
+
+        Map<String, Object> collect = Stream.of(Math.class.getDeclaredMethods()).
+                collect(Collectors.groupingBy(Method::getName,
+                        Collector.of(LinkedList::new, Class::toString, LinkedList::add,LinkedList::toArray)));
+
+
+        for (Method method : Math.class.getDeclaredMethods()) {
+            if (Modifier.isPublic(method.getModifiers()) && method.getReturnType() == double.class) {
+                mathFunctions.put(method.getName(), Stream.of(method.getParameterTypes()).map(Class::toString).
+                        collect(Collectors.toList()).toArray(new String[0]));
+            }
+        }
+
+    }
+
     /**
-     * Calculates a function
+     * Calculates a function. Firstly, tries to find a function in {@code Functions}.
+     * If it is found, calculates the function. If it is not found, tries to use
+     * {@code Math} functions.
      *
-     * @param function The string representation of the function
+     * @param function  The string representation of the function
      * @param arguments The function arguments
      * @return The string contains the computed value
      * @throws ArithmeticException             If an arithmetic error is happen
@@ -188,6 +208,7 @@ public enum Functions {
 
         if (Stream.of(values()).anyMatch(f -> f.getImage().equals(function))) {
             value = valueOf(function.toUpperCase()).calculate(arguments).toString();
+
         } else if (mathFunctions.containsKey(function)) {
             String[] args = mathFunctions.get(function);
             if (arguments.length == args.length) {
@@ -203,6 +224,7 @@ public enum Functions {
                     throw new InvalidInputExpressionException("Input data is invalid cause this part contains " +
                                                                 "an unknown function");
                 }
+
             } else {
                 throw new InvalidInputExpressionException("Input data is invalid cause this part cause the function " +
                         function + " contains " + arguments.length + " arguments instead of " + args.length);

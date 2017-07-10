@@ -12,8 +12,7 @@ import java.util.stream.Stream;
 import static com.sysgears.simplecalculator.computer.everythingisfunction2.FunctionComputer.*;
 
 /**
- * Contains allowed math operators and link to the relative functions. Minus
- * must be before plus according to algorithms' logic.
+ * Contains allowed math operators and link to the relative functions.
  */
 public enum Operators {
     /**
@@ -127,7 +126,6 @@ public enum Operators {
         return Stream.of(values()).sorted((e1, e2) -> e2.precedence.compareTo(e1.precedence)).collect(Collectors.toList());
     }
 
-
     /**
      * Returns constraints string except for this
      *
@@ -211,10 +209,9 @@ public enum Operators {
 
         if (expression.contains(OPEN_EXP) && expression.contains(image)) {
             List<String> list = new LinkedList<>();
-            int leftBound;
-            int rightBound;
+            int leftBound = 0;
 
-            for (leftBound = 0, rightBound = 0; rightBound < expression.length(); rightBound++) {
+            for (int rightBound = 0; rightBound < expression.length(); rightBound++) {
                 if (expression.charAt(rightBound) == OPEN_EXP.charAt(0)) {
                     // skip enclosed expression
                     rightBound += getEnclosedExpressionBound(expression.substring(rightBound), OPEN_EXP, CLOSE_EXP, 0);
@@ -224,7 +221,8 @@ public enum Operators {
                     leftBound = rightBound + 1;
                 }
             }
-            list.add(expression.substring(leftBound, rightBound));
+
+            list.add(expression.substring(leftBound));
 
             result = list.stream();
 
