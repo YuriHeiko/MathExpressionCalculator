@@ -94,7 +94,7 @@ public class FunctionComputer implements Computer {
 
             try {
                 Double[] args = Stream.of(arguments.split(Pattern.quote(DELIMITER))).
-                                          map(e -> Double.valueOf(computeFunction(Operators.removeEnclosingSymbols(e)))).
+                                          map(e -> Double.valueOf(computeFunction(e))).
                                           collect(Collectors.toList()).
                                           toArray(new Double[0]);
 
