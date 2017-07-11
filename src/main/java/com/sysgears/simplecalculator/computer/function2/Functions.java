@@ -1,4 +1,4 @@
-package com.sysgears.simplecalculator.computer.everythingisfunction2;
+package com.sysgears.simplecalculator.computer.function2;
 
 import com.sysgears.simplecalculator.computer.exceptions.InvalidInputExpressionException;
 
@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static com.sysgears.simplecalculator.computer.everythingisfunction2.FunctionComputer.CLOSE_EXP;
-import static com.sysgears.simplecalculator.computer.everythingisfunction2.FunctionComputer.OPEN_EXP;
+import static com.sysgears.simplecalculator.computer.function2.FunctionComputer.CLOSE_EXP;
+import static com.sysgears.simplecalculator.computer.function2.FunctionComputer.OPEN_EXP;
 
 /**
  * Contains allowed math functions and their logic. It also uses {@code
@@ -238,7 +238,7 @@ public enum Functions {
         List<String> functions = new LinkedList<>(mathFunctions.keySet());
         functions.addAll(Stream.of(values()).map(Functions::getImage).collect(Collectors.toList()));
 
-        return functions.stream().map(Pattern::quote).collect(Collectors.joining("|", "(", ")\\("));
+        return functions.stream().map(Pattern::quote).collect(Collectors.joining("|", "(", ")\\" + OPEN_EXP));
     }
 
     /**
@@ -275,5 +275,4 @@ public enum Functions {
         return mathFunctions.keySet().stream().
                 map(e -> "\t" + e + IntStream.range(1, mathFunctions.get(e).size() + 1).mapToObj(i -> "x" + i).
                         collect(Collectors.joining(", ", OPEN_EXP, CLOSE_EXP))).collect(Collectors.joining(System.lineSeparator()));
-    }
-}
+    }}

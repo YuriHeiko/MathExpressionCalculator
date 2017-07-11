@@ -1,4 +1,4 @@
-package com.sysgears.simplecalculator.computer.everythingisfunction;
+package com.sysgears.simplecalculator.computer.function;
 
 import java.util.Collection;
 import java.util.stream.Collectors;

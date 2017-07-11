@@ -1,4 +1,4 @@
-package com.sysgears.simplecalculator.computer.everythingisfunction2;
+package com.sysgears.simplecalculator.computer.function2;
 
 import org.junit.Test;
 

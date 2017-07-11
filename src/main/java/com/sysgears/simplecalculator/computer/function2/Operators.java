@@ -1,4 +1,4 @@
-package com.sysgears.simplecalculator.computer.everythingisfunction2;
+package com.sysgears.simplecalculator.computer.function2;
 
 import com.sysgears.simplecalculator.computer.exceptions.InvalidInputExpressionException;
 
@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.sysgears.simplecalculator.computer.everythingisfunction2.FunctionComputer.*;
+import static com.sysgears.simplecalculator.computer.function2.FunctionComputer.*;
 
 /**
  * Contains allowed math operators and link to the relative functions.

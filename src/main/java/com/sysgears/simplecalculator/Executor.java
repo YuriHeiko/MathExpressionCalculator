@@ -1,16 +1,10 @@
 package com.sysgears.simplecalculator;
 
 import com.sysgears.simplecalculator.computer.Computer;
-import com.sysgears.simplecalculator.computer.everythingisfunction2.FunctionComputer;
+import com.sysgears.simplecalculator.computer.function2.FunctionComputer;
 import com.sysgears.simplecalculator.history.HistoryHolder;
 import com.sysgears.simplecalculator.ui.ConsoleController;
 import com.sysgears.simplecalculator.ui.UIController;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.TypeVariable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Is used to run a demo of Simple Calculator application

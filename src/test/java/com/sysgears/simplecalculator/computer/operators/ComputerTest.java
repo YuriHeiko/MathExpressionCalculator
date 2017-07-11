@@ -1,4 +1,4 @@
-package com.sysgears.simplecalculator.computer.operatorsandfunctions;
+package com.sysgears.simplecalculator.computer.operators;
 
 import com.sysgears.simplecalculator.computer.exceptions.InvalidInputExpressionException;
 import org.junit.Assert;

@@ -1,4 +1,4 @@
-package com.sysgears.simplecalculator.computer.everythingisfunction2;
+package com.sysgears.simplecalculator.computer.function2;
 
 import com.sysgears.simplecalculator.computer.Computer;
 import com.sysgears.simplecalculator.computer.exceptions.InvalidInputExpressionException;
@@ -6,6 +6,7 @@ import com.sysgears.simplecalculator.computer.exceptions.InvalidInputExpressionE
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Calculates a received math expression. An incoming string cannot
@@ -67,7 +68,7 @@ public class FunctionComputer implements Computer {
             throw new InvalidInputExpressionException("Incoming string cannot contain either '++' or '--'");
 
         } else if (!expression.isEmpty()) {
-            result = computeFunction(Operators.convertToFunctions(expression));
+            result = computeFunction2(Operators.convertToFunctions(expression));
 
             if (!(result.isEmpty() || result.matches(NUMBER_EXP))) {
                 throw new InvalidInputExpressionException("Input data is invalid cause the result of calculation: " +
@@ -136,6 +137,46 @@ public class FunctionComputer implements Computer {
         while (result.charAt(0) == OPEN_EXP.charAt(0)) {
             int endIndex = Operators.getEnclosedExpressionBound(result, OPEN_EXP, CLOSE_EXP, 0);
             result = result.substring(1, endIndex) + result.substring(endIndex + 1, result.length());
+        }
+
+        return result;
+    }
+
+
+    /**
+     * Non-recursively computes functions starting from the innermost one.
+     *
+     * @param expression
+     * @return
+     */
+
+    String computeFunction2(final String expression) {
+        String result = expression;
+
+        while (result.contains(OPEN_EXP)) {
+            int openInd = result.lastIndexOf(OPEN_EXP);
+            int closeInd = Operators.getEnclosedExpressionBound(result, OPEN_EXP, CLOSE_EXP, openInd);
+            int funcInd = Math.max(result.lastIndexOf(OPEN_EXP, openInd - 1), result.lastIndexOf(DELIMITER, openInd - 1));
+            funcInd = funcInd == -1 ? 0 : funcInd;
+
+            if (result.charAt(funcInd) == DELIMITER.charAt(0) || result.charAt(funcInd) == OPEN_EXP.charAt(0)) {
+                funcInd++;
+            }
+
+            Double[] args = Stream.of(result.substring(openInd + 1, closeInd).split(DELIMITER)).
+                                    map(Double::valueOf).
+                                    collect(Collectors.toList()).toArray(new Double[0]);
+
+            String calculate = Functions.calculate(result.substring(funcInd, openInd), args);
+            result = result.replace(result.substring(funcInd, closeInd + 1), calculate);
+
+            if (funcInd > 0 && result.charAt(--funcInd) == OPEN_EXP.charAt(0) &&
+                    result.charAt(funcInd + calculate.length()) == CLOSE_EXP.charAt(0) &&
+                    (result.charAt(funcInd - 1) == OPEN_EXP.charAt(0) || result.charAt(funcInd - 1) == DELIMITER.charAt(0))) {
+
+                result = result.replace(result.substring(funcInd, funcInd + calculate.length()),
+                        removeEnclosingSymbols(result.substring(funcInd, funcInd + calculate.length())));
+            }
         }
 
         return result;

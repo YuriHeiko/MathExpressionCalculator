@@ -1,4 +1,4 @@
-package com.sysgears.simplecalculator.computer.everythingisfunction;
+package com.sysgears.simplecalculator.computer.function;
 
 import com.sysgears.simplecalculator.computer.Computer;
 import com.sysgears.simplecalculator.computer.exceptions.InvalidInputExpressionException;

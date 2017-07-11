@@ -1,4 +1,4 @@
-package com.sysgears.simplecalculator.computer.operatorsandfunctions;
+package com.sysgears.simplecalculator.computer.operators;
 
 import org.junit.BeforeClass;
 
