@@ -146,8 +146,9 @@ public class FunctionComputer implements Computer {
     /**
      * Non-recursively computes functions starting from the innermost one.
      *
-     * @param expression
-     * @return
+     * @param expression The string contains a math expression with only
+     *                   functions
+     * @return The string contains the calculated expression
      */
 
     String computeFunction2(final String expression) {

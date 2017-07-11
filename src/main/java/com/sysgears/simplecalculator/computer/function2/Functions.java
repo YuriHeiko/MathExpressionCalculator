@@ -115,7 +115,7 @@ public enum Functions {
     /**
      * The {@code Map} contains all Math class methods
      */
-    private static Map<String, List<String>> mathFunctions = getMathClassFunctions();
+    private final static Map<String, List<String>> mathFunctions = getMathClassFunctions();
 
     /**
      * Constructs an object with virtually endless number of arguments
