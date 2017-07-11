@@ -63,7 +63,7 @@ public class FunctionComputer implements Computer {
         if (expression == null) {
             throw new InvalidInputExpressionException("Incoming string cannot be null");
 
-        } else if (!(expression.contains("++") || expression.contains("--"))) {
+        } else if (expression.contains("++") || expression.contains("--")) {
             throw new InvalidInputExpressionException("Incoming string cannot contain either '++' or '--'");
 
         } else if (!expression.isEmpty()) {
@@ -128,7 +128,7 @@ public class FunctionComputer implements Computer {
     String removeEnclosingSymbols(final String expression) throws InvalidInputExpressionException {
         String result = expression;
 
-        if (result.charAt(result.length() - 1) != CLOSE_EXP.charAt(0)) {
+        if (result.charAt(0) == OPEN_EXP.charAt(0) && result.charAt(result.length() - 1) != CLOSE_EXP.charAt(0)) {
             throw new InvalidInputExpressionException("Input data is invalid cause this part " + result +
                     " does not have the closing symbol: '" + CLOSE_EXP + "'.", result);
         }

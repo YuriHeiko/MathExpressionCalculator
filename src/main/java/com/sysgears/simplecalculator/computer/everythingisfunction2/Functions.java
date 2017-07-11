@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -116,22 +115,7 @@ public enum Functions {
     /**
      * The {@code Map} contains all Math class methods
      */
-    private static Map<String, String[]> mathFunctions = new TreeMap<>();
-
-    /**
-     * Fills {@code mathFunctions} with all methods from {@code Math}
-     * class
-     */
-    static {
-        for (Method method : Math.class.getDeclaredMethods()) {
-            if (Modifier.isPublic(method.getModifiers()) && method.getReturnType() == double.class) {
-                mathFunctions.put(method.getName(), Stream.of(method.getParameterTypes()).map(Class::toString).
-                                                                collect(Collectors.toList()).toArray(new String[0]));
-            }
-        }
-    }
-
-    private static Object mathList;
+    private static Map<String, List<String>> mathFunctions = getMathClassFunctions();
 
     /**
      * Constructs an object with virtually endless number of arguments
@@ -173,20 +157,22 @@ public enum Functions {
         return 0.0;
     }
 
-    private static Map<String, String[]> getMathClassFunctions() {
-
-        Map<String, Object> collect = Stream.of(Math.class.getDeclaredMethods()).
-                collect(Collectors.groupingBy(Method::getName,
-                        Collector.of(LinkedList::new, Class::toString, LinkedList::add,LinkedList::toArray)));
-
+    /**
+     * Creates a map contains all methods from {@code Math} class
+     *
+     * @return The map contains functions as keys and their arguments as values
+     */
+    private static Map<String, List<String>> getMathClassFunctions() {
+        Map<String, List<String>> map = new TreeMap<>();
 
         for (Method method : Math.class.getDeclaredMethods()) {
             if (Modifier.isPublic(method.getModifiers()) && method.getReturnType() == double.class) {
-                mathFunctions.put(method.getName(), Stream.of(method.getParameterTypes()).map(Class::toString).
-                        collect(Collectors.toList()).toArray(new String[0]));
+                map.put(method.getName(), Stream.of(method.getParameterTypes()).map(Class::toString).
+                        collect(Collectors.toList()));
             }
         }
 
+        return map;
     }
 
     /**
@@ -210,10 +196,10 @@ public enum Functions {
             value = valueOf(function.toUpperCase()).calculate(arguments).toString();
 
         } else if (mathFunctions.containsKey(function)) {
-            String[] args = mathFunctions.get(function);
-            if (arguments.length == args.length) {
+            List<String> args = mathFunctions.get(function);
+            if (arguments.length == args.size()) {
                 try {
-                    Class<?>[] a = new Class[args.length];
+                    Class<?>[] a = new Class[args.size()];
                     for (int i = 0; i < a.length; i++) {
                         a[i] = double.class;
                     }
@@ -227,7 +213,7 @@ public enum Functions {
 
             } else {
                 throw new InvalidInputExpressionException("Input data is invalid cause this part cause the function " +
-                        function + " contains " + arguments.length + " arguments instead of " + args.length);
+                        function + " contains " + arguments.length + " arguments instead of " + args.size());
             }
         }
 
@@ -287,7 +273,7 @@ public enum Functions {
      */
     public static String getMathList() {
         return mathFunctions.keySet().stream().
-                map(e -> "\t" + e + IntStream.range(1, mathFunctions.get(e).length + 1).mapToObj(i -> "x" + i).
+                map(e -> "\t" + e + IntStream.range(1, mathFunctions.get(e).size() + 1).mapToObj(i -> "x" + i).
                         collect(Collectors.joining(", ", OPEN_EXP, CLOSE_EXP))).collect(Collectors.joining(System.lineSeparator()));
     }
 }
